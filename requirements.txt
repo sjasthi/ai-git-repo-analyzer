@@ -1,0 +1,21 @@
+
+Technology Stack:   Front End (HTML, CSS, JS, JQuery, Bootstrap)
+                    Server (PHP)
+                    Backend (MySQL)
+
+Requirements:  1. This app can scan GITHUB or GITLAB repos. 
+              2. Only input needed are:  link to the repo and PERSONAL ACCESS TOKEN.
+               3. THe system relies on APIs to read the repo
+              4. It reviews the code based on different standards (performance, security, compliance, stability and so on)
+              5. If the repo contains the SKILLs, then this app scans those skill and assesses those for licensing risk and execution risk.
+https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf
+6.Once the repo is reviewed, you provide the recommendations on what should be done to fix it
+
+7. Static code repo analysis: (stretch goal)
+-- what is the tech stack?
+-- number of files
+-- ci cd pipelinemetrics
+
+
+FP2: requirements.md file Requirements Elaboration
+FP3:  what is your 8 week plan to wrap up the projects. What is coming in FP3? You should demonstrate it
