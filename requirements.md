@@ -8,7 +8,7 @@ AI-Assisted Code and Skills Reviewer
 
 # 1. Project Description
 
-The AI-Assisted Code and Skills Reviewer is a web-based application that analyzes software repositories hosted on GitHub and GitLab. The system uses repository APIs to retrieve source code, project structure, and metadata for automated analysis.
+The AI-Assisted Code and Skills Reviewer is a web-based application that analyzes software repositories hosted on GitHub. The system uses repository APIs to retrieve source code, project structure, and metadata for automated analysis.
 
 Users only need to provide:
 
@@ -40,7 +40,6 @@ The application will review source code for quality, security, performance, comp
 ## External APIs
 
 - GitHub API
-- GitLab API
 
 ---
 
@@ -50,7 +49,7 @@ The application will review source code for quality, security, performance, comp
 
 The system shall allow users to enter:
 
-- GitHub repository URL or GitLab repository URL
+- GitHub repository URL
 - Personal Access Token (PAT)
 
 The system shall validate that both fields are provided before starting analysis.
@@ -59,7 +58,7 @@ The system shall validate that both fields are provided before starting analysis
 
 ## FR2 – Repository Access via APIs
 
-The system shall connect to either GitHub or GitLab using the provided Personal Access Token.
+The system shall connect to GitHub using the provided Personal Access Token.
 
 The system shall retrieve:
 
@@ -139,7 +138,6 @@ The system shall identify technologies and skills used in the repository.
 
 - Docker
 - GitHub Actions
-- GitLab CI/CD
 
 The system shall assess:
 
@@ -206,7 +204,6 @@ Report:
 Detect:
 
 - GitHub Actions workflows
-- GitLab CI/CD pipelines
 
 Provide:
 
@@ -237,7 +234,6 @@ Provide:
 ## Compatibility
 
 - Support GitHub repositories.
-- Support GitLab repositories.
 
 ---
 
@@ -253,14 +249,10 @@ Frontend
       v
 PHP Backend Server
       |
-      +----------------------+
-      |                      |
-      v                      v
- GitHub API            GitLab API
-      |                      |
-      +----------+-----------+
-                 |
-                 v
+     v
+ GitHub API
+     |
+     v
       Repository Analyzer
 (Code Review + Skills Detection
      + Risk Assessment)
@@ -278,12 +270,12 @@ PHP Backend Server
 
 ## Table: repositories
 
-| Field | Description |
-|---------|-------------|
-| id | Primary Key |
-| repo_url | Repository URL |
-| platform | GitHub or GitLab |
-| created_at | Analysis Date |
+| Field      | Description      |
+| ---------- | ---------------- |
+| id         | Primary Key      |
+| repo_url   | Repository URL   |
+| platform   | GitHub           |
+| created_at | Analysis Date    |
 
 ### SQL Example
 
@@ -364,24 +356,6 @@ Endpoints:
 /repos/{owner}/{repo}/contents
 /repos/{owner}/{repo}/languages
 ```
-
-## GitLab API
-
-Used For:
-
-- Project metadata
-- Repository tree
-- Pipeline information
-
-Endpoints:
-
-```text
-/projects/:id
-/projects/:id/repository/tree
-/projects/:id/pipelines
-```
-
----
 
 # 8. User Interface Design
 
@@ -464,21 +438,19 @@ Medium
 
 ---
 
-# 10. FP3 – Eight Week Development Plan
+# FP3 – Six Week Development Plan
 
-| Week | Activity |
-|------|----------|
-| Week 1 | Database Design and UI Setup |
-| Week 2 | PHP Backend Structure |
-| Week 3 | GitHub API Integration |
-| Week 4 | GitLab API Integration |
-| Week 5 | Repository Data Extraction |
-| Week 6 | Code Analysis and Skills Detection |
-| Week 7 | Recommendation Engine Development |
-| Week 8 | Testing, Documentation, and Final Demo |
+| Week   | Activity                                                      | Deliverable                                                                             |
+| ------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Week 1 | Project setup, architecture finalization, and database design | Approved scope, system architecture, and initial MySQL schema                           |
+| Week 2 | Frontend UI setup and PHP backend scaffolding                 | Working repository input screens and backend application skeleton                       |
+| Week 3 | GitHub API integration and repository data retrieval          | GitHub analysis flow that captures metadata, structure, and languages                   |
+| Week 4 | Repository file extraction and static analysis pipeline       | Normalized repository content ingestion and baseline analysis results                    |
+| Week 5 | Skills detection, risk assessment, and recommendation engine   | Findings engine that produces security, performance, stability, skill, and risk results |
+| Week 6 | Testing, hardening, documentation, and final demo             | Stabilized release with validation evidence, user guide, and demo-ready dashboard       |
 
 ---
 
 # Conclusion
 
-The AI-Assisted Code and Skills Reviewer will provide automated repository analysis for GitHub and GitLab projects. By combining API integration, code review analysis, skill detection, and risk assessment, the system will help developers improve software quality and better understand project technologies.
+The AI-Assisted Code and Skills Reviewer will provide automated repository analysis for GitHub projects. By combining API integration, code review analysis, skill detection, and risk assessment, the system will help developers improve software quality and better understand project technologies.
