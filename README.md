@@ -21,7 +21,7 @@ Web application starter for GitHub repository analysis using:
 2. Start Apache and MySQL from XAMPP Control Panel.
 3. Configure database environment variables if needed:
 	- `DB_HOST` (default `127.0.0.1`)
-	- `DB_PORT` (default `3307`)
+	- `DB_PORT` (default `3306`)
 	- `DB_NAME` (default `repo_analyzer`)
 	- `DB_USER` (default `root`)
 	- `DB_PASSWORD` (default empty)

@@ -11,7 +11,7 @@ function db_connection(): PDO
     }
 
     $host = getenv('DB_HOST') ?: '127.0.0.1';
-    $port = getenv('DB_PORT') ?: '3307';
+    $port = getenv('DB_PORT') ?: '3306';
     $name = getenv('DB_NAME') ?: 'repo_analyzer';
     $user = getenv('DB_USER') ?: 'root';
     $pass = getenv('DB_PASSWORD') ?: '';
