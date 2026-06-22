@@ -29,6 +29,14 @@ try {
 
     $bootstrapPdo->exec($sql);
 
+    // Make sure existing scans table has new columns if the schema was updated.
+    $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS total_findings INT DEFAULT 0");
+    $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS total_skills INT DEFAULT 0");
+    // Make sure existing findings table has the new title column.
+    $bootstrapPdo->exec("ALTER TABLE findings ADD COLUMN IF NOT EXISTS title VARCHAR(255) NOT NULL DEFAULT ''");
+    // Make sure existing skills table has the proficiency_level column.
+    $bootstrapPdo->exec("ALTER TABLE skills ADD COLUMN IF NOT EXISTS proficiency_level VARCHAR(50) NOT NULL DEFAULT 'Intermediate'");
+
     echo "Database initialized successfully.\n";
 } catch (Throwable $e) {
     http_response_code(500);
