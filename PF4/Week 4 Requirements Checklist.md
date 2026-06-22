@@ -23,6 +23,7 @@
 - [x] Error message display area
 - [x] Form validation (client-side)
 - [x] PAT is not stored in database
+- [x] Homepage summary explains live website functionality
 
 ### Progress Indicator
 - [x] Progress bar with percentage
@@ -81,6 +82,8 @@
 - [x] "Analyze Another Repository" button
 - [x] Form resets for new analysis
 - [x] Smooth transitions between sections
+- [x] Dashboard page accessible from the homepage
+- [x] Dashboard displays summary and recent scan history
 
 ---
 

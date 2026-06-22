@@ -22,6 +22,19 @@
     - Detected skills/technologies with proficiency levels
     - Actionable recommendations by priority
 
+## Home Page Summary
+- Added a homepage section describing the live website's purpose and functionality
+- Explained how the site uses PAT-based GitHub access to fetch repo metadata
+- Clarified that the analyzer generates findings, skills, and recommendations
+- Included user instructions for submitting a repo and refreshing dashboard data
+
+## Dashboard Page
+- Added `dashboard.php` to the live website
+- Included summary tiles for total repositories, scans, findings, skills, and recommendations
+- Added recent scan history with repository, score, date, findings, and skill counts
+- Included quick action buttons for Home and API health check
+- Matched the existing lavender dashboard style and site layout
+
 ## Debugging & Fixes
 - Fixed JSON payload handling in the API
 - Resolved database schema mismatches by adding missing columns

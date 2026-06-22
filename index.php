@@ -52,6 +52,10 @@ declare(strict_types=1);
             opacity: 0.95;
         }
 
+        .text-purple {
+            color: #7C3AED !important;
+        }
+
         /* Cards */
         .card {
             border: 0;
@@ -620,6 +624,36 @@ declare(strict_types=1);
     </div>
 
     <div class="container">
+        <!-- Home Details Section -->
+        <div class="card p-4 mb-4">
+            <h2 class="h5 mb-3"><i class="fas fa-info-circle"></i> About this Website</h2>
+            <p class="text-muted">This site is a live GitHub repository analyzer that uses your PAT to fetch repository metadata, run a basic code review, identify skills, and generate actionable recommendations.</p>
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <div class="card p-3 h-100" style="background: #F8F0FC; border: 1px solid #E9D5FF;">
+                        <h3 class="h6 mb-2">What it does</h3>
+                        <ul class="mb-0">
+                            <li>Validates GitHub repository access with your PAT</li>
+                            <li>Fetches repository metadata like stars, forks, and language</li>
+                            <li>Generates categorized findings and recommendations</li>
+                            <li>Stores scan history in the local database</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card p-3 h-100" style="background: #F3E8FF; border: 1px solid #DDD6FE;">
+                        <h3 class="h6 mb-2">How to use it</h3>
+                        <ul class="mb-0">
+                            <li>Enter a valid GitHub repository URL</li>
+                            <li>Provide your Personal Access Token (PAT)</li>
+                            <li>Click Analyze Repository</li>
+                            <li>View results, then open the Dashboard for history</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Input Form Section -->
         <div class="card p-4" id="input-section">
             <h2 class="h5 mb-4"><i class="fas fa-search"></i> Analyze Your GitHub Repository</h2>
@@ -658,6 +692,9 @@ declare(strict_types=1);
                     <button type="button" id="health-check" class="btn btn-outline-secondary">
                         <i class="fas fa-heartbeat"></i> Check API Health
                     </button>
+                    <a href="dashboard.php" class="btn btn-outline-light text-purple">
+                        <i class="fas fa-th-large"></i> Dashboard
+                    </a>
                 </div>
 
                 <div id="error-message" class="alert alert-danger mt-3" style="display: none;"></div>
