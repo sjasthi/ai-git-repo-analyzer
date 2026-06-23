@@ -19,3 +19,20 @@ https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-C
 
 FP2: requirements.md file Requirements Elaboration
 FP3:  what is your 8 week plan to wrap up the projects. What is coming in FP3? You should demonstrate it
+FP4:  What can we do to analyze the github repo?
+"We are building a Git Repo Analyzer - a web application to analyze give an repo. 
+What types of static code anlaysis can we do on that repo? For example, 
+OWASP Skill top 10, security STAT testing, scanning the code for perfomanc issues, and maintainabiilty, Code Repo file types and size summary and so on.
+Can you provide comprehensive list which can take up in the next 5 weeks? we are two people working on the project. 5 * 2 = 10 checsk. Suggest the top 10 checks we can possibliyt project'
+
+
+FP5: Add a "Settings" option. List all these 10 checks in the settings. The user can decide to run all 10 or only some.
+
+User picks a repo.
+Clicks "Analyse" button.
+You see what "settings" are selected by the user.
+You run those checks one after another.
+And provide big summary / report of each check
+
+
+
