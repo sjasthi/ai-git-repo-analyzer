@@ -100,6 +100,39 @@ declare(strict_types=1);
     </div>
 </div>
 
+<div class="container mb-4">
+    <div class="card p-4">
+        <h2 class="h5 mb-3"><i class="fas fa-info-circle text-purple"></i> About this website </h2>
+        <p class="mb-3">AI Git Repo Analyzer helps you inspect a GitHub repository and understand its code quality, detected skills, and potential improvement areas.</p>
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+            <div class="col">
+                <div class="p-3 border rounded bg-white">
+                    <strong>Analyze repositories</strong>
+                    <p class="mb-0 small text-muted">Submit a repo URL and GitHub PAT to run an AI-assisted review.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="p-3 border rounded bg-white">
+                    <strong>View findings</strong>
+                    <p class="mb-0 small text-muted">See issues, risks, and detected technologies found in the repository.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="p-3 border rounded bg-white">
+                    <strong>Detect skills</strong>
+                    <p class="mb-0 small text-muted">Review the skills and proficiency levels inferred from the repository.</p>
+                </div>
+            </div>
+            <div class="col">
+                <div class="p-3 border rounded bg-white">
+                    <strong>Track history</strong>
+                    <p class="mb-0 small text-muted">Use the dashboard to monitor scan history and summary metrics.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container pb-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">

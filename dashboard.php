@@ -178,7 +178,7 @@ try {
                     <i class="fas fa-home"></i> Home
                 </a>
                 <a href="dashboard.php" class="btn btn-light btn-sm text-purple">
-                    <i class="fas fa-th-large"></i> Dashboard
+                    <i class="fas fa-th-large"></i> Recent History
                 </a>
             </div>
         </div>
