@@ -98,6 +98,45 @@ try {
         .pill-red     { background: #FEE2E2; color: #991B1B; }
         .pill-blue    { background: #DBEAFE; color: #1D4ED8; }
 
+        /* Checks summary grid */
+        .checks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .check-tile {
+            border-radius: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 1.5px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            background: #fff;
+        }
+
+        .check-tile.clean   { border-color: #BBF7D0; background: #F0FDF4; }
+        .check-tile.issues  { border-color: #FECACA; background: #FFF5F5; }
+
+        .check-tile .check-name  { font-size: 0.78rem; font-weight: 700; color: #374151; }
+        .check-tile .check-count { font-size: 1.1rem; font-weight: 700; }
+        .check-tile.clean  .check-count { color: #16A34A; }
+        .check-tile.issues .check-count { color: #DC2626; }
+        .check-tile .check-label { font-size: 0.7rem; color: #6B7280; }
+
+        /* Findings grouped by category */
+        .finding-category-header {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #6B7280;
+            padding: 0.5rem 1rem;
+            background: #F9FAFB;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
         #result-section { display: none; }
     </style>
 </head>
@@ -286,15 +325,16 @@ try {
                     </div>
                 </div>
 
-                <div class="card p-4">
-                    <h3 class="h6 mb-3"><i class="fas fa-cogs text-primary"></i> Selected analysis checks</h3>
-                    <div class="small text-muted mb-3" id="selected-checks-summary"></div>
-                    <div id="check-results"></div>
+                <!-- Checks Summary -->
+                <div class="card p-4" id="checks-card">
+                    <h3 class="h6 mb-3"><i class="fas fa-tasks text-primary"></i> Analysis Checks</h3>
+                    <div class="checks-grid" id="checks-grid"></div>
                 </div>
 
+                <!-- Findings (grouped by category) -->
                 <div class="card p-4" id="findings-card">
                     <h3 class="h6 mb-3"><i class="fas fa-exclamation-triangle text-warning"></i> Findings</h3>
-                    <ul class="list-group list-group-flush" id="findings-list"></ul>
+                    <div id="findings-list"></div>
                 </div>
 
                 <div class="card p-4" id="recommendations-card">
@@ -369,13 +409,32 @@ try {
         return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
     }
 
+    const checkIcons = {
+        'Secret Scanner':  'fa-key',
+        'OWASP':           'fa-shield-alt',
+        'Dependencies':    'fa-box-open',
+        'Complexity':      'fa-project-diagram',
+        'File Summary':    'fa-folder-open',
+        'Code Quality':    'fa-clipboard-list',
+        'License':         'fa-file-contract',
+        'Git History':     'fa-history',
+        'Duplication':     'fa-copy',
+        'Security Config': 'fa-cog',
+    };
+
+    function esc(str) {
+        return $('<span>').text(String(str)).html();
+    }
+
     function renderResults(data) {
-        const repo = data.repository || {};
-        const scan = data.scan || {};
+        const repo  = data.repository || {};
+        const scan  = data.scan       || {};
         const score = scan.summary_score ?? 0;
 
-        const badge = $('#score-badge');
-        badge.text(score).removeClass('score-good score-medium score-low').addClass(scoreBadgeClass(score));
+        // Score badge
+        $('#score-badge').text(score)
+            .removeClass('score-good score-medium score-low')
+            .addClass(scoreBadgeClass(score));
 
         $('#res-name').text(repo.full_name || repo.name || '');
         $('#res-description').text(repo.description || 'No description provided.');
@@ -399,67 +458,90 @@ try {
             );
         }
 
-        const selectedChecks = data.selected_checks || [];
-        const results = data.results || [];
-        const checksHtml = results.map(function(result, index) {
-            const checkTitle = result.title || selectedChecks[index] || ('Check #' + (index + 1));
-            const resultId = 'check-result-' + safeId(result.id || index);
-            return '<a href="#' + resultId + '" class="pill pill-purple me-2 mb-2 text-decoration-none d-inline-block check-nav-link">' + $('<span>').text(checkTitle).html() + '</a>';
-        }).join('');
-        $('#selected-checks-summary').html(checksHtml || '<span class="text-muted">No checks selected.</span>');
-
-        const checkResults = $('#check-results').empty();
-        if (results.length) {
-            results.forEach(function(result, index) {
-                const severityClass = 'severity-' + (result.severity || 'Info');
-                const pillClass = result.severity === 'High' ? 'pill-red' : result.severity === 'Medium' ? 'pill-yellow' : result.severity === 'Low' ? 'pill-green' : 'pill-blue';
-                const evidenceHtml = (result.evidence || []).length ? `<ul class="mt-2 mb-0 small text-muted">${(result.evidence || []).map(function(item){ return '<li>' + item + '</li>'; }).join('')}</ul>` : '';
-                const resultId = 'check-result-' + safeId(result.id || index);
-                checkResults.append(`
-                    <div id="${resultId}" class="border rounded p-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-start gap-2">
-                            <div>
-                                <h4 class="h6 mb-1">${result.title}</h4>
-                                <p class="mb-1">${result.summary}</p>
-                                <div class="small text-muted">${result.details}</div>
-                                ${evidenceHtml}
-                            </div>
-                            <span class="pill ${pillClass} ${severityClass}">${result.severity || 'Info'}</span>
-                        </div>
-                    </div>
-                `);
+        // Checks summary tiles
+        const checksGrid = $('#checks-grid').empty();
+        if (data.checks && data.checks.length) {
+            data.checks.forEach(function(c) {
+                const isClean   = c.status === 'clean';
+                const tileClass = isClean ? 'clean' : 'issues';
+                const icon      = checkIcons[c.name] || 'fa-check-circle';
+                checksGrid.append(
+                    `<div class="check-tile ${tileClass}">
+                        <span class="check-name"><i class="fas ${icon} me-1"></i>${esc(c.name)}</span>
+                        <span class="check-count">${c.finding_count}</span>
+                        <span class="check-label">${isClean ? 'No issues' : (c.finding_count === 1 ? '1 issue' : c.finding_count + ' issues')}</span>
+                    </div>`
+                );
             });
+            $('#checks-card').show();
         } else {
-            checkResults.append('<div class="text-muted">No analysis checks were run.</div>');
+            $('#checks-card').hide();
         }
 
-        const findingsList = $('#findings-list').empty();
+        // Findings grouped by category
+        const findingsContainer = $('#findings-list').empty();
         if (data.findings && data.findings.length) {
+            // Group by category
+            const grouped = {};
             data.findings.forEach(function(f) {
-                findingsList.append(
-                    `<li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <strong>${$('<span>').text(f.title).html()}</strong>
-                                <span class="severity-${f.severity} ms-2 small">${f.severity}</span>
-                                <p class="mb-0 small text-muted mt-1">${$('<span>').text(f.description).html()}</p>
-                            </div>
-                            <span class="pill pill-purple ms-2">${$('<span>').text(f.category).html()}</span>
-                        </div>
-                    </li>`
+                if (!grouped[f.category]) grouped[f.category] = [];
+                grouped[f.category].push(f);
+            });
+
+            Object.keys(grouped).forEach(function(category) {
+                const count = grouped[category].length;
+                findingsContainer.append(
+                    `<div class="finding-category-header">${esc(category)} — ${count} finding${count !== 1 ? 's' : ''}</div>`
                 );
+                const ul = $('<ul class="list-group list-group-flush mb-0"></ul>');
+                grouped[category].forEach(function(f) {
+                    ul.append(
+                        `<li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1 me-2">
+                                    <strong>${esc(f.title)}</strong>
+                                    <span class="severity-${f.severity} ms-2 small">${f.severity}</span>
+                                    <p class="mb-0 small text-muted mt-1">${esc(f.description)}</p>
+                                </div>
+                            </div>
+                        </li>`
+                    );
+                });
+                findingsContainer.append(ul);
             });
             $('#findings-card').show();
         } else {
-            $('#findings-card').hide();
+            findingsContainer.append('<p class="text-muted mb-0">No issues found across all checks.</p>');
+            $('#findings-card').show();
         }
 
+        // Skills
+        const skillsList = $('#skills-list').empty();
+        if (data.skills && data.skills.length) {
+            data.skills.forEach(function(s) {
+                skillsList.append(
+                    `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><strong>${esc(s.skill_name)}</strong> — ${esc(s.proficiency_level)}</span>
+                        ${priorityPill(s.risk_level)}
+                    </li>`
+                );
+            });
+            $('#skills-card').show();
+        } else {
+            $('#skills-card').hide();
+        }
+
+        // Recommendations (High priority first)
         const recList = $('#recommendations-list').empty();
         if (data.recommendations && data.recommendations.length) {
-            data.recommendations.forEach(function(r) {
+            const order = { High: 0, Medium: 1, Low: 2 };
+            const sorted = [...data.recommendations].sort((a, b) =>
+                (order[a.priority] ?? 3) - (order[b.priority] ?? 3)
+            );
+            sorted.forEach(function(r) {
                 recList.append(
                     `<li class="list-group-item d-flex justify-content-between align-items-start gap-2">
-                        <span class="small">${$('<span>').text(r.recommendation_text).html()}</span>
+                        <span class="small">${esc(r.recommendation_text)}</span>
                         ${priorityPill(r.priority)}
                     </li>`
                 );

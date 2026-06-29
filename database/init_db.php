@@ -39,6 +39,12 @@ try {
     // Make sure existing skills table has the proficiency_level column.
     $bootstrapPdo->exec("ALTER TABLE skills ADD COLUMN IF NOT EXISTS proficiency_level VARCHAR(50) NOT NULL DEFAULT 'Intermediate'");
 
+    // Migration v2: check_runs table
+    $migrationV2 = file_get_contents(__DIR__ . '/migration_v2.sql');
+    if ($migrationV2 !== false) {
+        $bootstrapPdo->exec($migrationV2);
+    }
+
     echo "Database initialized successfully.\n";
 } catch (Throwable $e) {
     http_response_code(500);
