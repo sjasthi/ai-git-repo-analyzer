@@ -84,6 +84,23 @@ function buildResult(string $id, string $title, string $summary, string $details
     return ['id' => $id, 'title' => $title, 'summary' => $summary, 'details' => $details, 'severity' => $severity, 'evidence' => $evidence];
 }
 
+function getCheckLabel(string $checkId): string
+{
+    $map = [
+        'dependency_risk'  => '#1 Insecure Design and Logic Flaws (A04)',
+        'hardening'        => '#2 Vulnerable and Outdated Dependencies (A06)',
+        'performance'      => '#3 CI/CD and Software Integrity Risks (A08)',
+        'maintainability'  => '#4 Logging and Monitoring Coverage (A09)',
+        'code_intelligence'=> '#5 Code Quality, Performance and Repo Health',
+        'secret_scanner'   => '#6 Secret & Credential Scanner',
+        'dependency_cve'   => '#7 Dependency CVE Audit (OSV.dev)',
+        'license_check'    => '#8 License Compliance Scanner',
+        'git_history'      => '#9 Git History Risk Analysis',
+        'security_config'  => '#10 Security Header & Config Auditor',
+    ];
+    return $map[$checkId] ?? $checkId;
+}
+
 function collectFilesByExtensions(array $treeEntries, array $extensions): array
 {
     $files = [];
@@ -182,13 +199,68 @@ $sourceExtensions = ['php', 'js', 'ts', 'tsx', 'jsx', 'mjs', 'py', 'java', 'cs',
 $sourceFiles      = tree_files_by_extensions($tree, $sourceExtensions, 25);
 
 // ---------------------------------------------------------------------------
-// Run all 10 static analysis checks
+// Determine which checks were selected
 // ---------------------------------------------------------------------------
-$allFindings        = [];
-$allRecommendations = [];
-$allSkills          = [];
-$checkResults       = [];
+$rawChecks = $inputData['checks'] ?? $_POST['checks'] ?? [];
+if (!is_array($rawChecks) || empty($rawChecks)) {
+    // Default: all 10 checks enabled
+    $rawChecks = [
+        'dependency_risk', 'hardening', 'performance', 'maintainability', 'code_intelligence',
+        'secret_scanner', 'dependency_cve', 'license_check', 'git_history', 'security_config',
+    ];
+}
+$selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
 
+// ---------------------------------------------------------------------------
+// Run legacy checks #1–#5 (based on checkbox selection)
+// ---------------------------------------------------------------------------
+$results         = [];
+$allFindings     = [];
+$allRecommendations = [];
+$allSkills       = [];
+$checkResults    = [];
+
+$treeEntries = $tree; // alias for legacy functions
+
+foreach ($selectedChecks as $checkId) {
+    switch ($checkId) {
+        case 'dependency_risk':
+            $results[] = scanDependencies($owner, $repo, $pat, $treeEntries);
+            break;
+        case 'hardening':
+            $results[] = scanHardening($owner, $repo, $pat, $treeEntries);
+            break;
+        case 'performance':
+            $results[] = scanPerformance($owner, $repo, $pat, $treeEntries);
+            break;
+        case 'maintainability':
+            $results[] = scanMaintainability($owner, $repo, $pat, $treeEntries);
+            break;
+        case 'code_intelligence':
+            $results[] = scanCodeIntelligence($owner, $repo, $pat, $treeEntries);
+            break;
+    }
+}
+
+// Convert legacy results into findings/recommendations
+foreach ($results as $result) {
+    if (in_array($result['severity'], ['High', 'Medium'], true)) {
+        $allFindings[] = [
+            'category'    => 'Static Analysis',
+            'title'       => $result['title'],
+            'description' => $result['summary'],
+            'severity'    => $result['severity'],
+        ];
+        $allRecommendations[] = [
+            'recommendation_text' => 'Review findings from ' . $result['title'] . ' and address the highest-risk issues first.',
+            'priority'            => $result['severity'] === 'High' ? 'High' : 'Medium',
+        ];
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Run new checks #6–#10 (based on checkbox selection)
+// ---------------------------------------------------------------------------
 function run_check(string $name, callable $fn): array
 {
     $result = $fn();
@@ -202,20 +274,19 @@ function run_check(string $name, callable $fn): array
     ];
 }
 
-$checks = [
-    'Secret Scanner'  => fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles),
-    'OWASP'           => fn() => check_owasp($owner, $repo, $pat, $sourceFiles),
-    'Dependencies'    => fn() => check_dependencies($owner, $repo, $pat, $tree),
-    'Complexity'      => fn() => check_complexity($owner, $repo, $pat, $sourceFiles),
-    'File Summary'    => fn() => check_file_summary($tree, $languages),
-    'Code Quality'    => fn() => check_todos($owner, $repo, $pat, $sourceFiles),
-    'License'         => fn() => check_license($owner, $repo, $pat, $tree, $repoLicense),
-    'Git History'     => fn() => check_git_history($owner, $repo, $pat),
-    'Duplication'     => fn() => check_duplication($owner, $repo, $pat, $sourceFiles),
-    'Security Config' => fn() => check_security_config($owner, $repo, $pat, $tree),
+$newCheckMap = [
+    'secret_scanner'  => ['Secret Scanner',   fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles)],
+    'dependency_cve'  => ['Dependency CVE',   fn() => check_dependencies($owner, $repo, $pat, $tree)],
+    'license_check'   => ['License',          fn() => check_license($owner, $repo, $pat, $tree, $repoLicense)],
+    'git_history'     => ['Git History',      fn() => check_git_history($owner, $repo, $pat)],
+    'security_config' => ['Security Config',  fn() => check_security_config($owner, $repo, $pat, $tree)],
 ];
 
-foreach ($checks as $name => $fn) {
+foreach ($selectedChecks as $checkId) {
+    if (!isset($newCheckMap[$checkId])) {
+        continue;
+    }
+    [$name, $fn] = $newCheckMap[$checkId];
     $r              = run_check($name, $fn);
     $checkResults[] = ['name' => $r['name'], 'finding_count' => $r['finding_count'], 'status' => $r['status']];
     $allFindings          = array_merge($allFindings, $r['findings']);
@@ -356,6 +427,8 @@ try {
             'watchers'    => $repoWatchers,
         ],
         'scan'            => ['summary_score' => $overallScore],
+        'selected_checks' => $selectedChecks,
+        'results'         => $results,
         'checks'          => $checkResults,
         'findings'        => $allFindings,
         'skills'          => array_values($allSkills),
