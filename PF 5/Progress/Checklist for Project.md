@@ -1,6 +1,6 @@
 # Checklist for Project
 
-Completed items so far:
+Mai completed items:
 
 - [x] Created and maintained PF5 planning document.
 - [x] Implemented Settings-based selection for Person B 5 checks.

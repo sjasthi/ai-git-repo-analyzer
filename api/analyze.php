@@ -212,54 +212,16 @@ if (!is_array($rawChecks) || empty($rawChecks)) {
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
 
 // ---------------------------------------------------------------------------
-// Run legacy checks #1–#5 (based on checkbox selection)
+// Initialize results arrays
 // ---------------------------------------------------------------------------
-$results         = [];
+$results         = [];  // legacy compatibility
 $allFindings     = [];
 $allRecommendations = [];
 $allSkills       = [];
 $checkResults    = [];
 
-$treeEntries = $tree; // alias for legacy functions
-
-foreach ($selectedChecks as $checkId) {
-    switch ($checkId) {
-        case 'dependency_risk':
-            $results[] = scanDependencies($owner, $repo, $pat, $treeEntries);
-            break;
-        case 'hardening':
-            $results[] = scanHardening($owner, $repo, $pat, $treeEntries);
-            break;
-        case 'performance':
-            $results[] = scanPerformance($owner, $repo, $pat, $treeEntries);
-            break;
-        case 'maintainability':
-            $results[] = scanMaintainability($owner, $repo, $pat, $treeEntries);
-            break;
-        case 'code_intelligence':
-            $results[] = scanCodeIntelligence($owner, $repo, $pat, $treeEntries);
-            break;
-    }
-}
-
-// Convert legacy results into findings/recommendations
-foreach ($results as $result) {
-    if (in_array($result['severity'], ['High', 'Medium'], true)) {
-        $allFindings[] = [
-            'category'    => 'Static Analysis',
-            'title'       => $result['title'],
-            'description' => $result['summary'],
-            'severity'    => $result['severity'],
-        ];
-        $allRecommendations[] = [
-            'recommendation_text' => 'Review findings from ' . $result['title'] . ' and address the highest-risk issues first.',
-            'priority'            => $result['severity'] === 'High' ? 'High' : 'Medium',
-        ];
-    }
-}
-
 // ---------------------------------------------------------------------------
-// Run new checks #6–#10 (based on checkbox selection)
+// Run all checks (based on checkbox selection)
 // ---------------------------------------------------------------------------
 function run_check(string $name, callable $fn): array
 {
