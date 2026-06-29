@@ -32,6 +32,8 @@ try {
     // Make sure existing scans table has new columns if the schema was updated.
     $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS total_findings INT DEFAULT 0");
     $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS total_skills INT DEFAULT 0");
+    $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS selected_checks_json LONGTEXT NULL");
+    $bootstrapPdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS results_json LONGTEXT NULL");
     // Make sure existing findings table has the new title column.
     $bootstrapPdo->exec("ALTER TABLE findings ADD COLUMN IF NOT EXISTS title VARCHAR(255) NOT NULL DEFAULT ''");
     // Make sure existing skills table has the proficiency_level column.

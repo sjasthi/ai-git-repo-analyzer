@@ -178,7 +178,7 @@ try {
                     <i class="fas fa-home"></i> Home
                 </a>
                 <a href="dashboard.php" class="btn btn-light btn-sm text-purple">
-                    <i class="fas fa-th-large"></i> Recent History
+                    <i class="fas fa-th-large"></i> History
                 </a>
             </div>
         </div>
@@ -235,6 +235,8 @@ try {
                                 <th>Score</th>
                                 <th>Findings</th>
                                 <th>Skills</th>
+                                <th>Summary URL</th>
+                                <th>Download File</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -245,6 +247,16 @@ try {
                                     <td><?= htmlspecialchars((string) $scan['summary_score'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars((string) $scan['total_findings'], ENT_QUOTES, 'UTF-8') ?></td>
                                     <td><?= htmlspecialchars((string) $scan['total_skills'], ENT_QUOTES, 'UTF-8') ?></td>
+                                    <td>
+                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'] . '&download=1&format=txt', ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

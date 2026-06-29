@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS scans (
     summary_score INT NULL,
     total_findings INT DEFAULT 0,
     total_skills INT DEFAULT 0,
+    selected_checks_json LONGTEXT NULL,
+    results_json LONGTEXT NULL,
     FOREIGN KEY (repository_id) REFERENCES repositories(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE

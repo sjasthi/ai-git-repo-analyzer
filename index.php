@@ -1,6 +1,22 @@
 <?php
 
 declare(strict_types=1);
+
+require_once __DIR__ . '/config/database.php';
+
+$savedRepositoryUrls = [];
+
+try {
+    $pdo = db_connection();
+    $savedRepositoryUrls = $pdo->query(
+        'SELECT repo_url FROM repositories ORDER BY created_at DESC'
+    )->fetchAll(PDO::FETCH_COLUMN);
+    $savedRepositoryUrls = array_values(array_unique(array_filter(array_map(static function ($value) {
+        return trim((string) $value);
+    }, $savedRepositoryUrls))));
+} catch (Throwable $e) {
+    $savedRepositoryUrls = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -66,6 +82,7 @@ declare(strict_types=1);
         .severity-High     { color: #DC2626; font-weight: 600; }
         .severity-Medium   { color: #D97706; font-weight: 600; }
         .severity-Low      { color: #16A34A; font-weight: 600; }
+        .severity-Info     { color: #4F46E5; font-weight: 600; }
 
         .pill {
             display: inline-block;
@@ -79,6 +96,7 @@ declare(strict_types=1);
         .pill-green   { background: #DCFCE7; color: #166534; }
         .pill-yellow  { background: #FEF3C7; color: #92400E; }
         .pill-red     { background: #FEE2E2; color: #991B1B; }
+        .pill-blue    { background: #DBEAFE; color: #1D4ED8; }
 
         #result-section { display: none; }
     </style>
@@ -137,7 +155,6 @@ declare(strict_types=1);
     <div class="row justify-content-center">
         <div class="col-lg-8">
 
-            <!-- Analysis Form -->
             <div class="card p-4">
                 <h2 class="h5 mb-3"><i class="fas fa-search text-purple"></i> Analyze a Repository</h2>
 
@@ -149,9 +166,36 @@ declare(strict_types=1);
                             id="repo_url"
                             name="repo_url"
                             class="form-control"
+                            list="saved-repository-urls"
                             placeholder="https://github.com/owner/repository"
                             required
                         >
+                        <datalist id="saved-repository-urls">
+                            <?php foreach ($savedRepositoryUrls as $savedRepositoryUrl): ?>
+                                <option value="<?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>"></option>
+                            <?php endforeach; ?>
+                        </datalist>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" value="1" id="remember_repo_url">
+                            <label class="form-check-label" for="remember_repo_url">Remember this repository URL</label>
+                        </div>
+                        <div class="form-text">If checked, the last repository URL will be auto-filled next time.</div>
+                        <?php if (!empty($savedRepositoryUrls)): ?>
+                            <div class="mt-3">
+                                <div class="small fw-semibold mb-2">Saved GitHub Repository URLs</div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <?php foreach ($savedRepositoryUrls as $savedRepositoryUrl): ?>
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="<?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>"
+                                        >
+                                            <?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>
+                                        </button>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">
@@ -167,6 +211,33 @@ declare(strict_types=1);
                         <div class="form-text">Used only for GitHub API access — never stored in the database.</div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Analysis Settings</label>
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <button type="button" id="select-all-checks" class="btn btn-sm btn-outline-primary">Select all</button>
+                            <button type="button" id="clear-checks" class="btn btn-sm btn-outline-secondary">Clear</button>
+                        </div>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row row-cols-1 row-cols-md-2 g-2">
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_risk" id="check_dependency_risk" checked><label class="form-check-label" for="check_dependency_risk"><strong>#1</strong> Insecure Design and Logic Flaws (A04)</label></div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="hardening" id="check_hardening" checked><label class="form-check-label" for="check_hardening"><strong>#2</strong> Vulnerable and Outdated Dependencies (A06)</label></div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="performance" id="check_performance" checked><label class="form-check-label" for="check_performance"><strong>#3</strong> CI/CD and Software Integrity Risks (A08)</label></div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="maintainability" id="check_maintainability" checked><label class="form-check-label" for="check_maintainability"><strong>#4</strong> Logging and Monitoring Coverage (A09)</label></div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="code_intelligence" id="check_code_intelligence" checked><label class="form-check-label" for="check_code_intelligence"><strong>#5</strong> Code Quality, Performance and Repo Health</label></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="d-flex gap-2 flex-wrap">
                         <button type="submit" class="btn btn-primary" id="submit-btn">
                             <i class="fas fa-play"></i> Analyze Repository
@@ -180,10 +251,7 @@ declare(strict_types=1);
                 <div id="status-msg" class="mt-3 text-muted small"></div>
             </div>
 
-            <!-- Results Section -->
             <div id="result-section">
-
-                <!-- Repo Overview -->
                 <div class="card p-4">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div id="score-badge" class="score-badge"></div>
@@ -214,28 +282,27 @@ declare(strict_types=1);
                         <a href="dashboard.php" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-history"></i> View All Scan Records
                         </a>
+                        <span id="report-links" class="ms-2"></span>
                     </div>
                 </div>
 
-                <!-- Findings -->
+                <div class="card p-4">
+                    <h3 class="h6 mb-3"><i class="fas fa-cogs text-primary"></i> Selected analysis checks</h3>
+                    <div class="small text-muted mb-3" id="selected-checks-summary"></div>
+                    <div id="check-results"></div>
+                </div>
+
                 <div class="card p-4" id="findings-card">
                     <h3 class="h6 mb-3"><i class="fas fa-exclamation-triangle text-warning"></i> Findings</h3>
                     <ul class="list-group list-group-flush" id="findings-list"></ul>
                 </div>
 
-                <!-- Skills -->
-                <div class="card p-4" id="skills-card">
-                    <h3 class="h6 mb-3"><i class="fas fa-tools text-primary"></i> Detected Skills</h3>
-                    <ul class="list-group list-group-flush" id="skills-list"></ul>
-                </div>
-
-                <!-- Recommendations -->
                 <div class="card p-4" id="recommendations-card">
                     <h3 class="h6 mb-3"><i class="fas fa-lightbulb text-success"></i> Recommendations</h3>
                     <ul class="list-group list-group-flush" id="recommendations-list"></ul>
                 </div>
 
-            </div><!-- /result-section -->
+            </div>
 
         </div>
     </div>
@@ -243,6 +310,46 @@ declare(strict_types=1);
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+    const REPO_URL_LAST_KEY = 'repo_url_last';
+    const REPO_URL_REMEMBER_ENABLED_KEY = 'repo_url_remember_enabled';
+
+    function normalizeRepoUrl(value) {
+        return String(value || '').trim();
+    }
+
+    function isValidGitHubRepoUrl(value) {
+        return /^https?:\/\/github\.com\/[^\/]+\/[^\/]+\/?$/i.test(value);
+    }
+
+    function rememberRepoUrl(value) {
+        const repoUrl = normalizeRepoUrl(value);
+        const rememberEnabled = $('#remember_repo_url').is(':checked');
+
+        localStorage.setItem(REPO_URL_REMEMBER_ENABLED_KEY, rememberEnabled ? '1' : '0');
+
+        if (!rememberEnabled) {
+            localStorage.removeItem(REPO_URL_LAST_KEY);
+            return;
+        }
+
+        if (!isValidGitHubRepoUrl(repoUrl)) {
+            return;
+        }
+
+        localStorage.setItem(REPO_URL_LAST_KEY, repoUrl);
+    }
+
+    function loadRememberedRepoUrl() {
+        const rememberEnabled = localStorage.getItem(REPO_URL_REMEMBER_ENABLED_KEY);
+        const shouldRemember = rememberEnabled === null ? true : rememberEnabled === '1';
+        $('#remember_repo_url').prop('checked', shouldRemember);
+
+        const lastRepoUrl = normalizeRepoUrl(localStorage.getItem(REPO_URL_LAST_KEY) || '');
+        if (shouldRemember && lastRepoUrl !== '') {
+            $('#repo_url').val(lastRepoUrl);
+        }
+    }
+
     function setStatus(msg, isError) {
         $('#status-msg').html(msg).css('color', isError ? '#DC2626' : '#6B7280');
     }
@@ -258,16 +365,18 @@ declare(strict_types=1);
         return `<span class="pill ${map[priority] || 'pill-purple'}">${priority}</span>`;
     }
 
+    function safeId(value) {
+        return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+    }
+
     function renderResults(data) {
         const repo = data.repository || {};
         const scan = data.scan || {};
         const score = scan.summary_score ?? 0;
 
-        // Score badge
         const badge = $('#score-badge');
         badge.text(score).removeClass('score-good score-medium score-low').addClass(scoreBadgeClass(score));
 
-        // Repo info
         $('#res-name').text(repo.full_name || repo.name || '');
         $('#res-description').text(repo.description || 'No description provided.');
         $('#res-language').text(repo.language || 'Unknown');
@@ -275,7 +384,55 @@ declare(strict_types=1);
         $('#res-forks').text(repo.forks ?? 0);
         $('#res-watchers').text(repo.watchers ?? 0);
 
-        // Findings
+        const reportLinks = $('#report-links').empty();
+        const reportUrls = data.report_urls || {};
+        if (reportUrls.summary) {
+            reportLinks.append(
+                '<a href="' + $('<span>').text(reportUrls.summary).html() + '" target="_blank" class="btn btn-sm btn-outline-success me-2">' +
+                '<i class="fas fa-file-lines"></i> Summary URL</a>'
+            );
+        }
+        if (reportUrls.download) {
+            reportLinks.append(
+                '<a href="' + $('<span>').text(reportUrls.download).html() + '" target="_blank" class="btn btn-sm btn-success">' +
+                '<i class="fas fa-download"></i> Download Report</a>'
+            );
+        }
+
+        const selectedChecks = data.selected_checks || [];
+        const results = data.results || [];
+        const checksHtml = results.map(function(result, index) {
+            const checkTitle = result.title || selectedChecks[index] || ('Check #' + (index + 1));
+            const resultId = 'check-result-' + safeId(result.id || index);
+            return '<a href="#' + resultId + '" class="pill pill-purple me-2 mb-2 text-decoration-none d-inline-block check-nav-link">' + $('<span>').text(checkTitle).html() + '</a>';
+        }).join('');
+        $('#selected-checks-summary').html(checksHtml || '<span class="text-muted">No checks selected.</span>');
+
+        const checkResults = $('#check-results').empty();
+        if (results.length) {
+            results.forEach(function(result, index) {
+                const severityClass = 'severity-' + (result.severity || 'Info');
+                const pillClass = result.severity === 'High' ? 'pill-red' : result.severity === 'Medium' ? 'pill-yellow' : result.severity === 'Low' ? 'pill-green' : 'pill-blue';
+                const evidenceHtml = (result.evidence || []).length ? `<ul class="mt-2 mb-0 small text-muted">${(result.evidence || []).map(function(item){ return '<li>' + item + '</li>'; }).join('')}</ul>` : '';
+                const resultId = 'check-result-' + safeId(result.id || index);
+                checkResults.append(`
+                    <div id="${resultId}" class="border rounded p-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start gap-2">
+                            <div>
+                                <h4 class="h6 mb-1">${result.title}</h4>
+                                <p class="mb-1">${result.summary}</p>
+                                <div class="small text-muted">${result.details}</div>
+                                ${evidenceHtml}
+                            </div>
+                            <span class="pill ${pillClass} ${severityClass}">${result.severity || 'Info'}</span>
+                        </div>
+                    </div>
+                `);
+            });
+        } else {
+            checkResults.append('<div class="text-muted">No analysis checks were run.</div>');
+        }
+
         const findingsList = $('#findings-list').empty();
         if (data.findings && data.findings.length) {
             data.findings.forEach(function(f) {
@@ -297,23 +454,6 @@ declare(strict_types=1);
             $('#findings-card').hide();
         }
 
-        // Skills
-        const skillsList = $('#skills-list').empty();
-        if (data.skills && data.skills.length) {
-            data.skills.forEach(function(s) {
-                skillsList.append(
-                    `<li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><strong>${$('<span>').text(s.skill_name).html()}</strong> — ${$('<span>').text(s.proficiency_level).html()}</span>
-                        ${priorityPill(s.risk_level)}
-                    </li>`
-                );
-            });
-            $('#skills-card').show();
-        } else {
-            $('#skills-card').hide();
-        }
-
-        // Recommendations
         const recList = $('#recommendations-list').empty();
         if (data.recommendations && data.recommendations.length) {
             data.recommendations.forEach(function(r) {
@@ -340,12 +480,49 @@ declare(strict_types=1);
             .fail(function (xhr) { setStatus('Health check failed: ' + xhr.responseText, true); });
     });
 
+    $('#select-all-checks').on('click', function () {
+        $('input[name="checks[]"]').prop('checked', true);
+    });
+
+    $('#clear-checks').on('click', function () {
+        $('input[name="checks[]"]').prop('checked', false);
+    });
+
+    $('#remember_repo_url').on('change', function () {
+        if (!$(this).is(':checked')) {
+            localStorage.setItem(REPO_URL_REMEMBER_ENABLED_KEY, '0');
+            localStorage.removeItem(REPO_URL_LAST_KEY);
+        } else {
+            localStorage.setItem(REPO_URL_REMEMBER_ENABLED_KEY, '1');
+            rememberRepoUrl($('#repo_url').val());
+        }
+    });
+
+    $(document).on('click', '.use-saved-repo-url', function () {
+        const url = normalizeRepoUrl($(this).data('url') || '');
+        if (url !== '') {
+            $('#repo_url').val(url).trigger('focus');
+        }
+    });
+
+    $(document).on('click', '.check-nav-link', function (event) {
+        event.preventDefault();
+        const target = $(this).attr('href');
+        if (!target || !$(target).length) {
+            return;
+        }
+        $('html, body').animate({ scrollTop: $(target).offset().top - 20 }, 350);
+    });
+
     $('#analyze-form').on('submit', function (event) {
         event.preventDefault();
 
+        const currentRepoUrl = $('#repo_url').val();
+        rememberRepoUrl(currentRepoUrl);
+
         const btn = $('#submit-btn');
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Analyzing…');
-        setStatus('Sending request to GitHub API and saving to database…');
+        setStatus('Running the selected static analysis checks…');
         $('#result-section').hide();
 
         $.post('api/analyze.php', $(this).serialize())
@@ -361,6 +538,8 @@ declare(strict_types=1);
                 btn.prop('disabled', false).html('<i class="fas fa-play"></i> Analyze Repository');
             });
     });
+
+    loadRememberedRepoUrl();
 </script>
 </body>
 </html>
