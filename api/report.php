@@ -146,6 +146,108 @@ try {
         exit;
     }
 
+    if ($download && $format === 'html') {
+        header('Content-Type: text/html; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="scan-' . $scanId . '-summary.html"');
+        echo '<!DOCTYPE html>';
+        echo '<html lang="en">';
+        echo '<head>';
+        echo '<meta charset="UTF-8">';
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+        echo '<title>Scan Summary #' . h((string) $scanId) . '</title>';
+        echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}</style>';
+        echo '</head>';
+        echo '<body><div class="wrap">';
+
+        echo '<div class="card">';
+        echo '<h1 style="margin-top:0">Scan Summary #' . h((string) $scan['id']) . '</h1>';
+        echo '<p class="meta">Repository: ' . h((string) $scan['repo_url']) . '</p>';
+        echo '<p class="meta">Scan date: ' . h((string) $scan['scan_date']) . '</p>';
+        echo '<p class="meta">Score: <strong>' . h((string) ($scan['summary_score'] ?? 'N/A')) . '</strong> | Findings: <strong>' . h((string) $scan['total_findings']) . '</strong> | Skills: <strong>' . h((string) $scan['total_skills']) . '</strong></p>';
+        echo '</div>';
+
+        echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
+        if (empty($selectedCheckLabels)) {
+            echo '<p class="meta">No stored check list for this scan.</p>';
+        } else {
+            echo '<ul>';
+            foreach ($selectedCheckLabels as $check) {
+                echo '<li>' . h((string) $check) . '</li>';
+            }
+            echo '</ul>';
+        }
+        echo '</div>';
+
+        echo '<div class="card"><h2 style="margin-top:0">Analysis Checks</h2>';
+        if (empty($checkRuns)) {
+            echo '<p class="meta">No stored per-check results for this scan.</p>';
+        } else {
+            echo '<div class="checks-grid">';
+            foreach ($checkRuns as $cr) {
+                $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
+                $status = (string) ($cr['status'] ?? 'unknown');
+                $count = (int) ($cr['finding_count'] ?? 0);
+                $tileClass = $status === 'clean' ? 'clean' : 'issues';
+                
+                echo '<div class="check-tile ' . $tileClass . '">';
+                echo '<span class="check-name">' . $checkName . '</span>';
+                echo '<span class="check-count">' . $count . '</span>';
+                echo '<span class="check-label">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</span>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+        echo '</div>';
+
+        echo '<div class="card"><h2 style="margin-top:0">Findings</h2>';
+        if (empty($findings)) {
+            echo '<p class="meta">No findings recorded.</p>';
+        } else {
+            foreach ($findings as $finding) {
+                $sevClass = 'sev-info';
+                if ($finding['severity'] === 'High') {
+                    $sevClass = 'sev-high';
+                } elseif ($finding['severity'] === 'Medium') {
+                    $sevClass = 'sev-medium';
+                } elseif ($finding['severity'] === 'Low') {
+                    $sevClass = 'sev-low';
+                }
+                echo '<div class="tag ' . $sevClass . '">' . h((string) $finding['severity']) . '</div> ';
+                echo '<strong>' . h((string) $finding['title']) . '</strong><br>';
+                echo '<span class="meta">Category: ' . h((string) $finding['category']) . '</span><br>';
+                echo '<span class="meta">' . h((string) $finding['description']) . '</span><br><br>';
+            }
+        }
+        echo '</div>';
+
+        echo '<div class="card"><h2 style="margin-top:0">Recommendations</h2>';
+        if (empty($recommendations)) {
+            echo '<p class="meta">No recommendations available.</p>';
+        } else {
+            echo '<ul>';
+            foreach ($recommendations as $recommendation) {
+                echo '<li><strong>[' . h((string) $recommendation['priority']) . ']</strong> ' . h((string) $recommendation['recommendation_text']) . '</li>';
+            }
+            echo '</ul>';
+        }
+        echo '</div>';
+
+        echo '<div class="card"><h2 style="margin-top:0">Skills</h2>';
+        if (empty($skills)) {
+            echo '<p class="meta">No skills recorded.</p>';
+        } else {
+            echo '<ul>';
+            foreach ($skills as $skill) {
+                echo '<li><strong>' . h((string) $skill['skill_name']) . '</strong> (' . h((string) $skill['proficiency_level']) . ') - Risk: ' . h((string) $skill['risk_level']) . '</li>';
+            }
+            echo '</ul>';
+        }
+        echo '</div>';
+
+        echo '</div></body></html>';
+        exit;
+    }
+
     if ($download || $format === 'txt') {
         $lines = [];
         $lines[] = 'AI Git Repo Analyzer Report';
@@ -210,7 +312,7 @@ try {
     }
 
     $summaryUrl = 'report.php?scan_id=' . $scanId;
-    $downloadUrl = 'report.php?scan_id=' . $scanId . '&download=1&format=txt';
+    $downloadUrl = 'report.php?scan_id=' . $scanId . '&download=1&format=html';
 
     header('Content-Type: text/html; charset=UTF-8');
     echo '<!DOCTYPE html>';
@@ -229,7 +331,7 @@ try {
     echo '<p class="meta">Scan date: ' . h((string) $scan['scan_date']) . '</p>';
     echo '<p class="meta">Score: <strong>' . h((string) ($scan['summary_score'] ?? 'N/A')) . '</strong> | Findings: <strong>' . h((string) $scan['total_findings']) . '</strong> | Skills: <strong>' . h((string) $scan['total_skills']) . '</strong></p>';
     echo '<a class="btn" href="' . h($summaryUrl) . '">Refresh</a>';
-    echo '<a class="btn btn-primary" href="' . h($downloadUrl) . '">Download TXT</a>';
+    echo '<a class="btn btn-primary" href="' . h($downloadUrl) . '">Download HTML</a>';
     echo '</div>';
 
     echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
