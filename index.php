@@ -506,10 +506,24 @@ try {
         }
 
         // Selected Checks list
+        const checkLabels = {
+            'dependency_risk': '#1 Insecure Design and Logic Flaws (A04)',
+            'hardening': '#2 Vulnerable and Outdated Dependencies (A06)',
+            'performance': '#3 CI/CD and Software Integrity Risks (A08)',
+            'maintainability': '#4 Logging and Monitoring Coverage (A09)',
+            'code_intelligence': '#5 Code Quality, Performance and Repo Health',
+            'secret_scanner': '#6 Secret & Credential Scanner',
+            'dependency_cve': '#7 Dependency CVE Audit (OSV.dev)',
+            'license_check': '#8 License Compliance Scanner',
+            'git_history': '#9 Git History Risk Analysis',
+            'security_config': '#10 Security Header & Config Auditor'
+        };
+
         const selectedChecksList = $('#selected-checks-list').empty();
         if (data.selected_checks && data.selected_checks.length) {
-            data.selected_checks.forEach(function(check) {
-                selectedChecksList.append(`<li class="list-group-item">${esc(check)}</li>`);
+            data.selected_checks.forEach(function(checkId) {
+                const friendlyName = checkLabels[checkId] || checkId;
+                selectedChecksList.append(`<li class="list-group-item">${esc(friendlyName)}</li>`);
             });
             $('#selected-checks-card').show();
         } else {
