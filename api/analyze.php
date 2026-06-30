@@ -242,11 +242,11 @@ $newCheckMap = [
     'performance'      => ['#3 CI/CD and Software Integrity Risks',   fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'maintainability'  => ['#4 Logging and Monitoring Coverage',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'code_intelligence'=> ['#5 Code Quality, Performance and Repo Health', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
-    'secret_scanner'  => ['Secret Scanner',   fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles)],
-    'dependency_cve'  => ['Dependency CVE',   fn() => check_dependencies($owner, $repo, $pat, $tree)],
-    'license_check'   => ['License',          fn() => check_license($owner, $repo, $pat, $tree, $repoLicense)],
-    'git_history'     => ['Git History',      fn() => check_git_history($owner, $repo, $pat)],
-    'security_config' => ['Security Config',  fn() => check_security_config($owner, $repo, $pat, $tree)],
+    'secret_scanner'  => ['#6 Secret & Credential Scanner',   fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles)],
+    'dependency_cve'  => ['#7 Dependency CVE Audit (OSV.dev)',   fn() => check_dependencies($owner, $repo, $pat, $tree)],
+    'license_check'   => ['#8 License Compliance Scanner',          fn() => check_license($owner, $repo, $pat, $tree, $repoLicense)],
+    'git_history'     => ['#9 Git History Risk Analysis',      fn() => check_git_history($owner, $repo, $pat)],
+    'security_config' => ['#10 Security Header & Config Auditor',  fn() => check_security_config($owner, $repo, $pat, $tree)],
 ];
 
 foreach ($selectedChecks as $checkId) {
