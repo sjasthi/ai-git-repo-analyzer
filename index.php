@@ -369,6 +369,11 @@ try {
                     <ul class="list-group list-group-flush" id="recommendations-list"></ul>
                 </div>
 
+                <div class="card p-4" id="skills-card" style="display:none;">
+                    <h3 class="h6 mb-3"><i class="fas fa-star text-info"></i> Skills</h3>
+                    <ul class="list-group list-group-flush" id="skills-list"></ul>
+                </div>
+
             </div>
 
         </div>
