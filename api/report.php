@@ -165,12 +165,12 @@ try {
             }
         }
         $lines[] = '';
-        $lines[] = 'Check Results';
+        $lines[] = 'Analysis Checks';
         if (empty($checkRuns)) {
             $lines[] = '- No stored per-check results for this scan';
         } else {
             foreach ($checkRuns as $cr) {
-                $lines[] = '- ' . $cr['check_name'] . ': ' . $cr['status'] . ' (' . $cr['finding_count'] . ' findings)';
+                $lines[] = '- [' . ucfirst($cr['status']) . '] ' . $cr['check_name'] . ': ' . $cr['finding_count'] . ' finding' . ($cr['finding_count'] !== 1 ? 's' : '');
             }
         }
         $lines[] = '';
@@ -244,19 +244,26 @@ try {
     }
     echo '</div>';
 
-    echo '<div class="card"><h2 style="margin-top:0">Check Results</h2>';
+    echo '<div class="card"><h2 style="margin-top:0">Analysis Checks</h2>';
     if (empty($checkRuns)) {
         echo '<p class="meta">No stored per-check results for this scan.</p>';
     } else {
-        echo '<ul>';
+        echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px">';
         foreach ($checkRuns as $cr) {
             $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
             $status = (string) ($cr['status'] ?? 'unknown');
             $count = (int) ($cr['finding_count'] ?? 0);
-            $statusClass = $status === 'clean' ? 'clean' : 'issues_found';
-            echo '<li><span class="status status-' . $statusClass . '">' . ucfirst($status) . '</span> ' . $checkName . ' (' . $count . ' finding' . ($count !== 1 ? 's' : '') . ')</li>';
+            $bgColor = $status === 'clean' ? '#dcfce7' : '#fee2e2';
+            $borderColor = $status === 'clean' ? '#86efac' : '#fca5a5';
+            $textColor = $status === 'clean' ? '#166534' : '#991b1b';
+            
+            echo '<div style="border:1px solid ' . $borderColor . ';border-radius:8px;padding:16px;background:' . $bgColor . ';text-align:center">';
+            echo '<div style="color:' . $textColor . ';font-weight:bold;margin-bottom:8px">✓ ' . $checkName . '</div>';
+            echo '<div style="font-size:28px;font-weight:bold;color:' . $textColor . ';margin:8px 0">' . $count . '</div>';
+            echo '<div style="font-size:12px;color:' . $textColor . '">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</div>';
+            echo '</div>';
         }
-        echo '</ul>';
+        echo '</div>';
     }
     echo '</div>';
 
