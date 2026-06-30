@@ -79,6 +79,15 @@ try {
     $skillsStmt->execute([':scan_id' => $scanId]);
     $skills = $skillsStmt->fetchAll();
 
+    $checkRunsStmt = $pdo->prepare(
+        'SELECT check_name, status, finding_count
+         FROM check_runs
+         WHERE scan_id = :scan_id
+         ORDER BY id ASC'
+    );
+    $checkRunsStmt->execute([':scan_id' => $scanId]);
+    $checkRuns = $checkRunsStmt->fetchAll();
+
     $selectedChecks = [];
     if (!empty($scan['selected_checks_json'])) {
         $decodedChecks = json_decode((string) $scan['selected_checks_json'], true);
@@ -105,6 +114,7 @@ try {
             'repo_url' => (string) $scan['repo_url'],
         ],
         'selected_checks' => $selectedChecks,
+        'check_runs' => $checkRuns,
         'results' => $results,
         'findings' => $findings,
         'recommendations' => $recommendations,
@@ -137,22 +147,14 @@ try {
         }
         $lines[] = '';
         $lines[] = 'Check Results';
-        if (empty($results)) {
+        if (empty($checkRuns)) {
             $lines[] = '- No stored per-check results for this scan';
         } else {
-            foreach ($results as $result) {
-                $lines[] = '- [' . ($result['severity'] ?? 'Info') . '] ' . ($result['title'] ?? 'Unknown check');
-                $lines[] = '  Summary: ' . ($result['summary'] ?? '');
-                $lines[] = '  Details: ' . ($result['details'] ?? '');
-                if (!empty($result['evidence']) && is_array($result['evidence'])) {
-                    foreach ($result['evidence'] as $evidence) {
-                        $lines[] = '  Evidence: ' . $evidence;
-                    }
-                }
+            foreach ($checkRuns as $cr) {
+                $lines[] = '- ' . $cr['check_name'] . ': ' . $cr['status'] . ' (' . $cr['finding_count'] . ' findings)';
             }
         }
         $lines[] = '';
-        $lines[] = 'Findings';
         if (empty($findings)) {
             $lines[] = '- None';
         } else {
@@ -224,32 +226,18 @@ try {
     echo '</div>';
 
     echo '<div class="card"><h2 style="margin-top:0">Check Results</h2>';
-    if (empty($results)) {
+    if (empty($checkRuns)) {
         echo '<p class="meta">No stored per-check results for this scan.</p>';
     } else {
-        foreach ($results as $result) {
-            $severity = (string) ($result['severity'] ?? 'Info');
-            $sevClass = 'sev-info';
-            if ($severity === 'High') {
-                $sevClass = 'sev-high';
-            } elseif ($severity === 'Medium') {
-                $sevClass = 'sev-medium';
-            } elseif ($severity === 'Low') {
-                $sevClass = 'sev-low';
-            }
-            echo '<div style="padding:10px 0;border-top:1px solid #f3f4f6">';
-            echo '<div><strong>' . h((string) ($result['title'] ?? 'Unknown check')) . '</strong> <span class="tag ' . h($sevClass) . '">' . h($severity) . '</span></div>';
-            echo '<div>' . h((string) ($result['summary'] ?? '')) . '</div>';
-            echo '<div class="meta">' . h((string) ($result['details'] ?? '')) . '</div>';
-            if (!empty($result['evidence']) && is_array($result['evidence'])) {
-                echo '<ul>';
-                foreach ($result['evidence'] as $evidence) {
-                    echo '<li>' . h((string) $evidence) . '</li>';
-                }
-                echo '</ul>';
-            }
-            echo '</div>';
+        echo '<ul>';
+        foreach ($checkRuns as $cr) {
+            $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
+            $status = (string) ($cr['status'] ?? 'unknown');
+            $count = (int) ($cr['finding_count'] ?? 0);
+            $statusClass = $status === 'clean' ? 'clean' : 'issues_found';
+            echo '<li><span class="status status-' . $statusClass . '">' . ucfirst($status) . '</span> ' . $checkName . ' (' . $count . ' finding' . ($count !== 1 ? 's' : '') . ')</li>';
         }
+        echo '</ul>';
     }
     echo '</div>';
 

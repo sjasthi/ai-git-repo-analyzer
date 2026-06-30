@@ -294,13 +294,14 @@ try {
     $repositoryId = (int) $pdo->lastInsertId();
 
     $pdo->prepare(
-        'INSERT INTO scans (repository_id, summary_score, total_findings, total_skills)
-         VALUES (:rid, :score, :findings, :skills)'
+        'INSERT INTO scans (repository_id, summary_score, total_findings, total_skills, selected_checks_json)
+         VALUES (:rid, :score, :findings, :skills, :checks_json)'
     )->execute([
-        ':rid'      => $repositoryId,
-        ':score'    => $overallScore,
-        ':findings' => count($allFindings),
-        ':skills'   => count($allSkills),
+        ':rid'         => $repositoryId,
+        ':score'       => $overallScore,
+        ':findings'    => count($allFindings),
+        ':skills'      => count($allSkills),
+        ':checks_json' => json_encode($selectedChecks),
     ]);
     $scanId = (int) $pdo->lastInsertId();
 
