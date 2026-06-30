@@ -96,6 +96,25 @@ try {
         }
     }
 
+    // Map check IDs to friendly names
+    $checkLabels = [
+        'dependency_risk'  => '#1 Insecure Design and Logic Flaws (A04)',
+        'hardening'        => '#2 Vulnerable and Outdated Dependencies (A06)',
+        'performance'      => '#3 CI/CD and Software Integrity Risks (A08)',
+        'maintainability'  => '#4 Logging and Monitoring Coverage (A09)',
+        'code_intelligence'=> '#5 Code Quality, Performance and Repo Health',
+        'secret_scanner'   => '#6 Secret & Credential Scanner',
+        'dependency_cve'   => '#7 Dependency CVE Audit (OSV.dev)',
+        'license_check'    => '#8 License Compliance Scanner',
+        'git_history'      => '#9 Git History Risk Analysis',
+        'security_config'  => '#10 Security Header & Config Auditor',
+    ];
+
+    $selectedCheckLabels = [];
+    foreach ($selectedChecks as $checkId) {
+        $selectedCheckLabels[] = $checkLabels[$checkId] ?? $checkId;
+    }
+
     $results = [];
     if (!empty($scan['results_json'])) {
         $decodedResults = json_decode((string) $scan['results_json'], true);
@@ -113,7 +132,7 @@ try {
             'total_skills' => (int) $scan['total_skills'],
             'repo_url' => (string) $scan['repo_url'],
         ],
-        'selected_checks' => $selectedChecks,
+        'selected_checks' => $selectedCheckLabels,
         'check_runs' => $checkRuns,
         'results' => $results,
         'findings' => $findings,
@@ -138,10 +157,10 @@ try {
         $lines[] = 'Total Skills: ' . $scan['total_skills'];
         $lines[] = '';
         $lines[] = 'Selected Checks';
-        if (empty($selectedChecks)) {
+        if (empty($selectedCheckLabels)) {
             $lines[] = '- No stored check list for this scan';
         } else {
-            foreach ($selectedChecks as $check) {
+            foreach ($selectedCheckLabels as $check) {
                 $lines[] = '- ' . $check;
             }
         }
@@ -214,11 +233,11 @@ try {
     echo '</div>';
 
     echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
-    if (empty($selectedChecks)) {
+    if (empty($selectedCheckLabels)) {
         echo '<p class="meta">No stored check list for this scan.</p>';
     } else {
         echo '<ul>';
-        foreach ($selectedChecks as $check) {
+        foreach ($selectedCheckLabels as $check) {
             echo '<li>' . h((string) $check) . '</li>';
         }
         echo '</ul>';
