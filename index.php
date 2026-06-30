@@ -340,6 +340,18 @@ try {
                     </div>
                 </div>
 
+                <!-- Selected Checks -->
+                <div class="card p-4" id="selected-checks-card" style="display:none;">
+                    <h3 class="h6 mb-3"><i class="fas fa-list text-info"></i> Selected Checks</h3>
+                    <ul class="list-group list-group-flush" id="selected-checks-list"></ul>
+                </div>
+
+                <!-- Check Results -->
+                <div class="card p-4" id="check-results-card" style="display:none;">
+                    <h3 class="h6 mb-3"><i class="fas fa-tasks text-info"></i> Check Results</h3>
+                    <ul class="list-group list-group-flush" id="check-results-list"></ul>
+                </div>
+
                 <!-- Checks Summary -->
                 <div class="card p-4" id="checks-card">
                     <h3 class="h6 mb-3"><i class="fas fa-tasks text-primary"></i> Analysis Checks</h3>
@@ -491,6 +503,36 @@ try {
             $('#checks-card').show();
         } else {
             $('#checks-card').hide();
+        }
+
+        // Selected Checks list
+        const selectedChecksList = $('#selected-checks-list').empty();
+        if (data.selected_checks && data.selected_checks.length) {
+            data.selected_checks.forEach(function(check) {
+                selectedChecksList.append(`<li class="list-group-item">${esc(check)}</li>`);
+            });
+            $('#selected-checks-card').show();
+        } else {
+            $('#selected-checks-card').hide();
+        }
+
+        // Check Results list
+        const checkResultsList = $('#check-results-list').empty();
+        if (data.check_runs && data.check_runs.length) {
+            data.check_runs.forEach(function(cr) {
+                const statusClass = cr.status === 'clean' ? 'text-success' : 'text-danger';
+                const statusLabel = cr.status === 'clean' ? 'Clean' : 'Issues found';
+                checkResultsList.append(
+                    `<li class="list-group-item">
+                        <span class="badge ${statusClass}">${statusLabel}</span> 
+                        <strong>${esc(cr.check_name)}</strong> 
+                        (${cr.finding_count} finding${cr.finding_count !== 1 ? 's' : ''})
+                    </li>`
+                );
+            });
+            $('#check-results-card').show();
+        } else {
+            $('#check-results-card').hide();
         }
 
         // Findings grouped by category
