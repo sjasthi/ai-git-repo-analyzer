@@ -219,7 +219,7 @@ try {
     echo '<meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>Scan Summary #' . h((string) $scanId) . '</title>';
-    echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}</style>';
+    echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}</style>';
     echo '</head>';
     echo '<body><div class="wrap">';
 
@@ -248,19 +248,17 @@ try {
     if (empty($checkRuns)) {
         echo '<p class="meta">No stored per-check results for this scan.</p>';
     } else {
-        echo '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px">';
+        echo '<div class="checks-grid">';
         foreach ($checkRuns as $cr) {
             $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
             $status = (string) ($cr['status'] ?? 'unknown');
             $count = (int) ($cr['finding_count'] ?? 0);
-            $bgColor = $status === 'clean' ? '#dcfce7' : '#fee2e2';
-            $borderColor = $status === 'clean' ? '#86efac' : '#fca5a5';
-            $textColor = $status === 'clean' ? '#166534' : '#991b1b';
+            $tileClass = $status === 'clean' ? 'clean' : 'issues';
             
-            echo '<div style="border:1px solid ' . $borderColor . ';border-radius:8px;padding:16px;background:' . $bgColor . ';text-align:center">';
-            echo '<div style="color:' . $textColor . ';font-weight:bold;margin-bottom:8px">✓ ' . $checkName . '</div>';
-            echo '<div style="font-size:28px;font-weight:bold;color:' . $textColor . ';margin:8px 0">' . $count . '</div>';
-            echo '<div style="font-size:12px;color:' . $textColor . '">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</div>';
+            echo '<div class="check-tile ' . $tileClass . '">';
+            echo '<span class="check-name">' . $checkName . '</span>';
+            echo '<span class="check-count">' . $count . '</span>';
+            echo '<span class="check-label">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</span>';
             echo '</div>';
         }
         echo '</div>';
