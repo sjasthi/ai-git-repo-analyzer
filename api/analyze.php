@@ -237,6 +237,11 @@ function run_check(string $name, callable $fn): array
 }
 
 $newCheckMap = [
+    'dependency_risk'  => ['#1 Insecure Design and Logic Flaws',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'hardening'        => ['#2 Vulnerable and Outdated Dependencies', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'performance'      => ['#3 CI/CD and Software Integrity Risks',   fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'maintainability'  => ['#4 Logging and Monitoring Coverage',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'code_intelligence'=> ['#5 Code Quality, Performance and Repo Health', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'secret_scanner'  => ['Secret Scanner',   fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles)],
     'dependency_cve'  => ['Dependency CVE',   fn() => check_dependencies($owner, $repo, $pat, $tree)],
     'license_check'   => ['License',          fn() => check_license($owner, $repo, $pat, $tree, $repoLicense)],
