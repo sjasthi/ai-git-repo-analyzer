@@ -34,6 +34,7 @@ This week focused on report consistency and UI quality for AI Git Repo Analyzer.
 - Unified Summary URL and Download HTML rendering.
 - Fixed Refresh and Download HTML links with absolute URLs for downloaded files.
 - Fixed Analysis Settings checkbox behavior: select all, select some, and clear.
+- Updated Analysis Settings so all checks (#1-#10) show a Details button, not only #1.
 - Added footer text and address to key pages.
 - Styled footer to match header gradient with bold, larger text.
 - Created Contact page and added Contact button in Home and Dashboard headers.

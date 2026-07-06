@@ -432,31 +432,85 @@ try {
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="hardening" id="check_hardening" checked><label class="form-check-label" for="check_hardening"><strong>#2</strong> Vulnerable and Outdated Dependencies (A06)</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="hardening" id="check_hardening" checked>
+                                            <label class="form-check-label" for="check_hardening"><strong>#2</strong> Vulnerable and Outdated Dependencies (A06)</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=2" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="performance" id="check_performance" checked><label class="form-check-label" for="check_performance"><strong>#3</strong> CI/CD and Software Integrity Risks (A08)</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="performance" id="check_performance" checked>
+                                            <label class="form-check-label" for="check_performance"><strong>#3</strong> CI/CD and Software Integrity Risks (A08)</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=3" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="maintainability" id="check_maintainability" checked><label class="form-check-label" for="check_maintainability"><strong>#4</strong> Logging and Monitoring Coverage (A09)</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="maintainability" id="check_maintainability" checked>
+                                            <label class="form-check-label" for="check_maintainability"><strong>#4</strong> Logging and Monitoring Coverage (A09)</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=4" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="code_intelligence" id="check_code_intelligence" checked><label class="form-check-label" for="check_code_intelligence"><strong>#5</strong> Code Quality, Performance and Repo Health</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="code_intelligence" id="check_code_intelligence" checked>
+                                            <label class="form-check-label" for="check_code_intelligence"><strong>#5</strong> Code Quality, Performance and Repo Health</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=5" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="secret_scanner" id="check_secret_scanner" checked><label class="form-check-label" for="check_secret_scanner"><strong>#6</strong> Secret &amp; Credential Scanner</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="secret_scanner" id="check_secret_scanner" checked>
+                                            <label class="form-check-label" for="check_secret_scanner"><strong>#6</strong> Secret &amp; Credential Scanner</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=6" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_cve" id="check_dependency_cve" checked><label class="form-check-label" for="check_dependency_cve"><strong>#7</strong> Dependency CVE Audit (OSV.dev)</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="dependency_cve" id="check_dependency_cve" checked>
+                                            <label class="form-check-label" for="check_dependency_cve"><strong>#7</strong> Dependency CVE Audit (OSV.dev)</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=7" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="license_check" id="check_license_check" checked><label class="form-check-label" for="check_license_check"><strong>#8</strong> License Compliance Scanner</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="license_check" id="check_license_check" checked>
+                                            <label class="form-check-label" for="check_license_check"><strong>#8</strong> License Compliance Scanner</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=8" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="git_history" id="check_git_history" checked><label class="form-check-label" for="check_git_history"><strong>#9</strong> Git History Risk Analysis</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="git_history" id="check_git_history" checked>
+                                            <label class="form-check-label" for="check_git_history"><strong>#9</strong> Git History Risk Analysis</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=9" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="security_config" id="check_security_config" checked><label class="form-check-label" for="check_security_config"><strong>#10</strong> Security Header &amp; Config Auditor</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="security_config" id="check_security_config" checked>
+                                            <label class="form-check-label" for="check_security_config"><strong>#10</strong> Security Header &amp; Config Auditor</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=10" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
