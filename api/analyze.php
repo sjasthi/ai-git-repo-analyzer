@@ -381,7 +381,7 @@ try {
         'scan_id'         => $scanId,
         'report_urls'     => [
             'summary'  => 'api/report.php?scan_id=' . $scanId,
-            'download' => 'api/report.php?scan_id=' . $scanId . '&download=1&format=txt',
+            'download' => 'api/report.php?scan_id=' . $scanId . '&download=1&format=html',
         ],
         'repository'      => [
             'id'          => $repoPayload['id']   ?? null,

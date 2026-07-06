@@ -35,16 +35,41 @@ try {
         :root {
             --primary: #7C3AED;
             --primary-light: #A78BFA;
+            --bg-body: linear-gradient(180deg, #f5f3ff 0%, #faf8ff 100%);
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --surface: #FFFFFF;
+            --surface-soft: #F9FAFB;
+            --surface-emphasis: #F3F4F6;
+            --border: #E5E7EB;
+            --header-gradient: linear-gradient(135deg, #9B59B6 0%, #7C3AED 100%);
+            --hero-image: url("assets/images/git-repo-analyzer-banner.png");
+            --hero-overlay-start: rgba(7, 12, 24, 0.42);
+            --hero-overlay-end: rgba(10, 20, 38, 0.62);
+        }
+
+        body[data-theme="dark"] {
+            --bg-body: linear-gradient(180deg, #121826 0%, #0d1321 100%);
+            --text-main: #E5E7EB;
+            --text-muted: #9CA3AF;
+            --surface: #1F2937;
+            --surface-soft: #111827;
+            --surface-emphasis: #0F172A;
+            --border: #374151;
+            --header-gradient: linear-gradient(135deg, #5B21B6 0%, #312E81 100%);
+            --hero-overlay-start: rgba(4, 8, 18, 0.60);
+            --hero-overlay-end: rgba(5, 10, 20, 0.72);
         }
 
         body {
-            background: linear-gradient(180deg, #f5f3ff 0%, #faf8ff 100%);
+            background: var(--bg-body);
+            color: var(--text-main);
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .header-section {
-            background: linear-gradient(135deg, #9B59B6 0%, #7C3AED 100%);
+            background: var(--header-gradient);
             color: white;
             padding: 2rem 0;
             margin-bottom: 2rem;
@@ -54,13 +79,49 @@ try {
         .header-section h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
         .header-section p  { font-size: 1.1rem; opacity: 0.9; margin-bottom: 1rem; }
 
-        .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .header-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+
+        .theme-toggle-btn {
+            border-width: 1px;
+        }
 
         .card {
             border: 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             border-radius: 1rem;
             margin-bottom: 1.5rem;
+            background: var(--surface);
+            color: var(--text-main);
+        }
+
+        .hero-section {
+            margin-bottom: 2rem;
+        }
+
+        .hero-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            padding: 0;
+            line-height: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b1220;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+        }
+
+        .about-card {
+            height: 100%;
+            margin-bottom: 0;
         }
 
         .score-badge {
@@ -115,6 +176,18 @@ try {
             background: #fff;
         }
 
+        .check-tile-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .check-tile-link:hover .check-tile,
+        .check-tile-link:focus-visible .check-tile {
+            border-color: #7C3AED !important;
+            box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.15);
+        }
+
         .check-tile.clean   { border-color: #BBF7D0; background: #F0FDF4; }
         .check-tile.issues  { border-color: #FECACA; background: #FFF5F5; }
 
@@ -130,11 +203,86 @@ try {
             font-weight: 700;
             letter-spacing: 0.06em;
             text-transform: uppercase;
-            color: #6B7280;
+            color: var(--text-muted);
             padding: 0.5rem 1rem;
-            background: #F9FAFB;
-            border-top: 1px solid #E5E7EB;
-            border-bottom: 1px solid #E5E7EB;
+            background: var(--surface-soft);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .text-muted { color: var(--text-muted) !important; }
+
+        .border,
+        .list-group-item,
+        .table thead th,
+        .table td,
+        .table th,
+        .form-control,
+        .check-tile {
+            border-color: var(--border) !important;
+        }
+
+        .bg-light,
+        .table,
+        .list-group-item,
+        .form-control,
+        .check-tile {
+            background-color: var(--surface-soft) !important;
+            color: var(--text-main);
+        }
+
+        .form-check-input {
+            background-color: var(--surface) !important;
+            border-color: var(--border) !important;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+        }
+
+        body[data-theme="dark"] .form-check-input:checked {
+            background-color: #7C3AED !important;
+            border-color: #7C3AED !important;
+        }
+
+        .site-footer {
+            margin-top: 2.5rem;
+            padding: 1.1rem 0;
+            background: var(--header-gradient);
+            color: white;
+            font-size: 0.92rem;
+        }
+
+        .site-footer .footer-line {
+            margin: 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 2rem;
+            line-height: 1.2;
+        }
+
+        .bg-white,
+        .check-tile.clean,
+        .check-tile.issues {
+            background-color: var(--surface) !important;
+            color: var(--text-main);
+        }
+
+        .form-control::placeholder { color: var(--text-muted); }
+
+        body[data-theme="dark"] .btn-outline-secondary,
+        body[data-theme="dark"] .btn-outline-primary,
+        body[data-theme="dark"] .btn-outline-success {
+            color: #D1D5DB;
+            border-color: #6B7280;
+        }
+
+        body[data-theme="dark"] .btn-light {
+            background-color: #374151;
+            border-color: #4B5563;
+            color: #F3F4F6;
         }
 
         #result-section { display: none; }
@@ -153,37 +301,52 @@ try {
             <a href="dashboard.php" class="btn btn-outline-light btn-sm">
                 <i class="fas fa-history"></i> View Scan History
             </a>
+            <a href="contact.php" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-address-card"></i> Contact
+            </a>
+            <button type="button" id="theme-toggle" class="btn btn-outline-light btn-sm theme-toggle-btn">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
         </div>
     </div>
 </div>
 
-<div class="container mb-4">
-    <div class="card p-4">
-        <h2 class="h5 mb-3"><i class="fas fa-info-circle text-purple"></i> About this website </h2>
-        <p class="mb-3">AI Git Repo Analyzer helps you inspect a GitHub repository and understand its code quality, detected skills, and potential improvement areas.</p>
-        <div class="row row-cols-1 row-cols-md-2 g-3">
-            <div class="col">
-                <div class="p-3 border rounded bg-white">
-                    <strong>Analyze repositories</strong>
-                    <p class="mb-0 small text-muted">Submit a repo URL and GitHub PAT to run an AI-assisted review.</p>
-                </div>
+<div class="container hero-section">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-8">
+            <div class="hero-card">
+                <img class="hero-image" src="assets/images/git-repo-analyzer-banner.png" alt="">
             </div>
-            <div class="col">
-                <div class="p-3 border rounded bg-white">
-                    <strong>View findings</strong>
-                    <p class="mb-0 small text-muted">See issues, risks, and detected technologies found in the repository.</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="p-3 border rounded bg-white">
-                    <strong>Detect skills</strong>
-                    <p class="mb-0 small text-muted">Review the skills and proficiency levels inferred from the repository.</p>
-                </div>
-            </div>
-            <div class="col">
-                <div class="p-3 border rounded bg-white">
-                    <strong>Track history</strong>
-                    <p class="mb-0 small text-muted">Use the dashboard to monitor scan history and summary metrics.</p>
+        </div>
+        <div class="col-lg-4">
+            <div class="card p-4 about-card">
+                <h2 class="h5 mb-3"><i class="fas fa-info-circle text-purple"></i> About this website </h2>
+                <p class="mb-3">AI Git Repo Analyzer helps you inspect a GitHub repository and understand its code quality, detected skills, and potential improvement areas.</p>
+                <div class="row row-cols-1 g-3">
+                    <div class="col">
+                        <div class="p-3 border rounded bg-white">
+                            <a href="#analyze-repository-section" class="btn btn-primary btn-sm mb-2">Analyze repositories</a>
+                            <p class="mb-0 small text-muted">Submit a repo URL and GitHub PAT to run an AI-assisted review.</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 border rounded bg-white">
+                            <a href="dashboard.php" class="btn btn-primary btn-sm mb-2">Track history</a>
+                            <p class="mb-0 small text-muted">Use the dashboard to monitor scan history and summary metrics.</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 border rounded bg-white">
+                            <strong>Detect skills</strong>
+                            <p class="mb-0 small text-muted">Review the skills and proficiency levels inferred from the repository.</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="p-3 border rounded bg-white">
+                            <strong>View findings</strong>
+                            <p class="mb-0 small text-muted">See issues, risks, and detected technologies found in the repository.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -194,7 +357,7 @@ try {
     <div class="row justify-content-center">
         <div class="col-lg-8">
 
-            <div class="card p-4">
+            <div class="card p-4" id="analyze-repository-section">
                 <h2 class="h5 mb-3"><i class="fas fa-search text-purple"></i> Analyze a Repository</h2>
 
                 <form id="analyze-form">
@@ -256,10 +419,17 @@ try {
                             <button type="button" id="select-all-checks" class="btn btn-sm btn-outline-primary">Select all</button>
                             <button type="button" id="clear-checks" class="btn btn-sm btn-outline-secondary">Clear</button>
                         </div>
+                        <div id="checks-selection-status" class="form-text mb-2"></div>
                         <div class="border rounded p-3 bg-light">
                             <div class="row row-cols-1 row-cols-md-2 g-2">
                                 <div class="col">
-                                    <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_risk" id="check_dependency_risk" checked><label class="form-check-label" for="check_dependency_risk"><strong>#1</strong> Insecure Design and Logic Flaws (A04)</label></div>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="dependency_risk" id="check_dependency_risk" checked>
+                                            <label class="form-check-label" for="check_dependency_risk"><strong>#1</strong> Insecure Design and Logic Flaws (A04)</label>
+                                        </div>
+                                        <a href="check_insecure_design.php" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check"><input class="form-check-input" type="checkbox" name="checks[]" value="hardening" id="check_hardening" checked><label class="form-check-label" for="check_hardening"><strong>#2</strong> Vulnerable and Outdated Dependencies (A06)</label></div>
@@ -382,8 +552,38 @@ try {
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
+    const THEME_KEY = 'ai_git_repo_theme';
     const REPO_URL_LAST_KEY = 'repo_url_last';
     const REPO_URL_REMEMBER_ENABLED_KEY = 'repo_url_remember_enabled';
+
+    function preferredTheme() {
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+            return savedTheme;
+        }
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+    }
+
+    function applyTheme(theme) {
+        const nextTheme = theme === 'dark' ? 'dark' : 'light';
+        $('body').attr('data-theme', nextTheme);
+
+        const icon = nextTheme === 'dark' ? 'fa-sun' : 'fa-moon';
+        const label = nextTheme === 'dark' ? 'Light Mode' : 'Dark Mode';
+        $('#theme-toggle').html('<i class="fas ' + icon + '"></i> ' + label);
+    }
+
+    function initThemeToggle() {
+        applyTheme(preferredTheme());
+        $('#theme-toggle').on('click', function () {
+            const currentTheme = $('body').attr('data-theme') === 'dark' ? 'dark' : 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem(THEME_KEY, nextTheme);
+            applyTheme(nextTheme);
+        });
+    }
 
     function normalizeRepoUrl(value) {
         return String(value || '').trim();
@@ -458,6 +658,57 @@ try {
         return $('<span>').text(String(str)).html();
     }
 
+    function checkDetailIdFromName(name) {
+        const text = String(name || '').toLowerCase();
+
+        const numMatch = text.match(/#\s*(10|[1-9])/);
+        if (numMatch && numMatch[1]) {
+            return numMatch[1];
+        }
+
+        const checks = [
+            ['1', /#?1\s*insecure design and logic flaws|insecure design and logic flaws/],
+            ['2', /#?2\s*vulnerable and outdated dependencies|vulnerable and outdated dependencies/],
+            ['3', /#?3\s*ci\/cd and software integrity risks|software integrity risks/],
+            ['4', /#?4\s*logging and monitoring coverage|logging and monitoring/],
+            ['5', /#?5\s*code quality, performance and repo health|repo health/],
+            ['6', /#?6\s*secret\s*&\s*credential scanner|secret.*credential scanner/],
+            ['7', /#?7\s*dependency cve audit|osv\.dev/],
+            ['8', /#?8\s*license compliance scanner|license compliance/],
+            ['9', /#?9\s*git history risk analysis|git history risk/],
+            ['10', /#?10\s*security header\s*&\s*config auditor|security header.*config auditor/],
+        ];
+
+        for (const entry of checks) {
+            if (entry[1].test(text)) {
+                return entry[0];
+            }
+        }
+
+        return '';
+    }
+
+    function checkDetailsUrl(check, scanId) {
+        const name = String((check && check.name) || '');
+        const checkId = checkDetailIdFromName(name);
+        if (!checkId) {
+            return '';
+        }
+
+        const params = new URLSearchParams({
+            check_id: checkId,
+            name: name,
+            status: String((check && check.status) || ''),
+            count: String(Number((check && check.finding_count) || 0)),
+        });
+
+        if (scanId) {
+            params.set('scan_id', String(scanId));
+        }
+
+        return 'check_insecure_design.php?' + params.toString();
+    }
+
     function renderResults(data) {
         const repo  = data.repository || {};
         const scan  = data.scan       || {};
@@ -492,18 +743,77 @@ try {
 
         // Checks summary tiles
         const checksGrid = $('#checks-grid').empty();
-        if (data.checks && data.checks.length) {
+        const allChecksInOrder = [
+            '#1 Insecure Design and Logic Flaws',
+            '#2 Vulnerable and Outdated Dependencies',
+            '#3 CI/CD and Software Integrity Risks',
+            '#4 Logging and Monitoring Coverage',
+            '#5 Code Quality, Performance and Repo Health',
+            '#6 Secret & Credential Scanner',
+            '#7 Dependency CVE Audit (OSV.dev)',
+            '#8 License Compliance Scanner',
+            '#9 Git History Risk Analysis',
+            '#10 Security Header & Config Auditor'
+        ];
+
+        const checkMap = {};
+        if (Array.isArray(data.checks)) {
             data.checks.forEach(function(c) {
-                const isClean   = c.status === 'clean';
-                const tileClass = isClean ? 'clean' : 'issues';
-                const icon      = checkIcons[c.name] || 'fa-check-circle';
-                checksGrid.append(
+                const id = checkDetailIdFromName(c.name || '');
+                if (id) {
+                    checkMap[id] = c;
+                }
+            });
+        }
+
+        if (allChecksInOrder.length) {
+            allChecksInOrder.forEach(function(defaultName) {
+                const checkId = checkDetailIdFromName(defaultName);
+                const existing = checkId ? checkMap[checkId] : null;
+                const c = existing || {
+                    name: defaultName,
+                    status: 'not_run',
+                    finding_count: 0
+                };
+
+                const status = String(c.status || 'unknown').toLowerCase();
+                const isClean = status === 'clean';
+                const isNotRun = status === 'not_run';
+                const tileClass = isNotRun ? '' : (isClean ? 'clean' : 'issues');
+                const icon = checkIcons[c.name] || 'fa-check-circle';
+
+                const countText = isNotRun
+                    ? '-'
+                    : String(Number(c.finding_count || 0));
+
+                const labelText = isNotRun
+                    ? 'Not run'
+                    : (isClean ? 'No issues' : (c.finding_count === 1 ? '1 issue' : c.finding_count + ' issues'));
+
+                const detailsUrl = checkId
+                    ? 'check_insecure_design.php?' + new URLSearchParams({
+                        check_id: checkId,
+                        name: String(c.name || defaultName),
+                        status: String(c.status || 'not_run'),
+                        count: String(Number(c.finding_count || 0)),
+                        scan_id: String(data.scan_id || '')
+                    }).toString()
+                    : '';
+
+                const tileHtml =
                     `<div class="check-tile ${tileClass}">
-                        <span class="check-name"><i class="fas ${icon} me-1"></i>${esc(c.name)}</span>
-                        <span class="check-count">${c.finding_count}</span>
-                        <span class="check-label">${isClean ? 'No issues' : (c.finding_count === 1 ? '1 issue' : c.finding_count + ' issues')}</span>
-                    </div>`
-                );
+                        <span class="check-name"><i class="fas ${icon} me-1"></i>${esc(c.name || defaultName)}</span>
+                        <span class="check-count">${esc(countText)}</span>
+                        <span class="check-label">${esc(labelText)}</span>
+                    </div>`;
+
+                if (detailsUrl) {
+                    checksGrid.append(
+                        `<a class="check-tile-link" href="${esc(detailsUrl)}" target="_blank" rel="noopener" title="Open check details">${tileHtml}</a>`
+                    );
+                } else {
+                    checksGrid.append(tileHtml);
+                }
             });
             $('#checks-card').show();
         } else {
@@ -638,12 +948,24 @@ try {
             .fail(function (xhr) { setStatus('Health check failed: ' + xhr.responseText, true); });
     });
 
+    function updateChecksSelectionStatus() {
+        const total = $('input[name="checks[]"]').length;
+        const selected = $('input[name="checks[]"]:checked').length;
+        $('#checks-selection-status').text(selected + ' of ' + total + ' checks selected');
+    }
+
     $('#select-all-checks').on('click', function () {
-        $('input[name="checks[]"]').prop('checked', true);
+        $('input[name="checks[]"]').prop('checked', true).trigger('change');
+        updateChecksSelectionStatus();
     });
 
     $('#clear-checks').on('click', function () {
-        $('input[name="checks[]"]').prop('checked', false);
+        $('input[name="checks[]"]').prop('checked', false).trigger('change');
+        updateChecksSelectionStatus();
+    });
+
+    $(document).on('change', 'input[name="checks[]"]', function () {
+        updateChecksSelectionStatus();
     });
 
     $('#remember_repo_url').on('change', function () {
@@ -697,7 +1019,16 @@ try {
             });
     });
 
+    initThemeToggle();
+    updateChecksSelectionStatus();
     loadRememberedRepoUrl();
 </script>
+<footer class="site-footer">
+    <div class="container">
+        <p class="footer-line">@2026 AI Git Repo Analyzer</p>
+        <p class="footer-line">803 Summer Street, MN 55106</p>
+        <p class="footer-line">ContactUs@aigitrepoanalyzer.com</p>
+    </div>
+</footer>
 </body>
 </html>

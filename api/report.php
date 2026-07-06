@@ -21,6 +21,67 @@ function h(string $value): string
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function absoluteCheckDetailsUrl(array $params = []): string
+{
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $scheme = $isHttps ? 'https' : 'http';
+    $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/api/report.php'));
+    $appBasePath = rtrim(dirname(dirname($scriptName)), '/');
+
+    $base = $scheme . '://' . $host . $appBasePath . '/check_insecure_design.php';
+    if (empty($params)) {
+        return $base;
+    }
+
+    return $base . '?' . http_build_query($params);
+}
+
+function absoluteReportUrl(array $params = []): string
+{
+    $isHttps = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $scheme = $isHttps ? 'https' : 'http';
+    $host = (string) ($_SERVER['HTTP_HOST'] ?? 'localhost');
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? '/api/report.php'));
+
+    $base = $scheme . '://' . $host . $scriptName;
+    if (empty($params)) {
+        return $base;
+    }
+
+    return $base . '?' . http_build_query($params);
+}
+
+function checkDetailIdFromName(string $checkName): ?string
+{
+    $normalized = strtolower(trim($checkName));
+
+    if (preg_match('/#\s*(10|[1-9])/', $normalized, $numberMatch) === 1) {
+        return (string) $numberMatch[1];
+    }
+
+    $patterns = [
+        '1' => '/#?1\s*insecure design and logic flaws|insecure design and logic flaws/i',
+        '2' => '/#?2\s*vulnerable and outdated dependencies|vulnerable and outdated dependencies/i',
+        '3' => '/#?3\s*ci\/cd and software integrity risks|software integrity risks/i',
+        '4' => '/#?4\s*logging and monitoring coverage|logging and monitoring/i',
+        '5' => '/#?5\s*code quality, performance and repo health|repo health/i',
+        '6' => '/#?6\s*secret\s*&\s*credential scanner|secret.*credential scanner/i',
+        '7' => '/#?7\s*dependency cve audit|osv\.dev/i',
+        '8' => '/#?8\s*license compliance scanner|license compliance/i',
+        '9' => '/#?9\s*git history risk analysis|git history risk/i',
+        '10' => '/#?10\s*security header\s*&\s*config auditor|security header.*config auditor/i',
+    ];
+
+    foreach ($patterns as $checkId => $pattern) {
+        if (preg_match($pattern, $normalized) === 1) {
+            return $checkId;
+        }
+    }
+
+    return null;
+}
+
 $scanId = (int) ($_GET['scan_id'] ?? 0);
 $download = isset($_GET['download']) && (string) $_GET['download'] === '1';
 $format = strtolower(trim((string) ($_GET['format'] ?? 'html')));
@@ -115,6 +176,35 @@ try {
         $selectedCheckLabels[] = $checkLabels[$checkId] ?? $checkId;
     }
 
+    $checkRunsById = [];
+    foreach ($checkRuns as $cr) {
+        $nameRaw = (string) ($cr['check_name'] ?? '');
+        $id = checkDetailIdFromName($nameRaw);
+        if ($id !== null) {
+            $checkRunsById[$id] = $cr;
+        }
+    }
+
+    $orderedCheckRuns = [];
+    foreach ($checkLabels as $id => $label) {
+        $labelRaw = preg_replace('/\s*\([^)]*\)\s*$/', '', $label);
+        $labelCheckId = null;
+        if (preg_match('/#\s*(10|[1-9])/', $label, $numberMatch) === 1) {
+            $labelCheckId = (string) $numberMatch[1];
+        }
+
+        if ($labelCheckId !== null && isset($checkRunsById[$labelCheckId])) {
+            $orderedCheckRuns[] = $checkRunsById[$labelCheckId];
+            continue;
+        }
+
+        $orderedCheckRuns[] = [
+            'check_name' => $labelRaw,
+            'status' => 'not_run',
+            'finding_count' => 0,
+        ];
+    }
+
     $results = [];
     if (!empty($scan['results_json'])) {
         $decodedResults = json_decode((string) $scan['results_json'], true);
@@ -147,108 +237,10 @@ try {
     }
 
     if ($download && $format === 'html') {
-        header('Content-Type: text/html; charset=UTF-8');
         header('Content-Disposition: attachment; filename="scan-' . $scanId . '-summary.html"');
-        echo '<!DOCTYPE html>';
-        echo '<html lang="en">';
-        echo '<head>';
-        echo '<meta charset="UTF-8">';
-        echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-        echo '<title>Scan Summary #' . h((string) $scanId) . '</title>';
-        echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}</style>';
-        echo '</head>';
-        echo '<body><div class="wrap">';
-
-        echo '<div class="card">';
-        echo '<h1 style="margin-top:0">Scan Summary #' . h((string) $scan['id']) . '</h1>';
-        echo '<p class="meta">Repository: ' . h((string) $scan['repo_url']) . '</p>';
-        echo '<p class="meta">Scan date: ' . h((string) $scan['scan_date']) . '</p>';
-        echo '<p class="meta">Score: <strong>' . h((string) ($scan['summary_score'] ?? 'N/A')) . '</strong> | Findings: <strong>' . h((string) $scan['total_findings']) . '</strong> | Skills: <strong>' . h((string) $scan['total_skills']) . '</strong></p>';
-        echo '</div>';
-
-        echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
-        if (empty($selectedCheckLabels)) {
-            echo '<p class="meta">No stored check list for this scan.</p>';
-        } else {
-            echo '<ul>';
-            foreach ($selectedCheckLabels as $check) {
-                echo '<li>' . h((string) $check) . '</li>';
-            }
-            echo '</ul>';
-        }
-        echo '</div>';
-
-        echo '<div class="card"><h2 style="margin-top:0">Analysis Checks</h2>';
-        if (empty($checkRuns)) {
-            echo '<p class="meta">No stored per-check results for this scan.</p>';
-        } else {
-            echo '<div class="checks-grid">';
-            foreach ($checkRuns as $cr) {
-                $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
-                $status = (string) ($cr['status'] ?? 'unknown');
-                $count = (int) ($cr['finding_count'] ?? 0);
-                $tileClass = $status === 'clean' ? 'clean' : 'issues';
-                
-                echo '<div class="check-tile ' . $tileClass . '">';
-                echo '<span class="check-name">' . $checkName . '</span>';
-                echo '<span class="check-count">' . $count . '</span>';
-                echo '<span class="check-label">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</span>';
-                echo '</div>';
-            }
-            echo '</div>';
-        }
-        echo '</div>';
-
-        echo '<div class="card"><h2 style="margin-top:0">Findings</h2>';
-        if (empty($findings)) {
-            echo '<p class="meta">No findings recorded.</p>';
-        } else {
-            foreach ($findings as $finding) {
-                $sevClass = 'sev-info';
-                if ($finding['severity'] === 'High') {
-                    $sevClass = 'sev-high';
-                } elseif ($finding['severity'] === 'Medium') {
-                    $sevClass = 'sev-medium';
-                } elseif ($finding['severity'] === 'Low') {
-                    $sevClass = 'sev-low';
-                }
-                echo '<div class="tag ' . $sevClass . '">' . h((string) $finding['severity']) . '</div> ';
-                echo '<strong>' . h((string) $finding['title']) . '</strong><br>';
-                echo '<span class="meta">Category: ' . h((string) $finding['category']) . '</span><br>';
-                echo '<span class="meta">' . h((string) $finding['description']) . '</span><br><br>';
-            }
-        }
-        echo '</div>';
-
-        echo '<div class="card"><h2 style="margin-top:0">Recommendations</h2>';
-        if (empty($recommendations)) {
-            echo '<p class="meta">No recommendations available.</p>';
-        } else {
-            echo '<ul>';
-            foreach ($recommendations as $recommendation) {
-                echo '<li><strong>[' . h((string) $recommendation['priority']) . ']</strong> ' . h((string) $recommendation['recommendation_text']) . '</li>';
-            }
-            echo '</ul>';
-        }
-        echo '</div>';
-
-        echo '<div class="card"><h2 style="margin-top:0">Skills</h2>';
-        if (empty($skills)) {
-            echo '<p class="meta">No skills recorded.</p>';
-        } else {
-            echo '<ul>';
-            foreach ($skills as $skill) {
-                echo '<li><strong>' . h((string) $skill['skill_name']) . '</strong> (' . h((string) $skill['proficiency_level']) . ') - Risk: ' . h((string) $skill['risk_level']) . '</li>';
-            }
-            echo '</ul>';
-        }
-        echo '</div>';
-
-        echo '</div></body></html>';
-        exit;
     }
 
-    if ($download || $format === 'txt') {
+    if ($format === 'txt' || ($download && $format !== 'html')) {
         $lines = [];
         $lines[] = 'AI Git Repo Analyzer Report';
         $lines[] = 'Scan ID: ' . $scan['id'];
@@ -311,8 +303,14 @@ try {
         exit;
     }
 
-    $summaryUrl = 'report.php?scan_id=' . $scanId;
-    $downloadUrl = 'report.php?scan_id=' . $scanId . '&download=1&format=html';
+    $summaryUrl = absoluteReportUrl([
+        'scan_id' => (string) $scanId,
+    ]);
+    $downloadUrl = absoluteReportUrl([
+        'scan_id' => (string) $scanId,
+        'download' => '1',
+        'format' => 'html',
+    ]);
 
     header('Content-Type: text/html; charset=UTF-8');
     echo '<!DOCTYPE html>';
@@ -322,6 +320,7 @@ try {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>Scan Summary #' . h((string) $scanId) . '</title>';
     echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}</style>';
+    echo '<style>body[data-theme="dark"]{background:#0f172a;color:#e5e7eb}body[data-theme="dark"] .card{background:#1f2937;border-color:#374151}body[data-theme="dark"] .meta{color:#9ca3af}body[data-theme="dark"] .btn{color:#e5e7eb;border-color:#6b7280}body[data-theme="dark"] .btn-primary{background:#1d4ed8;border-color:#1d4ed8;color:#fff}body[data-theme="dark"] .tag{background:#1e293b;color:#c7d2fe}body[data-theme="dark"] .check-tile{background:#111827;border-color:#374151}body[data-theme="dark"] .check-tile.clean{background:#0f1f17;border-color:#166534}body[data-theme="dark"] .check-tile.issues{background:#2a1313;border-color:#7f1d1d}body[data-theme="dark"] .check-name{color:#d1d5db}body[data-theme="dark"] .check-label{color:#9ca3af}</style>';
     echo '</head>';
     echo '<body><div class="wrap">';
 
@@ -332,6 +331,7 @@ try {
     echo '<p class="meta">Score: <strong>' . h((string) ($scan['summary_score'] ?? 'N/A')) . '</strong> | Findings: <strong>' . h((string) $scan['total_findings']) . '</strong> | Skills: <strong>' . h((string) $scan['total_skills']) . '</strong></p>';
     echo '<a class="btn" href="' . h($summaryUrl) . '">Refresh</a>';
     echo '<a class="btn btn-primary" href="' . h($downloadUrl) . '">Download HTML</a>';
+    echo '<button type="button" id="theme-toggle" class="btn">Dark Mode</button>';
     echo '</div>';
 
     echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
@@ -347,21 +347,40 @@ try {
     echo '</div>';
 
     echo '<div class="card"><h2 style="margin-top:0">Analysis Checks</h2>';
-    if (empty($checkRuns)) {
+    if (empty($orderedCheckRuns)) {
         echo '<p class="meta">No stored per-check results for this scan.</p>';
     } else {
         echo '<div class="checks-grid">';
-        foreach ($checkRuns as $cr) {
+        foreach ($orderedCheckRuns as $cr) {
             $checkName = h((string) ($cr['check_name'] ?? 'Unknown'));
+            $checkNameRaw = (string) ($cr['check_name'] ?? 'Unknown');
             $status = (string) ($cr['status'] ?? 'unknown');
             $count = (int) ($cr['finding_count'] ?? 0);
-            $tileClass = $status === 'clean' ? 'clean' : 'issues';
+            $statusNorm = strtolower($status);
+            $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
+            $detailsUrl = '';
+            $checkId = checkDetailIdFromName($checkNameRaw);
+            if ($checkId !== null) {
+                $detailsUrl = absoluteCheckDetailsUrl([
+                    'check_id' => $checkId,
+                    'name' => $checkNameRaw,
+                    'status' => $status,
+                    'count' => (string) $count,
+                    'scan_id' => (string) $scanId,
+                ]);
+            }
             
+            if ($detailsUrl !== '') {
+                echo '<a href="' . h($detailsUrl) . '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">';
+            }
             echo '<div class="check-tile ' . $tileClass . '">';
             echo '<span class="check-name">' . $checkName . '</span>';
-            echo '<span class="check-count">' . $count . '</span>';
-            echo '<span class="check-label">' . ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues')) . '</span>';
+            echo '<span class="check-count">' . ($statusNorm === 'not_run' ? '-' : (string) $count) . '</span>';
+            echo '<span class="check-label">' . ($statusNorm === 'not_run' ? 'Not run' : ($count === 0 ? 'No issues' : ($count === 1 ? '1 issue' : $count . ' issues'))) . '</span>';
             echo '</div>';
+            if ($detailsUrl !== '') {
+                echo '</a>';
+            }
         }
         echo '</div>';
     }
@@ -413,6 +432,7 @@ try {
     }
     echo '</div>';
 
+    echo '<script>(function(){var key="ai_git_repo_theme";var btn=document.getElementById("theme-toggle");function pref(){var s=localStorage.getItem(key);if(s==="dark"||s==="light"){return s;}return window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}function apply(t){var next=t==="dark"?"dark":"light";document.body.setAttribute("data-theme",next);if(btn){btn.textContent=next==="dark"?"Light Mode":"Dark Mode";}}apply(pref());if(btn){btn.addEventListener("click",function(){var current=document.body.getAttribute("data-theme")==="dark"?"dark":"light";var next=current==="dark"?"light":"dark";localStorage.setItem(key,next);apply(next);});}})();</script>';
     echo '</div></body></html>';
 } catch (Throwable $e) {
     http_response_code(500);

@@ -51,16 +51,34 @@ try {
             --warning: #F59E0B;
             --critical: #EF4444;
             --bg-light: #F5F3FF;
+            --bg-body: linear-gradient(180deg, #f5f3ff 0%, #faf8ff 100%);
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --surface: #FFFFFF;
+            --surface-soft: #F8FAFC;
+            --border: #E5E7EB;
+            --header-gradient: linear-gradient(135deg, #9B59B6 0%, #7C3AED 100%);
+        }
+
+        body[data-theme="dark"] {
+            --bg-body: linear-gradient(180deg, #121826 0%, #0d1321 100%);
+            --text-main: #E5E7EB;
+            --text-muted: #9CA3AF;
+            --surface: #1F2937;
+            --surface-soft: #111827;
+            --border: #374151;
+            --header-gradient: linear-gradient(135deg, #5B21B6 0%, #312E81 100%);
         }
 
         body {
-            background: linear-gradient(180deg, #f5f3ff 0%, #faf8ff 100%);
+            background: var(--bg-body);
+            color: var(--text-main);
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         .header-section {
-            background: linear-gradient(135deg, #9B59B6 0%, #7C3AED 100%);
+            background: var(--header-gradient);
             color: white;
             padding: 2rem 0;
             margin-bottom: 2rem;
@@ -83,6 +101,11 @@ try {
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .theme-toggle-btn {
+            border-width: 1px;
         }
 
         .card {
@@ -90,6 +113,8 @@ try {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             margin-bottom: 2rem;
             transition: box-shadow 0.3s ease;
+            background: var(--surface);
+            color: var(--text-main);
         }
 
         .card:hover {
@@ -100,19 +125,19 @@ try {
             border-radius: 1rem;
             padding: 1.5rem;
             text-align: center;
-            background: #ffffff;
-            border: 1px solid #E5E7EB;
+            background: var(--surface);
+            border: 1px solid var(--border);
         }
 
         .stat-card strong {
             font-size: 2rem;
             display: block;
             margin-bottom: 0.5rem;
-            color: #111827;
+            color: var(--text-main);
         }
 
         .stat-card small {
-            color: #6B7280;
+            color: var(--text-muted);
         }
 
         .overview-grid {
@@ -122,25 +147,25 @@ try {
         }
 
         .summary-card {
-            background: #F8FAFC;
+            background: var(--surface-soft);
             border-radius: 0.85rem;
             padding: 1.25rem;
-            border: 1px solid #E5E7EB;
+            border: 1px solid var(--border);
             text-align: center;
         }
 
         .summary-card strong {
             display: block;
             font-size: 1.75rem;
-            color: #111827;
+            color: var(--text-main);
         }
 
         .summary-card small {
-            color: #6B7280;
+            color: var(--text-muted);
         }
 
         .table thead th {
-            border-bottom: 2px solid #E5E7EB;
+            border-bottom: 2px solid var(--border);
         }
 
         .table tbody tr:hover {
@@ -161,6 +186,61 @@ try {
         .label-warning { background: #FEF3C7; color: #92400E; }
         .label-danger { background: #FEE2E2; color: #991B1B; }
 
+        .text-muted { color: var(--text-muted) !important; }
+
+        .table,
+        .table td,
+        .table th,
+        .border,
+        .btn-outline-secondary {
+            border-color: var(--border) !important;
+        }
+
+        .table,
+        .table td,
+        .table th {
+            color: var(--text-main);
+            background-color: transparent;
+        }
+
+        body[data-theme="dark"] .btn-light {
+            background-color: #374151;
+            border-color: #4B5563;
+            color: #F3F4F6;
+        }
+
+        body[data-theme="dark"] .btn-outline-secondary,
+        body[data-theme="dark"] .btn-outline-success,
+        body[data-theme="dark"] .btn-outline-primary {
+            color: #D1D5DB;
+            border-color: #6B7280;
+        }
+
+        body[data-theme="dark"] .table tbody tr:hover {
+            background: rgba(167, 139, 250, 0.16);
+        }
+
+        body[data-theme="dark"] .summary-card small,
+        body[data-theme="dark"] .stat-card small {
+            color: #D1D5DB;
+        }
+
+        .site-footer {
+            margin-top: 1.5rem;
+            padding: 1.1rem 0;
+            background: var(--header-gradient);
+            color: white;
+            font-size: 0.92rem;
+        }
+
+        .site-footer .footer-line {
+            margin: 0;
+            text-align: center;
+            font-weight: 700;
+            font-size: 2rem;
+            line-height: 1.2;
+        }
+
         @media (max-width: 991px) {
             .overview-grid {
                 grid-template-columns: 1fr;
@@ -180,6 +260,12 @@ try {
                 <a href="dashboard.php" class="btn btn-light btn-sm text-purple">
                     <i class="fas fa-th-large"></i> History
                 </a>
+                <a href="contact.php" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-address-card"></i> Contact
+                </a>
+                <button type="button" id="theme-toggle" class="btn btn-outline-light btn-sm theme-toggle-btn">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
             </div>
         </div>
     </div>
@@ -253,7 +339,7 @@ try {
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'] . '&download=1&format=txt', ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-success mb-1">
+                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'] . '&download=1&format=html', ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-success mb-1">
                                             <i class="fas fa-download"></i> Download File
                                         </a>
                                     </td>
@@ -293,5 +379,50 @@ try {
             </div>
         </div>
     </div>
+    <script>
+        (function () {
+            const THEME_KEY = 'ai_git_repo_theme';
+            const body = document.body;
+            const toggle = document.getElementById('theme-toggle');
+
+            function preferredTheme() {
+                const savedTheme = localStorage.getItem(THEME_KEY);
+                if (savedTheme === 'light' || savedTheme === 'dark') {
+                    return savedTheme;
+                }
+                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light';
+            }
+
+            function applyTheme(theme) {
+                const nextTheme = theme === 'dark' ? 'dark' : 'light';
+                body.setAttribute('data-theme', nextTheme);
+                if (toggle) {
+                    toggle.innerHTML = nextTheme === 'dark'
+                        ? '<i class="fas fa-sun"></i> Light Mode'
+                        : '<i class="fas fa-moon"></i> Dark Mode';
+                }
+            }
+
+            applyTheme(preferredTheme());
+
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    const currentTheme = body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    localStorage.setItem(THEME_KEY, nextTheme);
+                    applyTheme(nextTheme);
+                });
+            }
+        })();
+    </script>
+    <footer class="site-footer">
+        <div class="container">
+            <p class="footer-line">@2026 AI Git Repo Analyzer</p>
+            <p class="footer-line">803 Summer Street, MN 55106</p>
+            <p class="footer-line">ContactUs@aigitrepoanalyzer.com</p>
+        </div>
+    </footer>
 </body>
 </html>
