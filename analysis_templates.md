@@ -1,98 +1,226 @@
-# Git Repository Analyzer
-
-**Course:** Software Engineering / DevOps / AI Applications  
-
-
+# Git Repository Analyzer (API-Driven)
 ---
 
-# Overview
+# Project Overview
 
-In this project, you will build an **AI-powered Git Repository Analyzer**.
+In this project, you will build an **API-driven Git Repository Analyzer** that evaluates the overall health of a software repository **without cloning it locally**.
 
-The application accepts:
+Instead of downloading the repository, your application will use the **GitHub REST APIs**, **GitHub GraphQL APIs**, and/or **GitLab APIs** to retrieve repository metadata, source files, commit history, pull requests, workflow definitions, documentation, and other artifacts required for analysis.
 
-- Git Repository URL
-- Personal Access Token (PAT)
+The goal is to build an **Explainable AI (XAI)** system that not only produces scores, but also explains:
 
-The application clones the repository, performs a comprehensive static analysis, and produces a professional engineering report with scores, findings, recommendations, and visual dashboards.
+- Why a score was assigned
+- What evidence was found
+- Which rules were violated
+- How the repository can be improved
 
-Think of your project as combining the capabilities of:
-
-- SonarQube
-- GitHub Code Scanning
-- Code Climate
-- OWASP Scanner
-- AI Code Reviewer
-
-into one application.
+Your application should behave like an AI Engineering Consultant rather than just a scoring engine.
 
 ---
 
 # Learning Objectives
 
-By completing this project you will learn:
+Students will gain experience with:
 
-- Git APIs
-- Repository cloning
+- GitHub APIs
+- GitLab APIs
+- REST APIs
+- GraphQL
+- Repository mining
 - Static code analysis
-- Software architecture evaluation
-- Security scanning
-- AI-assisted code review
-- Metrics collection
+- Software engineering metrics
+- Explainable AI (XAI)
+- Rule engines
+- AI-assisted code reviews
 - Report generation
-- Dashboard design
+- Dashboard development
 
 ---
 
 # Functional Requirements
 
-The application shall allow the user to enter:
+The application shall accept:
 
 - Repository URL
 - Personal Access Token (PAT)
 
-Example:
+Example
 
 ```
-Repository:
-https://github.com/username/project
+Repository
 
-PAT:
+https://github.com/company/project
+
+PAT
+
 ghp_xxxxxxxxxxxxxxxxx
 ```
 
-After clicking **Analyze Repository**, the application should:
+---
 
-1. Clone the repository
-2. Traverse every source file
-3. Run all analysis modules
-4. Compute scores
-5. Generate a report
-6. Display an overall Repository Health Score
+The application shall:
+
+1. Authenticate using the PAT
+2. Read repository metadata using APIs
+3. Retrieve source files using APIs
+4. Analyze repository contents
+5. Compute scores
+6. Explain every score
+7. Generate recommendations
+8. Produce executive reports and dashboards
+
+---
+
+# Important Constraint
+
+**Do NOT clone repositories.**
+
+All repository access must occur through:
+
+- GitHub REST APIs
+- GitHub GraphQL APIs
+- GitLab REST APIs
+- GitLab GraphQL APIs (optional)
+
+Students should demonstrate efficient API usage, pagination, caching, and rate-limit handling.
+
+---
+
+# Explainable AI (XAI) Requirement
+
+A score by itself has little value.
+
+Every score **must include an explanation**.
+
+Example
+
+```
+Security Score
+
+84 / 100
+
+Reason
+
+✓ No hardcoded passwords found
+
+✓ Authentication implemented
+
+✓ HTTPS enforced
+
+⚠ 2 secrets detected
+
+⚠ Weak password validation
+
+⚠ Missing Content Security Policy
+
+Score deductions
+
+Hardcoded Secrets
+-8
+
+Weak Authentication
+-5
+
+Missing Security Headers
+-3
+
+Final Score
+
+84
+```
+
+Every analyzer should answer:
+
+- What was analyzed?
+- What evidence was found?
+- Which rules passed?
+- Which rules failed?
+- Why did the score increase?
+- Why did the score decrease?
+- How can the repository improve?
 
 ---
 
 # Repository Health Score
 
-The repository should receive an overall score out of **100**.
+The final report should contain a weighted scorecard.
 
-Example:
-
-| Category | Score |
-|-----------|------:|
-| Security | 92 |
-| Code Quality | 87 |
-| Architecture | 81 |
-| Testing | 78 |
-| Documentation | 95 |
-| DevOps | 83 |
-| Performance | 80 |
-| Dependencies | 91 |
-| AI Readiness | 94 |
+| Category | Weight | Score |
+|-----------|-------:|------:|
+| Security | 15% | 92 |
+| Code Quality | 15% | 88 |
+| Clean Code | 10% | 90 |
+| Architecture | 10% | 84 |
+| Complexity | 10% | 80 |
+| Performance | 10% | 82 |
+| Reliability | 10% | 86 |
+| Testing | 10% | 76 |
+| Documentation | 5% | 94 |
+| Dependencies | 5% | 89 |
+| DevOps | 5% | 81 |
+| AI Readiness | 5% | 95 |
 
 Overall Repository Health
 
-**88 / 100**
+**87 / 100**
+
+---
+
+# Every Analysis Module Must Produce
+
+Every module shall return a structured result.
+
+Example
+
+```
+Module
+
+Security
+
+Score
+
+84
+
+Summary
+
+Repository demonstrates good authentication practices but contains exposed secrets.
+
+Evidence
+
+2 hardcoded API keys
+
+3 authentication modules
+
+No SQL Injection patterns
+
+No unsafe eval() usage
+
+Passed Rules
+
+✓ Authentication
+
+✓ Authorization
+
+✓ Input Validation
+
+Failed Rules
+
+✗ Hardcoded Secrets
+
+✗ CSP Missing
+
+Recommendations
+
+Move secrets to environment variables.
+
+Use GitHub Secrets.
+
+Enable CSP headers.
+
+Confidence
+
+95%
+```
 
 ---
 
@@ -100,35 +228,26 @@ Overall Repository Health
 
 ---
 
-# 1. Security (OWASP)
+# 1. Security Analysis
 
 Weight: 15%
 
-Detect common security issues.
+### Purpose
 
-Examples:
+Identify security vulnerabilities.
 
-- SQL Injection
-- Command Injection
-- Cross Site Scripting
-- Hardcoded passwords
-- Hardcoded API keys
-- Weak hashing
-- Unsafe deserialization
-- Missing authentication
-- Missing authorization
-
-Suggested Standards
+### Suggested Frameworks
 
 - OWASP Top 10
+- OWASP ASVS
 - CWE Top 25
+- MITRE ATT&CK (high level)
+- CERT Secure Coding Guidelines
 
-Deliverables
+### Suggested Template
 
-- Number of findings
-- Severity
-- Recommendation
-- Security Score
+| Rule | Status | Severity | Evidence | Recommendation |
+|------|---------|----------|-----------|----------------|
 
 ---
 
@@ -136,27 +255,24 @@ Deliverables
 
 Weight: 15%
 
-Analyze maintainability.
+### Suggested Standards
 
-Examples
+- SonarQube Rules
+- ISO/IEC 25010 (Maintainability)
+- Clean Code principles
+
+### Suggested Template
+
+| Metric | Value | Threshold | Status |
+|---------|------:|----------:|--------|
+
+Example metrics
 
 - Duplicate code
 - Dead code
-- Long methods
-- Large classes
-- Poor variable names
-- Magic numbers
-- Code smells
-
-Metrics
-
-- Cyclomatic Complexity
+- Naming
 - Maintainability Index
-- Lines of Code
-
-Deliverables
-
-- Code Quality Score
+- Code smells
 
 ---
 
@@ -164,43 +280,48 @@ Deliverables
 
 Weight: 10%
 
-Evaluate software engineering principles.
+### Suggested Framework
 
-Check for:
+Robert C. Martin's Clean Code principles
+
+Evaluate
 
 - SOLID
 - DRY
 - KISS
 - YAGNI
-- Single Responsibility Principle
-- High Cohesion
-- Low Coupling
+- Single Responsibility
+- Separation of Concerns
 
-Deliverables
+### Suggested Template
 
-- Violations
-- Suggestions
-- Score
+| Principle | Rating | Evidence |
+|------------|--------|----------|
 
 ---
 
-# 4. Software Architecture
+# 4. Architecture
 
 Weight: 10%
 
-Analyze project organization.
+### Suggested Frameworks
+
+- Layered Architecture
+- Clean Architecture
+- Hexagonal Architecture
+- Domain Driven Design
+
+### Suggested Template
+
+| Check | Status | Evidence |
+|--------|--------|----------|
 
 Examples
 
-- Layer violations
 - Circular dependencies
-- God classes
+- Module cohesion
 - Package organization
-- Modularity
-
-Deliverables
-
-Architecture Score
+- Separation of layers
 
 ---
 
@@ -208,19 +329,17 @@ Architecture Score
 
 Weight: 10%
 
-Measure code complexity.
-
-Metrics
+### Suggested Metrics
 
 - Cyclomatic Complexity
 - Cognitive Complexity
-- Maximum Nesting
-- Function Length
+- Function Size
 - Class Size
+- Nesting Depth
 
-Deliverables
+### Suggested Template
 
-Complexity Score
+| Metric | Average | Maximum | Threshold |
 
 ---
 
@@ -228,19 +347,17 @@ Complexity Score
 
 Weight: 10%
 
-Static analysis for performance issues.
-
-Examples
+### Suggested Checklist
 
 - Nested loops
-- Inefficient algorithms
 - Expensive operations
-- Repeated database calls
-- Memory concerns
+- N+1 patterns
+- Repeated API calls
+- Blocking operations
 
-Deliverables
+### Suggested Template
 
-Performance Score
+| Finding | Impact | Recommendation |
 
 ---
 
@@ -248,20 +365,22 @@ Performance Score
 
 Weight: 10%
 
-Evaluate robustness.
+### Suggested Framework
 
-Examples
+Google Site Reliability Engineering (SRE) concepts
 
-- Exception handling
+Evaluate
+
 - Logging
-- Retry logic
-- Timeout handling
-- Resource cleanup
+- Retry
+- Timeout
+- Exception handling
 - Null handling
+- Resource cleanup
 
-Deliverables
+### Suggested Template
 
-Reliability Score
+| Rule | Passed | Evidence |
 
 ---
 
@@ -269,19 +388,23 @@ Reliability Score
 
 Weight: 10%
 
-Analyze testing quality.
+### Suggested Frameworks
 
-Examples
+- FIRST Principles
+- Test Pyramid
+- AAA Pattern
+
+Evaluate
 
 - Unit tests
 - Integration tests
-- Test coverage
-- Assertions
 - Test organization
+- Coverage
+- Assertions
 
-Deliverables
+### Suggested Template
 
-Testing Score
+| Metric | Score |
 
 ---
 
@@ -289,19 +412,23 @@ Testing Score
 
 Weight: 5%
 
-Evaluate documentation.
+### Suggested Standards
 
-Examples
-
-- README
-- Installation Guide
+- README Best Practices
 - API Documentation
-- Inline comments
+- Architecture Decision Records (ADR)
+
+Evaluate
+
+- Installation
+- Usage
 - Examples
+- Architecture
+- Contribution Guide
 
-Deliverables
+### Suggested Template
 
-Documentation Score
+| Section | Present | Quality |
 
 ---
 
@@ -309,18 +436,22 @@ Documentation Score
 
 Weight: 5%
 
-Analyze project dependencies.
+### Suggested Frameworks
 
-Examples
+- Software Bill of Materials (SBOM)
+- Supply Chain Security
+- Semantic Versioning
 
+Evaluate
+
+- Vulnerabilities
 - Outdated packages
-- Vulnerable packages
-- Unused dependencies
-- License issues
+- License compatibility
+- Unused packages
 
-Deliverables
+### Suggested Template
 
-Dependency Score
+| Dependency | Version | Status |
 
 ---
 
@@ -328,19 +459,23 @@ Dependency Score
 
 Weight: 5%
 
-Evaluate deployment readiness.
+### Suggested Standards
 
-Examples
+- DevOps Maturity Model
+- Twelve-Factor App
+- GitHub Actions Best Practices
 
-- Dockerfile
-- CI/CD pipeline
-- GitHub Actions
-- Secrets management
+Evaluate
+
+- CI/CD
+- Docker
+- Secrets
 - Environment variables
+- Release workflows
 
-Deliverables
+### Suggested Template
 
-DevOps Score
+| Capability | Status |
 
 ---
 
@@ -348,195 +483,97 @@ DevOps Score
 
 Weight: 5%
 
-Evaluate whether the repository is easy for AI coding assistants to understand.
+### Suggested Framework
 
-Examples
+Design your own AI Readiness Rubric.
+
+Possible criteria
 
 - Good naming
 - Small functions
-- Modular code
-- Rich documentation
+- Modular design
+- Documentation
+- Consistent style
+- Rich README
+- Examples
 - Clear APIs
-- Consistent coding style
 
-Deliverables
+### Suggested Template
 
-AI Readiness Score
+| Criterion | Score | Evidence |
 
 ---
 
-# Suggested Folder Structure
+# Explainability Dashboard
+
+Every dashboard should answer:
+
+## What is my score?
+
+## Why did I receive this score?
+
+## What evidence supports it?
+
+## Which files contributed?
+
+## What should I fix first?
+
+## What will improve my score the most?
+
+---
+
+# Priority Matrix
+
+Every recommendation should include:
+
+| Recommendation | Impact | Effort | Priority |
+|---------------|--------|--------|----------|
+
+Example
+
+| Remove hardcoded secrets | High | Low | ⭐⭐⭐⭐⭐ |
+
+---
+
+# Architecture Recommendation
+
+Design your solution using a plug-in architecture.
 
 ```
-git-repo-analyzer/
+Analyzer
 
-    analyzer/
+    analyze()
 
-        security.py
+    evaluate()
 
-        quality.py
+    explain()
 
-        architecture.py
+    recommendations()
 
-        performance.py
-
-        testing.py
-
-        documentation.py
-
-        dependencies.py
-
-        ai_readiness.py
-
-        devops.py
-
-        scoring.py
-
-    reports/
-
-    templates/
-
-    static/
-
-    app.py
-
-    requirements.txt
-
+    score()
 ```
 
----
-
-# Suggested Technologies
-
-Backend
-
-- Python
-- Flask or FastAPI
-
-Frontend
-
-- HTML
-- Bootstrap
-- JavaScript
-
-Git
-
-- GitPython
-
-Visualization
-
-- Chart.js
-- Plotly
-
-Optional AI
-
-- OpenAI API
-- GitHub Models
-- Local LLM
+Every analyzer should implement the same interface so that future analysis modules can be added without changing the rest of the application.
 
 ---
 
-# Suggested Output
+# Stretch Goals
 
-The final report should include:
+Students may implement:
 
-## Executive Summary
-
-Overall Health Score
-
-Top Strengths
-
-Top Risks
-
-Recommendations
-
----
-
-## Detailed Findings
-
-For every category:
-
-- Score
-- Findings
-- Severity
-- Recommendation
-
----
-
-## Dashboard
-
-Include visualizations such as:
-
-- Radar Chart
-- Pie Chart
-- Bar Graph
-- Repository Scorecard
-
----
-
-# Bonus Features
-
-Students are encouraged to implement additional capabilities such as:
-
-- PDF report generation
-- Excel export
-- HTML report
-- Repository badges
-- Trend analysis across multiple repositories
-- Git commit history analysis
-- Pull request analytics
+- AI-generated executive summaries
+- Natural language explanations
+- Repository chat assistant
+- Repository comparison
+- Historical trend analysis
+- Team analytics
 - Contributor analytics
-- Code ownership analysis
-- Security heat map
-- Technical debt estimation
-- AI-generated executive summary
-- AI-generated refactoring suggestions
-- Chat interface for querying the repository
-- Compare two repositories
-- Repository leaderboard
-- Dark mode dashboard
-
----
-
-# Evaluation Rubric
-
-| Criteria | Points |
-|-----------|-------:|
-| User Interface | 10 |
-| Repository Cloning | 10 |
-| Security Analysis | 15 |
-| Code Quality Analysis | 15 |
-| Architecture Analysis | 10 |
-| Performance Analysis | 10 |
-| Testing Analysis | 10 |
-| Documentation Analysis | 5 |
-| Dashboard & Visualization | 10 |
-| AI Features | 5 |
-| Code Quality & Documentation | 10 |
-
-Total: **100 Points**
-
----
-
-# Stretch Goal
-
-Design your application so that **new analysis modules can be plugged in easily** without modifying existing code. Consider using object-oriented principles such as interfaces or abstract base classes to define a common `Analyzer` contract.
-
-Example:
-
-```python
-class Analyzer:
-    def analyze(self, repository):
-        pass
-
-    def score(self):
-        pass
-
-    def recommendations(self):
-        pass
-```
-
-Each category (Security, Performance, Documentation, etc.) can then implement this interface independently.
+- Pull Request analytics
+- Release analytics
+- Interactive score simulator ("What if I fix these issues?")
+- Export to PDF, HTML, Excel, or JSON
+- Custom rule packs
+- Organization-wide dashboards
 
 ---
 
@@ -545,12 +582,32 @@ Each category (Security, Performance, Documentation, etc.) can then implement th
 Students must submit:
 
 - Source code
+- API documentation
 - README
-- Installation instructions
-- Sample repository analyzed
-- Generated report
+- Installation guide
+- Architecture diagram
+- Sample analysis of at least one GitHub repository
+- Explainability report
 - Dashboard screenshots
-- Short demo video (5–10 minutes)
+- 5–10 minute demonstration video
+
+---
+
+# Evaluation Rubric
+
+| Criteria | Points |
+|-----------|-------:|
+| API Integration (GitHub/GitLab) | 10 |
+| Repository Analysis Engine | 20 |
+| Scoring Methodology | 10 |
+| Explainability (XAI) | 20 |
+| Dashboard & Visualizations | 10 |
+| Report Generation | 10 |
+| Software Architecture & Extensibility | 10 |
+| AI Features | 5 |
+| Code Quality & Documentation | 5 |
+
+**Total: 100 Points**
 
 ---
 
@@ -558,10 +615,11 @@ Students must submit:
 
 A successful Git Repository Analyzer should:
 
-- Clone public and private repositories using a PAT.
-- Analyze source code across multiple quality dimensions.
-- Produce a weighted Repository Health Score out of 100.
-- Present findings in a clear, professional dashboard.
-- Offer actionable recommendations for improving the repository.
+- Analyze repositories entirely through GitHub/GitLab APIs without cloning.
+- Evaluate multiple dimensions of repository quality using recognized industry standards and best-practice frameworks.
+- Produce a transparent, weighted Repository Health Score.
+- Explain every score with supporting evidence, rule evaluations, and actionable recommendations.
+- Prioritize improvements based on impact and effort.
+- Present results in an intuitive dashboard suitable for developers, technical leads, and engineering managers.
 
-The goal is not only to detect problems but also to help developers understand **why** they matter and **how** to improve the overall quality, security, maintainability, and readiness of their software projects.
+**Remember:** The objective is not merely to *score* a repository, but to provide an **explainable engineering assessment** that helps users understand the current state of their software and guides them toward measurable improvements.
