@@ -1,24 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-require_once __DIR__ . '/config/database.php';
-
-$savedRepositoryUrls = [];
-
-try {
-    $pdo = db_connection();
-    $savedRepositoryUrls = $pdo->query(
-        'SELECT repo_url FROM repositories ORDER BY created_at DESC'
-    )->fetchAll(PDO::FETCH_COLUMN);
-    $savedRepositoryUrls = array_values(array_unique(array_filter(array_map(static function ($value) {
-        return trim((string) $value);
-    }, $savedRepositoryUrls))));
-} catch (Throwable $e) {
-    $savedRepositoryUrls = [];
-}
-?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -406,7 +386,7 @@ try {
 <div class="header-section">
     <div class="container">
         <h1><i class="fas fa-code-branch"></i> AI Git Repo Analyzer</h1>
-        <p>Submit a GitHub or GitLab repository to analyze its code quality, skills, and findings.</p>
+        <p>Submit a GitHub repository to analyze its code quality, skills, and findings.</p>
         <div class="header-actions">
             <a href="index.php" class="btn btn-light btn-sm">
                 <i class="fas fa-home"></i> Home
@@ -434,12 +414,12 @@ try {
         <div class="col-lg-4">
             <div class="card p-4 about-card">
                 <h2 class="h5 mb-3"><i class="fas fa-info-circle text-purple"></i> About this website </h2>
-                <p class="mb-3">AI Git Repo Analyzer helps you inspect a GitHub or GitLab repository and understand its code quality, detected skills, and potential improvement areas.</p>
+                <p class="mb-3">AI Git Repo Analyzer helps you inspect a GitHub repository and understand its code quality, detected skills, and potential improvement areas.</p>
                 <div class="row row-cols-1 g-3">
                     <div class="col">
                         <div class="p-3 border rounded bg-white">
                             <a href="#analyze-repository-section" class="btn btn-primary btn-sm mb-2">Analyze repositories</a>
-                            <p class="mb-0 small text-muted">Submit a repo URL and personal access token to run an AI-assisted review.</p>
+                            <p class="mb-0 small text-muted">Submit a repo URL and GitHub PAT to run an AI-assisted review.</p>
                         </div>
                     </div>
                     <div class="col">
@@ -475,43 +455,71 @@ try {
 
                 <form id="analyze-form">
                     <div class="mb-3">
-                        <label for="repo_url" class="form-label">Repository URL (GitHub or GitLab)</label>
+                        <label for="repo_url" class="form-label">GitHub Repository URL</label>
                         <input
                             type="url"
                             id="repo_url"
                             name="repo_url"
                             class="form-control"
                             list="saved-repository-urls"
-                            placeholder="https://github.com/owner/repository or https://gitlab.com/group/repository"
+                            placeholder="https://github.com/owner/repository"
                             required
                         >
                         <datalist id="saved-repository-urls">
-                            <?php foreach ($savedRepositoryUrls as $savedRepositoryUrl): ?>
-                                <option value="<?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>"></option>
-                            <?php endforeach; ?>
-                        </datalist>
+                                                            <option value="https://github.com/mohitagw15856/pm-claude-skills"></option>
+                                                            <option value="https://github.com/dceoy/speckit-agent-skills"></option>
+                                                            <option value="https://github.com/1SosukeAizen1/ai_review_agent"></option>
+                                                            <option value="https://github.com/1SosukeAizen1/Drive3"></option>
+                                                            <option value="https://github.com/atlaslakes/busyboys-app/"></option>
+                                                            <option value="https://github.com/atlaslakes/Slim-s"></option>
+                                                    </datalist>
                         <div class="form-check mt-2">
                             <input class="form-check-input" type="checkbox" value="1" id="remember_repo_url">
                             <label class="form-check-label" for="remember_repo_url">Remember this repository URL</label>
                         </div>
                         <div class="form-text">If checked, the last repository URL will be auto-filled next time.</div>
-                        <?php if (!empty($savedRepositoryUrls)): ?>
-                            <div class="mt-3">
-                                <div class="small fw-semibold mb-2">Saved Repository URLs</div>
+                                                    <div class="mt-3">
+                                <div class="small fw-semibold mb-2">Saved GitHub Repository URLs</div>
                                 <div class="d-flex flex-wrap gap-2">
-                                    <?php foreach ($savedRepositoryUrls as $savedRepositoryUrl): ?>
-                                        <button
+                                                                            <button
                                             type="button"
                                             class="btn btn-sm btn-outline-primary use-saved-repo-url"
-                                            data-url="<?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>"
+                                            data-url="https://github.com/mohitagw15856/pm-claude-skills"
                                         >
-                                            <?= htmlspecialchars($savedRepositoryUrl, ENT_QUOTES, 'UTF-8') ?>
-                                        </button>
-                                    <?php endforeach; ?>
-                                </div>
+                                            https://github.com/mohitagw15856/pm-claude-skills                                        </button>
+                                                                            <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="https://github.com/dceoy/speckit-agent-skills"
+                                        >
+                                            https://github.com/dceoy/speckit-agent-skills                                        </button>
+                                                                            <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="https://github.com/1SosukeAizen1/ai_review_agent"
+                                        >
+                                            https://github.com/1SosukeAizen1/ai_review_agent                                        </button>
+                                                                            <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="https://github.com/1SosukeAizen1/Drive3"
+                                        >
+                                            https://github.com/1SosukeAizen1/Drive3                                        </button>
+                                                                            <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="https://github.com/atlaslakes/busyboys-app/"
+                                        >
+                                            https://github.com/atlaslakes/busyboys-app/                                        </button>
+                                                                            <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-primary use-saved-repo-url"
+                                            data-url="https://github.com/atlaslakes/Slim-s"
+                                        >
+                                            https://github.com/atlaslakes/Slim-s                                        </button>
+                                                                    </div>
                             </div>
-                        <?php endif; ?>
-                    </div>
+                                            </div>
 
                     <div class="mb-3">
                         <label for="pat" class="form-label">Personal Access Token (PAT)</label>
@@ -523,7 +531,7 @@ try {
                             placeholder="ghp_..."
                             required
                         >
-                        <div class="form-text">Used only for API access — never stored in the database.</div>
+                        <div class="form-text">Used only for GitHub API access — never stored in the database.</div>
                     </div>
 
                     <div class="mb-3">
@@ -623,69 +631,6 @@ try {
                                             <label class="form-check-label" for="check_security_config"><strong>#10</strong> Security Header &amp; Config Auditor</label>
                                         </div>
                                         <a href="check_insecure_design.php?check_id=10" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <div class="small fw-semibold text-muted">Complexity Checks (Weight: 10%)</div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_avg" id="check_complexity_cyclomatic_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_cyclomatic_avg"><strong>#11</strong> Cyclomatic Complexity Average</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_max" id="check_complexity_cyclomatic_max" checked>
-                                        <label class="form-check-label" for="check_complexity_cyclomatic_max"><strong>#12</strong> Cyclomatic Complexity Maximum</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_avg" id="check_complexity_cognitive_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_cognitive_avg"><strong>#13</strong> Cognitive Complexity Average</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_max" id="check_complexity_cognitive_max" checked>
-                                        <label class="form-check-label" for="check_complexity_cognitive_max"><strong>#14</strong> Cognitive Complexity Maximum</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_avg" id="check_complexity_function_size_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_function_size_avg"><strong>#15</strong> Function Size Average</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_max" id="check_complexity_function_size_max" checked>
-                                        <label class="form-check-label" for="check_complexity_function_size_max"><strong>#16</strong> Function Size Maximum</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_avg" id="check_complexity_class_size_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_class_size_avg"><strong>#17</strong> Class Size Average</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_max" id="check_complexity_class_size_max" checked>
-                                        <label class="form-check-label" for="check_complexity_class_size_max"><strong>#18</strong> Class Size Maximum</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_avg" id="check_complexity_nesting_depth_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_nesting_depth_avg"><strong>#19</strong> Nesting Depth Average</label>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_max" id="check_complexity_nesting_depth_max" checked>
-                                        <label class="form-check-label" for="check_complexity_nesting_depth_max"><strong>#20</strong> Nesting Depth Maximum</label>
                                     </div>
                                 </div>
                             </div>
@@ -850,10 +795,8 @@ try {
         return String(value || '').trim();
     }
 
-    function isValidRepositoryUrl(value) {
-        return /^https?:\/\/(github\.com|gitlab\.com)\/.+\/.+/i.test(value)
-            || /^git@(github\.com|gitlab\.com):.+\/.+$/i.test(value)
-            || /^(github\.com|gitlab\.com)\/.+\/.+/i.test(value);
+    function isValidGitHubRepoUrl(value) {
+        return /^https?:\/\/github\.com\/[^\/]+\/[^\/]+\/?$/i.test(value);
     }
 
     function rememberRepoUrl(value) {
@@ -867,7 +810,7 @@ try {
             return;
         }
 
-        if (!isValidRepositoryUrl(repoUrl)) {
+        if (!isValidGitHubRepoUrl(repoUrl)) {
             return;
         }
 
@@ -924,7 +867,7 @@ try {
     function checkDetailIdFromName(name) {
         const text = String(name || '').toLowerCase();
 
-        const numMatch = text.match(/#\s*(20|1[0-9]|[1-9])/);
+        const numMatch = text.match(/#\s*(10|[1-9])/);
         if (numMatch && numMatch[1]) {
             return numMatch[1];
         }
@@ -967,10 +910,6 @@ try {
 
         if (scanId) {
             params.set('scan_id', String(scanId));
-        }
-
-        if (Number(checkId) > 10) {
-            return '';
         }
 
         return 'check_insecure_design.php?' + params.toString();
@@ -1092,17 +1031,7 @@ try {
             '#7 Dependency CVE Audit (OSV.dev)',
             '#8 License Compliance Scanner',
             '#9 Git History Risk Analysis',
-            '#10 Security Header & Config Auditor',
-            '#11 Cyclomatic Complexity Average',
-            '#12 Cyclomatic Complexity Maximum',
-            '#13 Cognitive Complexity Average',
-            '#14 Cognitive Complexity Maximum',
-            '#15 Function Size Average',
-            '#16 Function Size Maximum',
-            '#17 Class Size Average',
-            '#18 Class Size Maximum',
-            '#19 Nesting Depth Average',
-            '#20 Nesting Depth Maximum'
+            '#10 Security Header & Config Auditor'
         ];
 
         const checkMap = {};
@@ -1148,7 +1077,6 @@ try {
                         scan_id: String(data.scan_id || '')
                     }).toString()
                     : '';
-                const canOpenDetails = Number(checkId) <= 10;
 
                 const tileHtml =
                     `<div class="check-tile ${tileClass}">
@@ -1157,7 +1085,7 @@ try {
                         <span class="check-label">${esc(labelText)}</span>
                     </div>`;
 
-                if (detailsUrl && canOpenDetails) {
+                if (detailsUrl) {
                     checksGrid.append(
                         `<a class="check-tile-link check-details-trigger" href="${esc(detailsUrl)}" data-title="${esc(c.name || defaultName)}" title="Open check details">${tileHtml}</a>`
                     );
@@ -1181,17 +1109,7 @@ try {
             'dependency_cve': '#7 Dependency CVE Audit (OSV.dev)',
             'license_check': '#8 License Compliance Scanner',
             'git_history': '#9 Git History Risk Analysis',
-            'security_config': '#10 Security Header & Config Auditor',
-            'complexity_cyclomatic_avg': '#11 Cyclomatic Complexity Average',
-            'complexity_cyclomatic_max': '#12 Cyclomatic Complexity Maximum',
-            'complexity_cognitive_avg': '#13 Cognitive Complexity Average',
-            'complexity_cognitive_max': '#14 Cognitive Complexity Maximum',
-            'complexity_function_size_avg': '#15 Function Size Average',
-            'complexity_function_size_max': '#16 Function Size Maximum',
-            'complexity_class_size_avg': '#17 Class Size Average',
-            'complexity_class_size_max': '#18 Class Size Maximum',
-            'complexity_nesting_depth_avg': '#19 Nesting Depth Average',
-            'complexity_nesting_depth_max': '#20 Nesting Depth Maximum'
+            'security_config': '#10 Security Header & Config Auditor'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();

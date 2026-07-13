@@ -6,16 +6,17 @@ set_time_limit(120); // Allow up to 2 minutes for all API calls
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/github_helper.php';
-require_once __DIR__ . '/checks/check_secrets.php';
-require_once __DIR__ . '/checks/check_owasp.php';
-require_once __DIR__ . '/checks/check_dependencies.php';
-require_once __DIR__ . '/checks/check_complexity.php';
-require_once __DIR__ . '/checks/check_file_summary.php';
-require_once __DIR__ . '/checks/check_todos.php';
-require_once __DIR__ . '/checks/check_license.php';
-require_once __DIR__ . '/checks/check_git_history.php';
-require_once __DIR__ . '/checks/check_duplication.php';
-require_once __DIR__ . '/checks/check_security_config.php';
+require_once __DIR__ . '/checks/security/check_secrets.php';
+require_once __DIR__ . '/checks/security/check_owasp.php';
+require_once __DIR__ . '/checks/security/check_dependencies.php';
+require_once __DIR__ . '/checks/security/check_complexity.php';
+require_once __DIR__ . '/checks/security/check_file_summary.php';
+require_once __DIR__ . '/checks/security/check_todos.php';
+require_once __DIR__ . '/checks/security/check_license.php';
+require_once __DIR__ . '/checks/security/check_git_history.php';
+require_once __DIR__ . '/checks/security/check_duplication.php';
+require_once __DIR__ . '/checks/security/check_security_config.php';
+require_once __DIR__ . '/checks/complexity/check_complexity_metrics.php';
 
 header('Content-Type: application/json');
 
@@ -28,6 +29,18 @@ function ensureScanReportColumns(PDO $pdo): void
     }
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS selected_checks_json LONGTEXT NULL");
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS results_json LONGTEXT NULL");
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS check_runs (
+            id            INT AUTO_INCREMENT PRIMARY KEY,
+            scan_id       INT         NOT NULL,
+            check_name    VARCHAR(50) NOT NULL,
+            status        VARCHAR(20) NOT NULL DEFAULT 'clean',
+            finding_count INT         NOT NULL DEFAULT 0,
+            FOREIGN KEY (scan_id) REFERENCES scans(id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        )"
+    );
     $ensured = true;
 }
 
@@ -97,6 +110,16 @@ function getCheckLabel(string $checkId): string
         'license_check'    => '#8 License Compliance Scanner',
         'git_history'      => '#9 Git History Risk Analysis',
         'security_config'  => '#10 Security Header & Config Auditor',
+        'complexity_cyclomatic_avg' => '#11 Cyclomatic Complexity Average',
+        'complexity_cyclomatic_max' => '#12 Cyclomatic Complexity Maximum',
+        'complexity_cognitive_avg' => '#13 Cognitive Complexity Average',
+        'complexity_cognitive_max' => '#14 Cognitive Complexity Maximum',
+        'complexity_function_size_avg' => '#15 Function Size Average',
+        'complexity_function_size_max' => '#16 Function Size Maximum',
+        'complexity_class_size_avg' => '#17 Class Size Average',
+        'complexity_class_size_max' => '#18 Class Size Maximum',
+        'complexity_nesting_depth_avg' => '#19 Nesting Depth Average',
+        'complexity_nesting_depth_max' => '#20 Nesting Depth Maximum',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -134,6 +157,148 @@ function collectPatternHits(string $owner, string $repo, string $pat, array $fil
     return array_values(array_unique($hits));
 }
 
+function parseRepositoryRef(string $rawUrl): ?array
+{
+    $url = trim($rawUrl);
+    if ($url === '') {
+        return null;
+    }
+
+    // Support git remote style: git@github.com:owner/repo.git or git@gitlab.com:group/repo.git
+    if (preg_match('/^git@(github\.com|gitlab\.com):([^\/\s]+)\/([^\s]+?)(?:\.git)?$/i', $url, $m) === 1) {
+        $host = strtolower($m[1]);
+        return [
+            'provider' => $host === 'gitlab.com' ? 'gitlab' : 'github',
+            'owner' => $m[2],
+            'repo' => $m[3],
+        ];
+    }
+
+    // Support git remote style: https://gitlab.com/group/repo.git
+    if (preg_match('/^git@github\.com:([^\/]+)\/([^\s]+?)(?:\.git)?$/i', $url, $m) === 1) {
+        return ['provider' => 'github', 'owner' => $m[1], 'repo' => $m[2]];
+    }
+
+    // Support host-only URLs entered without scheme.
+    if (preg_match('/^(github\.com|gitlab\.com)\//i', $url) === 1) {
+        $url = 'https://' . $url;
+    }
+
+    $parts = parse_url($url);
+    if (!is_array($parts)) {
+        return null;
+    }
+
+    $host = strtolower((string) ($parts['host'] ?? ''));
+    if (!in_array($host, ['github.com', 'www.github.com', 'gitlab.com', 'www.gitlab.com'], true)) {
+        return null;
+    }
+
+    $path = trim((string) ($parts['path'] ?? ''), '/');
+    if ($path === '') {
+        return null;
+    }
+
+    $segments = array_values(array_filter(explode('/', $path), static fn($seg) => $seg !== ''));
+    if (count($segments) < 2) {
+        return null;
+    }
+
+    $provider = str_contains($host, 'gitlab') ? 'gitlab' : 'github';
+
+    if ($provider === 'gitlab') {
+        // GitLab paths can be nested groups. Repo is the last segment, owner/group is preceding path.
+        $repo = rawurldecode((string) end($segments));
+        $ownerSegments = array_slice($segments, 0, -1);
+        $owner = rawurldecode(implode('/', $ownerSegments));
+    } else {
+        $owner = rawurldecode($segments[0]);
+        $repo = rawurldecode($segments[1]);
+    }
+    $repo = preg_replace('/\.git$/i', '', $repo) ?? $repo;
+
+    if ($owner === '' || $repo === '') {
+        return null;
+    }
+
+    if ($provider === 'github') {
+        if (!preg_match('/^[A-Za-z0-9._-]+$/', $owner) || !preg_match('/^[A-Za-z0-9._-]+$/', $repo)) {
+            return null;
+        }
+    } else {
+        if (!preg_match('/^[A-Za-z0-9._\/-]+$/', $owner) || !preg_match('/^[A-Za-z0-9._-]+$/', $repo)) {
+            return null;
+        }
+    }
+
+    return ['provider' => $provider, 'owner' => $owner, 'repo' => $repo];
+}
+
+function canonicalRepositoryUrl(string $provider, string $owner, string $repo): string
+{
+    $host = $provider === 'gitlab' ? 'gitlab.com' : 'github.com';
+    return 'https://' . $host . '/' . $owner . '/' . $repo;
+}
+
+function fetchRepositoryMetadata(string $provider, string $owner, string $repo, string $pat): ?array
+{
+    if ($provider === 'gitlab') {
+        $projectPath = rawurlencode($owner . '/' . $repo);
+        $project = github_get('https://gitlab.com/api/v4/projects/' . $projectPath, $pat, 30);
+        if ($project === null) {
+            return null;
+        }
+
+        $fullName = (string) ($project['path_with_namespace'] ?? ($owner . '/' . $repo));
+        $description = trim((string) ($project['description'] ?? ''));
+        $defaultBranch = (string) ($project['default_branch'] ?? 'main');
+        $stars = (int) ($project['star_count'] ?? 0);
+        $forks = (int) ($project['forks_count'] ?? 0);
+
+        $languages = github_get_languages($owner, $repo, $pat);
+        $primaryLanguage = 'Unknown';
+        if (!empty($languages)) {
+            arsort($languages);
+            $primaryLanguage = (string) array_key_first($languages);
+        }
+
+        return [
+            'id' => $project['id'] ?? null,
+            'name' => $project['name'] ?? $repo,
+            'full_name' => $fullName,
+            'description' => $description,
+            'language' => $primaryLanguage,
+            'owner' => $owner,
+            'stars' => $stars,
+            'forks' => $forks,
+            'watchers' => $stars,
+            'license' => null,
+            'default_branch' => $defaultBranch,
+            'platform' => 'GitLab',
+        ];
+    }
+
+    $repoPayload = github_get('https://api.github.com/repos/' . $owner . '/' . $repo, $pat, 30);
+    if ($repoPayload === null) {
+        return null;
+    }
+
+    return [
+        'id' => $repoPayload['id'] ?? null,
+        'name' => $repoPayload['name'] ?? $repo,
+        'full_name' => $repoPayload['full_name'] ?? ($owner . '/' . $repo),
+        'description' => trim((string) ($repoPayload['description'] ?? '')),
+        'language' => $repoPayload['language'] ?? 'Unknown',
+        'owner' => $owner,
+        'stars' => (int) ($repoPayload['stargazers_count'] ?? 0),
+        'forks' => (int) ($repoPayload['forks_count'] ?? 0),
+        'watchers' => (int) ($repoPayload['watchers_count'] ?? 0),
+        'license' => $repoPayload['license']['name'] ?? null,
+        'default_branch' => $repoPayload['default_branch'] ?? 'HEAD',
+        'platform' => 'GitHub',
+    ];
+}
+
 // ---------------------------------------------------------------------------
 // Request handling
 // ---------------------------------------------------------------------------
@@ -159,34 +324,47 @@ if ($repoUrl === '' || $pat === '') {
     exit;
 }
 
-if (!preg_match('#^https?://github\.com/([^/]+)/([^/]+?)(?:\.git)?/?$#i', $repoUrl, $matches)) {
+$repoRef = parseRepositoryRef($repoUrl);
+if ($repoRef === null) {
     http_response_code(422);
     echo json_encode(['error' => 'Provide a valid GitHub repository URL.']);
     exit;
 }
 
-$owner = $matches[1];
-$repo  = $matches[2];
+$provider = $repoRef['provider'];
+$owner = $repoRef['owner'];
+$repo  = $repoRef['repo'];
+
+// Persist canonical root URL so /tree/... and root URLs map to the same repository record.
+$repoUrl = canonicalRepositoryUrl($provider, $owner, $repo);
+
+repo_set_context([
+    'provider' => $provider,
+    'owner' => $owner,
+    'repo' => $repo,
+    'pat' => $pat,
+]);
 
 // ---------------------------------------------------------------------------
 // Fetch repository metadata
 // ---------------------------------------------------------------------------
-$repoPayload = github_get("https://api.github.com/repos/{$owner}/{$repo}", $pat, 30);
+$repoMetadata = fetchRepositoryMetadata($provider, $owner, $repo, $pat);
 
-if ($repoPayload === null) {
+if ($repoMetadata === null) {
     http_response_code(401);
-    echo json_encode(['error' => 'GitHub API rejected the request. Verify the URL and PAT permissions.']);
+    echo json_encode(['error' => 'Repository API rejected the request. Verify the URL and token permissions.']);
     exit;
 }
 
-$repoName        = $repoPayload['full_name']               ?? "{$owner}/{$repo}";
-$repoDescription = trim((string) ($repoPayload['description'] ?? ''));
-$repoLanguage    = $repoPayload['language']                ?? 'Unknown';
-$repoLicense     = $repoPayload['license']['name']         ?? null;
-$repoStars       = (int) ($repoPayload['stargazers_count'] ?? 0);
-$repoForks       = (int) ($repoPayload['forks_count']      ?? 0);
-$repoWatchers    = (int) ($repoPayload['watchers_count']   ?? 0);
-$defaultBranch   = $repoPayload['default_branch']          ?? 'HEAD';
+$repoName        = $repoMetadata['full_name'] ?? ($owner . '/' . $repo);
+$repoDescription = (string) ($repoMetadata['description'] ?? '');
+$repoLanguage    = $repoMetadata['language'] ?? 'Unknown';
+$repoLicense     = $repoMetadata['license'] ?? null;
+$repoStars       = (int) ($repoMetadata['stars'] ?? 0);
+$repoForks       = (int) ($repoMetadata['forks'] ?? 0);
+$repoWatchers    = (int) ($repoMetadata['watchers'] ?? 0);
+$defaultBranch   = (string) ($repoMetadata['default_branch'] ?? 'HEAD');
+$platformName    = (string) ($repoMetadata['platform'] ?? ($provider === 'gitlab' ? 'GitLab' : 'GitHub'));
 
 // ---------------------------------------------------------------------------
 // Fetch tree and language breakdown (shared across checks)
@@ -207,6 +385,9 @@ if (!is_array($rawChecks) || empty($rawChecks)) {
     $rawChecks = [
         'dependency_risk', 'hardening', 'performance', 'maintainability', 'code_intelligence',
         'secret_scanner', 'dependency_cve', 'license_check', 'git_history', 'security_config',
+        'complexity_cyclomatic_avg', 'complexity_cyclomatic_max', 'complexity_cognitive_avg', 'complexity_cognitive_max',
+        'complexity_function_size_avg', 'complexity_function_size_max', 'complexity_class_size_avg', 'complexity_class_size_max',
+        'complexity_nesting_depth_avg', 'complexity_nesting_depth_max',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -236,17 +417,43 @@ function run_check(string $name, callable $fn): array
     ];
 }
 
+function merge_check_outputs(array ...$outputs): array
+{
+    $merged = ['findings' => [], 'recommendations' => [], 'skills' => []];
+    foreach ($outputs as $out) {
+        $merged['findings'] = array_merge($merged['findings'], $out['findings'] ?? []);
+        $merged['recommendations'] = array_merge($merged['recommendations'], $out['recommendations'] ?? []);
+        $merged['skills'] = array_merge($merged['skills'], $out['skills'] ?? []);
+    }
+    return $merged;
+}
+
 $newCheckMap = [
     'dependency_risk'  => ['#1 Insecure Design and Logic Flaws',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'hardening'        => ['#2 Vulnerable and Outdated Dependencies', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'performance'      => ['#3 CI/CD and Software Integrity Risks',   fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
     'maintainability'  => ['#4 Logging and Monitoring Coverage',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
-    'code_intelligence'=> ['#5 Code Quality, Performance and Repo Health', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'code_intelligence'=> ['#5 Code Quality, Performance and Repo Health', fn() => merge_check_outputs(
+        check_file_summary($tree, $languages),
+        check_complexity($owner, $repo, $pat, $sourceFiles),
+        check_duplication($owner, $repo, $pat, $sourceFiles),
+        check_todos($owner, $repo, $pat, $sourceFiles)
+    )],
     'secret_scanner'  => ['#6 Secret & Credential Scanner',   fn() => check_secrets($owner, $repo, $pat, $tree, $sourceFiles)],
     'dependency_cve'  => ['#7 Dependency CVE Audit (OSV.dev)',   fn() => check_dependencies($owner, $repo, $pat, $tree)],
     'license_check'   => ['#8 License Compliance Scanner',          fn() => check_license($owner, $repo, $pat, $tree, $repoLicense)],
     'git_history'     => ['#9 Git History Risk Analysis',      fn() => check_git_history($owner, $repo, $pat)],
     'security_config' => ['#10 Security Header & Config Auditor',  fn() => check_security_config($owner, $repo, $pat, $tree)],
+    'complexity_cyclomatic_avg' => ['#11 Cyclomatic Complexity Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_cyclomatic_avg')],
+    'complexity_cyclomatic_max' => ['#12 Cyclomatic Complexity Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_cyclomatic_max')],
+    'complexity_cognitive_avg' => ['#13 Cognitive Complexity Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_cognitive_avg')],
+    'complexity_cognitive_max' => ['#14 Cognitive Complexity Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_cognitive_max')],
+    'complexity_function_size_avg' => ['#15 Function Size Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_function_size_avg')],
+    'complexity_function_size_max' => ['#16 Function Size Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_function_size_max')],
+    'complexity_class_size_avg' => ['#17 Class Size Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_class_size_avg')],
+    'complexity_class_size_max' => ['#18 Class Size Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_class_size_max')],
+    'complexity_nesting_depth_avg' => ['#19 Nesting Depth Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_nesting_depth_avg')],
+    'complexity_nesting_depth_max' => ['#20 Nesting Depth Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_nesting_depth_max')],
 ];
 
 foreach ($selectedChecks as $checkId) {
@@ -260,6 +467,36 @@ foreach ($selectedChecks as $checkId) {
     $allRecommendations   = array_merge($allRecommendations, $r['recommendations']);
     $allSkills            = array_merge($allSkills, $r['skills']);
 }
+
+if (empty($allSkills) && !empty($languages)) {
+    $langTotal = array_sum(array_values($languages));
+    foreach ($languages as $lang => $bytes) {
+        $pct = $langTotal > 0 ? round(($bytes / $langTotal) * 100) : 0;
+        $allSkills[] = [
+            'skill_name' => (string) $lang,
+            'proficiency_level' => $pct >= 50 ? 'Primary Language' : ($pct >= 20 ? 'Secondary Language' : 'Minor Language'),
+            'risk_level' => 'Low',
+        ];
+    }
+}
+
+$skillsByKey = [];
+foreach ($allSkills as $s) {
+    $name = trim((string) ($s['skill_name'] ?? ''));
+    if ($name === '') {
+        continue;
+    }
+    $key = strtolower($name);
+    if (isset($skillsByKey[$key])) {
+        continue;
+    }
+    $skillsByKey[$key] = [
+        'skill_name' => $name,
+        'proficiency_level' => (string) ($s['proficiency_level'] ?? 'Intermediate'),
+        'risk_level' => (string) ($s['risk_level'] ?? 'Low'),
+    ];
+}
+$allSkills = array_values($skillsByKey);
 
 // PAT no longer needed — clear from memory
 $pat = '';
@@ -295,7 +532,7 @@ try {
     $pdo->prepare(
         'INSERT INTO repositories (repo_url, platform) VALUES (:url, :platform)
          ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id), platform = VALUES(platform)'
-    )->execute([':url' => $repoUrl, ':platform' => 'GitHub']);
+    )->execute([':url' => $repoUrl, ':platform' => $platformName]);
     $repositoryId = (int) $pdo->lastInsertId();
 
     $pdo->prepare(
@@ -324,17 +561,11 @@ try {
         ]);
     }
 
-    $seenSkills = [];
     $skillStmt  = $pdo->prepare(
         'INSERT INTO skills (scan_id, skill_name, proficiency_level, risk_level)
          VALUES (:scan_id, :name, :level, :risk)'
     );
     foreach ($allSkills as $s) {
-        $key = strtolower($s['skill_name']);
-        if (isset($seenSkills[$key])) {
-            continue;
-        }
-        $seenSkills[$key] = true;
         $skillStmt->execute([
             ':scan_id' => $scanId,
             ':name'    => $s['skill_name'],
@@ -384,8 +615,8 @@ try {
             'download' => 'api/report.php?scan_id=' . $scanId . '&download=1&format=html',
         ],
         'repository'      => [
-            'id'          => $repoPayload['id']   ?? null,
-            'name'        => $repoPayload['name'] ?? $repoName,
+            'id'          => $repoMetadata['id']   ?? null,
+            'name'        => $repoMetadata['name'] ?? $repoName,
             'full_name'   => $repoName,
             'description' => $repoDescription,
             'language'    => $repoLanguage,
@@ -393,6 +624,7 @@ try {
             'stars'       => $repoStars,
             'forks'       => $repoForks,
             'watchers'    => $repoWatchers,
+            'platform'    => $platformName,
         ],
         'scan'            => ['summary_score' => $overallScore],
         'selected_checks' => $selectedChecks,

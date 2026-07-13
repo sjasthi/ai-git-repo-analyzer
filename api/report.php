@@ -13,6 +13,18 @@ function ensureScanReportColumns(PDO $pdo): void
 
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS selected_checks_json LONGTEXT NULL");
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS results_json LONGTEXT NULL");
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS check_runs (
+            id            INT AUTO_INCREMENT PRIMARY KEY,
+            scan_id       INT         NOT NULL,
+            check_name    VARCHAR(50) NOT NULL,
+            status        VARCHAR(20) NOT NULL DEFAULT 'clean',
+            finding_count INT         NOT NULL DEFAULT 0,
+            FOREIGN KEY (scan_id) REFERENCES scans(id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        )"
+    );
     $ensured = true;
 }
 
@@ -56,7 +68,7 @@ function checkDetailIdFromName(string $checkName): ?string
 {
     $normalized = strtolower(trim($checkName));
 
-    if (preg_match('/#\s*(10|[1-9])/', $normalized, $numberMatch) === 1) {
+    if (preg_match('/#\s*(20|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
         return (string) $numberMatch[1];
     }
 
@@ -71,6 +83,16 @@ function checkDetailIdFromName(string $checkName): ?string
         '8' => '/#?8\s*license compliance scanner|license compliance/i',
         '9' => '/#?9\s*git history risk analysis|git history risk/i',
         '10' => '/#?10\s*security header\s*&\s*config auditor|security header.*config auditor/i',
+        '11' => '/#?11\s*cyclomatic complexity average|cyclomatic complexity average/i',
+        '12' => '/#?12\s*cyclomatic complexity maximum|cyclomatic complexity maximum/i',
+        '13' => '/#?13\s*cognitive complexity average|cognitive complexity average/i',
+        '14' => '/#?14\s*cognitive complexity maximum|cognitive complexity maximum/i',
+        '15' => '/#?15\s*function size average|function size average/i',
+        '16' => '/#?16\s*function size maximum|function size maximum/i',
+        '17' => '/#?17\s*class size average|class size average/i',
+        '18' => '/#?18\s*class size maximum|class size maximum/i',
+        '19' => '/#?19\s*nesting depth average|nesting depth average/i',
+        '20' => '/#?20\s*nesting depth maximum|nesting depth maximum/i',
     ];
 
     foreach ($patterns as $checkId => $pattern) {
@@ -169,6 +191,16 @@ try {
         'license_check'    => '#8 License Compliance Scanner',
         'git_history'      => '#9 Git History Risk Analysis',
         'security_config'  => '#10 Security Header & Config Auditor',
+        'complexity_cyclomatic_avg' => '#11 Cyclomatic Complexity Average',
+        'complexity_cyclomatic_max' => '#12 Cyclomatic Complexity Maximum',
+        'complexity_cognitive_avg' => '#13 Cognitive Complexity Average',
+        'complexity_cognitive_max' => '#14 Cognitive Complexity Maximum',
+        'complexity_function_size_avg' => '#15 Function Size Average',
+        'complexity_function_size_max' => '#16 Function Size Maximum',
+        'complexity_class_size_avg' => '#17 Class Size Average',
+        'complexity_class_size_max' => '#18 Class Size Maximum',
+        'complexity_nesting_depth_avg' => '#19 Nesting Depth Average',
+        'complexity_nesting_depth_max' => '#20 Nesting Depth Maximum',
     ];
 
     $selectedCheckLabels = [];
@@ -189,7 +221,7 @@ try {
     foreach ($checkLabels as $id => $label) {
         $labelRaw = preg_replace('/\s*\([^)]*\)\s*$/', '', $label);
         $labelCheckId = null;
-        if (preg_match('/#\s*(10|[1-9])/', $label, $numberMatch) === 1) {
+        if (preg_match('/#\s*(20|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
             $labelCheckId = (string) $numberMatch[1];
         }
 
@@ -360,7 +392,7 @@ try {
             $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
             $detailsUrl = '';
             $checkId = checkDetailIdFromName($checkNameRaw);
-            if ($checkId !== null) {
+            if ($checkId !== null && (int) $checkId <= 10) {
                 $detailsUrl = absoluteCheckDetailsUrl([
                     'check_id' => $checkId,
                     'name' => $checkNameRaw,

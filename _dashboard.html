@@ -1,40 +1,4 @@
-<?php
-
-declare(strict_types=1);
-
-require_once __DIR__ . '/config/database.php';
-
-try {
-    $pdo = db_connection();
-
-    $repositoryCount = (int) $pdo->query('SELECT COUNT(*) FROM repositories')->fetchColumn();
-    $scanCount = (int) $pdo->query('SELECT COUNT(*) FROM scans')->fetchColumn();
-    $findingCount = (int) $pdo->query('SELECT COUNT(*) FROM findings')->fetchColumn();
-    $skillCount = (int) $pdo->query('SELECT COUNT(*) FROM skills')->fetchColumn();
-    $recommendationCount = (int) $pdo->query('SELECT COUNT(*) FROM recommendations')->fetchColumn();
-    $averageScore = $pdo->query('SELECT AVG(summary_score) FROM scans')->fetchColumn();
-    $averageScoreText = $averageScore !== false ? number_format((float) $averageScore, 0) : '-';
-
-    $recentScansStmt = $pdo->query(
-        'SELECT s.id, s.scan_date, s.summary_score, s.total_findings, s.total_skills, r.repo_url
-         FROM scans s
-         JOIN repositories r ON s.repository_id = r.id
-         ORDER BY s.scan_date DESC
-         LIMIT 6'
-    );
-    $recentScans = $recentScansStmt->fetchAll();
-    $latestScoreText = !empty($recentScans) && $recentScans[0]['summary_score'] !== null
-        ? (string) ((int) $recentScans[0]['summary_score'])
-        : '-';
-} catch (Throwable $e) {
-    $errorMessage = $e->getMessage();
-    $repositoryCount = $scanCount = $findingCount = $skillCount = $recommendationCount = 0;
-    $averageScoreText = '-';
-    $latestScoreText = '-';
-    $recentScans = [];
-}
-?>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -284,19 +248,19 @@ try {
                     <div class="overview-grid">
                         <div class="summary-card">
                             <small>Total Repositories</small>
-                            <strong id="summary-repositories"><?= $repositoryCount ?></strong>
+                            <strong id="summary-repositories">6</strong>
                         </div>
                         <div class="summary-card">
                             <small>Total Scans</small>
-                            <strong id="summary-scans"><?= $scanCount ?></strong>
+                            <strong id="summary-scans">22</strong>
                         </div>
                         <div class="summary-card">
                             <small>Latest Score</small>
-                            <strong id="summary-latest-score"><?= htmlspecialchars($latestScoreText, ENT_QUOTES, 'UTF-8') ?></strong>
+                            <strong id="summary-latest-score">53</strong>
                         </div>
                         <div class="summary-card">
                             <small>Average Score</small>
-                            <strong id="summary-average-score"><?= $averageScoreText ?></strong>
+                            <strong id="summary-average-score">74</strong>
                         </div>
                     </div>
                 </div>
@@ -305,11 +269,11 @@ try {
                 <div class="card p-4 stat-card">
                     <strong>Results Totals</strong>
                     <small>Findings</small>
-                    <div id="summary-findings" class="mb-3"><?= $findingCount ?></div>
+                    <div id="summary-findings" class="mb-3">208</div>
                     <small>Skills</small>
-                    <div id="summary-skills" class="mb-3"><?= $skillCount ?></div>
+                    <div id="summary-skills" class="mb-3">3213</div>
                     <small>Recommendations</small>
-                    <div id="summary-recommendations"><?= $recommendationCount ?></div>
+                    <div id="summary-recommendations">163</div>
                 </div>
             </div>
         </div>
@@ -319,8 +283,7 @@ try {
                 <h2>Recent Scan History</h2>
                 <span id="summary-last-updated" class="label-pill label-primary">Latest 6 entries</span>
             </div>
-            <?php if (!empty($recentScans)): ?>
-                <div id="recent-scans-table-wrap" class="table-responsive">
+                            <div id="recent-scans-table-wrap" class="table-responsive">
                     <table class="table align-middle">
                         <thead>
                             <tr>
@@ -334,38 +297,113 @@ try {
                             </tr>
                         </thead>
                         <tbody id="recent-scans-body">
-                            <?php foreach ($recentScans as $scan): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($scan['repo_url'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($scan['scan_date'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars((string) $scan['summary_score'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars((string) $scan['total_findings'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars((string) $scan['total_skills'], ENT_QUOTES, 'UTF-8') ?></td>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:57:26</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
                                     <td>
-                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                        <a href="api/report.php?scan_id=23" target="_blank" class="btn btn-sm btn-outline-success mb-1">
                                             <i class="fas fa-link"></i> Summary URL
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="<?= htmlspecialchars('api/report.php?scan_id=' . (int) $scan['id'] . '&download=1&format=html', ENT_QUOTES, 'UTF-8') ?>" target="_blank" class="btn btn-sm btn-success mb-1">
+                                        <a href="api/report.php?scan_id=23&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
                                             <i class="fas fa-download"></i> Download File
                                         </a>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:53:12</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=22" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=22&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
+                                </tr>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:52:29</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=21" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=21&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
+                                </tr>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:48:37</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=20" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=20&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
+                                </tr>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:44:48</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=19" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=19&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
+                                </tr>
+                                                            <tr>
+                                    <td>https://github.com/mohitagw15856/pm-claude-skills</td>
+                                    <td>2026-07-06 19:42:17</td>
+                                    <td>53</td>
+                                    <td>18</td>
+                                    <td>454</td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=18" target="_blank" class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="fas fa-link"></i> Summary URL
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="api/report.php?scan_id=18&amp;download=1&amp;format=html" target="_blank" class="btn btn-sm btn-success mb-1">
+                                            <i class="fas fa-download"></i> Download File
+                                        </a>
+                                    </td>
+                                </tr>
+                                                    </tbody>
                     </table>
                 </div>
                 <p id="recent-scans-empty" class="text-muted d-none">No scan history is available yet. Run an analysis from the home page to populate the dashboard.</p>
-            <?php else: ?>
-                <p id="recent-scans-empty" class="text-muted">No scan history is available yet. Run an analysis from the home page to populate the dashboard.</p>
-                <div id="recent-scans-table-wrap" class="table-responsive d-none">
-                    <table class="table align-middle">
-                        <tbody id="recent-scans-body"></tbody>
-                    </table>
-                </div>
-            <?php endif; ?>
-        </div>
+                    </div>
 
         <div class="row">
             <div class="col-md-6">
