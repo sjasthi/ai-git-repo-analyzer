@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/database.php';
 
 $checkIdRaw = trim((string) ($_GET['check_id'] ?? '1'));
-$checkId = preg_match('/^(10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
+$checkId = preg_match('/^(30|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
 $checkNameFromQuery = trim((string) ($_GET['name'] ?? ''));
 $statusRaw = strtolower(trim((string) ($_GET['status'] ?? '')));
 $countRaw = isset($_GET['count']) ? (int) $_GET['count'] : null;
@@ -192,6 +192,326 @@ $checkContent = [
         ],
         'why' => 'Config weaknesses are high-impact because they can affect every request and endpoint globally.',
     ],
+    '11' => [
+        'title' => '#11 Cyclomatic Complexity Average',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check evaluates the average branching complexity across detected functions.',
+        'looks_for' => [
+            'Average decision-path complexity above safe baseline.',
+            'Branch-heavy methods that are harder to test.',
+            'Growing complexity trend across core modules.',
+        ],
+        'recommendations' => [
+            'Reduce branch chains with guard clauses and early returns.',
+            'Split complex methods into smaller focused units.',
+            'Track complexity average in CI over time.',
+        ],
+        'why' => 'High average cyclomatic complexity increases defect risk and testing effort.',
+    ],
+    '12' => [
+        'title' => '#12 Cyclomatic Complexity Maximum',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check highlights worst-case cyclomatic hotspots in the repository.',
+        'looks_for' => [
+            'Outlier functions with very high branch counts.',
+            'Single-method hotspots likely to accumulate regressions.',
+            'Paths that are difficult to reason about safely.',
+        ],
+        'recommendations' => [
+            'Prioritize refactoring of top cyclomatic hotspots.',
+            'Move conditional logic into dedicated helper strategies.',
+            'Set hard threshold gates for max cyclomatic score.',
+        ],
+        'why' => 'Maximum complexity hotspots are common failure points during changes.',
+    ],
+    '13' => [
+        'title' => '#13 Cognitive Complexity Average',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check estimates how difficult the average method is to understand.',
+        'looks_for' => [
+            'Nested and chained logic increasing mental load.',
+            'Complexity patterns that slow code reviews.',
+            'Average readability decline in core files.',
+        ],
+        'recommendations' => [
+            'Flatten nested logic and simplify conditional flows.',
+            'Prefer explicit naming and smaller routines.',
+            'Continuously monitor average cognitive complexity in CI.',
+        ],
+        'why' => 'Higher cognitive complexity reduces maintainability and increases review misses.',
+    ],
+    '14' => [
+        'title' => '#14 Cognitive Complexity Maximum',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check identifies the most difficult methods to reason about.',
+        'looks_for' => [
+            'Deep nesting and heavy branching in single routines.',
+            'Control flow that obscures intent and edge cases.',
+            'Methods requiring disproportionate review effort.',
+        ],
+        'recommendations' => [
+            'Refactor maximum cognitive hotspots into clear subroutines.',
+            'Replace deeply nested branches with composed flows.',
+            'Use cognitive thresholds as release quality gates.',
+        ],
+        'why' => 'Extreme cognitive complexity is strongly associated with fragile code areas.',
+    ],
+    '15' => [
+        'title' => '#15 Function Size Average',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check tracks the average function size (LOC) across source files.',
+        'looks_for' => [
+            'Functions becoming too broad in responsibility.',
+            'Rising average function LOC over time.',
+            'Long routines that reduce readability and testability.',
+        ],
+        'recommendations' => [
+            'Extract repeated or secondary logic into helper methods.',
+            'Align each function to a single responsibility.',
+            'Set average LOC targets per module.',
+        ],
+        'why' => 'Smaller functions are easier to test, review, and maintain.',
+    ],
+    '16' => [
+        'title' => '#16 Function Size Maximum',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check detects oversized function outliers that pose maintenance risk.',
+        'looks_for' => [
+            'Very large methods with mixed concerns.',
+            'Functions that require broad context to modify safely.',
+            'Outlier LOC hotspots in critical files.',
+        ],
+        'recommendations' => [
+            'Break up oversized functions into cohesive smaller units.',
+            'Introduce internal helpers for repeated sequences.',
+            'Fail CI when max size exceeds agreed limits.',
+        ],
+        'why' => 'Large function outliers are a major source of hidden regressions.',
+    ],
+    '17' => [
+        'title' => '#17 Class Size Average',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check monitors average class size to control cohesion drift.',
+        'looks_for' => [
+            'Average class growth beyond maintainable boundaries.',
+            'Increasing responsibilities per class.',
+            'Signs of bloated abstraction layers.',
+        ],
+        'recommendations' => [
+            'Split classes by domain boundaries and responsibilities.',
+            'Prefer composition over centralizing logic into one class.',
+            'Review class-size trends in architecture checks.',
+        ],
+        'why' => 'Lower average class size helps preserve modular architecture and clarity.',
+    ],
+    '18' => [
+        'title' => '#18 Class Size Maximum',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check identifies very large class outliers (god classes).',
+        'looks_for' => [
+            'Classes with excessive LOC and broad responsibilities.',
+            'Cross-cutting logic concentrated into one type.',
+            'Hotspots hard to test and reason about.',
+        ],
+        'recommendations' => [
+            'Refactor god classes into focused collaborators.',
+            'Separate state management from behavior-rich services.',
+            'Set maximum class-size thresholds and enforce in CI.',
+        ],
+        'why' => 'Large class outliers reduce cohesion and slow safe code evolution.',
+    ],
+    '19' => [
+        'title' => '#19 Nesting Depth Average',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check tracks average nesting depth in function control flow.',
+        'looks_for' => [
+            'Deeply nested if/loop constructs across methods.',
+            'Average nesting growth that hurts readability.',
+            'Control flow structures prone to logical mistakes.',
+        ],
+        'recommendations' => [
+            'Use guard clauses to flatten nested branches.',
+            'Extract deeply nested blocks into named methods.',
+            'Monitor average nesting depth in quality gates.',
+        ],
+        'why' => 'Shallow nesting improves comprehension and lowers bug probability.',
+    ],
+    '20' => [
+        'title' => '#20 Nesting Depth Maximum',
+        'tag' => 'Complexity Metrics',
+        'about' => 'This check highlights the deepest nesting hotspots in the codebase.',
+        'looks_for' => [
+            'Extreme nesting in individual methods.',
+            'Complex blocks with multiple nested branches.',
+            'Hard-to-debug hotspots with dense control flow.',
+        ],
+        'recommendations' => [
+            'Refactor deepest nested paths first.',
+            'Replace nested branching with explicit strategy decomposition.',
+            'Add max nesting depth limits to CI policy.',
+        ],
+        'why' => 'Maximum nesting hotspots are difficult to maintain and error-prone.',
+    ],
+    '21' => [
+        'title' => '#21 SonarQube Bugs and Reliability Issues',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check highlights reliability risks and bug-prone implementation patterns that should be fixed first.',
+        'looks_for' => [
+            'High branching hotspots likely to hide edge-case bugs.',
+            'Complex control flow that increases defect probability.',
+            'Large methods where reliability regressions are harder to detect.',
+        ],
+        'recommendations' => [
+            'Refactor high-risk methods into smaller, testable units.',
+            'Add targeted tests for branch-heavy logic and edge cases.',
+            'Set quality gates to block new high-severity reliability issues.',
+        ],
+        'why' => 'Reliability issues directly affect correctness and production stability.',
+    ],
+    '22' => [
+        'title' => '#22 SonarQube Code Smells and Maintainability Issues',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check tracks maintainability concerns that make code harder to evolve safely.',
+        'looks_for' => [
+            'Cognitive complexity hotspots.',
+            'Readability issues and inconsistent structure.',
+            'Patterns that increase long-term maintenance cost.',
+        ],
+        'recommendations' => [
+            'Reduce cognitive load with clearer control flow and naming.',
+            'Break up large routines and repeated decision chains.',
+            'Address maintainability findings in each sprint.',
+        ],
+        'why' => 'Code smells are leading indicators of future defects and delivery slowdown.',
+    ],
+    '23' => [
+        'title' => '#23 SonarQube Duplicated Code Detection',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check focuses on duplicate logic that increases change risk and inconsistency.',
+        'looks_for' => [
+            'Repeated blocks across multiple files.',
+            'Copy-paste logic with slight variations.',
+            'Parallel fixes required for the same bug class.',
+        ],
+        'recommendations' => [
+            'Extract shared utilities or abstractions for repeated logic.',
+            'Consolidate near-duplicate routines into a single implementation.',
+            'Track duplication trend as part of quality gate checks.',
+        ],
+        'why' => 'Duplication amplifies maintenance effort and bug propagation risk.',
+    ],
+    '24' => [
+        'title' => '#24 SonarQube Cyclomatic and Cognitive Complexity Limits',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check enforces complexity boundaries to keep code understandable and testable.',
+        'looks_for' => [
+            'Methods exceeding cyclomatic complexity limits.',
+            'Nested control flows with high cognitive load.',
+            'Hotspots requiring disproportionate testing effort.',
+        ],
+        'recommendations' => [
+            'Apply guard clauses and split complex branches.',
+            'Refactor deeply nested methods into focused helpers.',
+            'Define and enforce complexity thresholds in CI.',
+        ],
+        'why' => 'Complex code raises defect density and slows safe delivery.',
+    ],
+    '25' => [
+        'title' => '#25 SonarQube Function and Class Size Control',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check keeps method and class sizes within manageable limits.',
+        'looks_for' => [
+            'Oversized methods with multiple responsibilities.',
+            'God classes with weak cohesion.',
+            'Large files that hinder review quality.',
+        ],
+        'recommendations' => [
+            'Extract focused methods and simplify ownership boundaries.',
+            'Split large classes by domain responsibility.',
+            'Use size thresholds as quality gate criteria.',
+        ],
+        'why' => 'Smaller units improve readability, testability, and change safety.',
+    ],
+    '26' => [
+        'title' => '#26 SonarQube Naming Convention and Readability Checks',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check evaluates clarity and consistency of naming and code readability.',
+        'looks_for' => [
+            'Ambiguous naming and inconsistent conventions.',
+            'Readability issues that obscure intent.',
+            'Structure that increases onboarding and review time.',
+        ],
+        'recommendations' => [
+            'Adopt repository-wide naming conventions and enforce them.',
+            'Prioritize readability in refactoring and code review.',
+            'Document style rules and automate linting where possible.',
+        ],
+        'why' => 'Readable code reduces misunderstandings and review defects.',
+    ],
+    '27' => [
+        'title' => '#27 SonarQube Dead or Commented-Out Code Detection',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check flags stale and inactive code paths that increase noise and risk.',
+        'looks_for' => [
+            'Long-lived TODO/FIXME placeholders.',
+            'Commented-out blocks retained in source files.',
+            'Stale code paths with no active ownership.',
+        ],
+        'recommendations' => [
+            'Delete obsolete code and revive only when needed.',
+            'Convert important TODOs into tracked issues.',
+            'Enforce cleanup as part of feature completion.',
+        ],
+        'why' => 'Dead code increases confusion and can hide accidental vulnerabilities.',
+    ],
+    '28' => [
+        'title' => '#28 SonarQube Error Handling and Defensive Coding Patterns',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check highlights weak error-handling paths and fragile defensive coding.',
+        'looks_for' => [
+            'Deeply nested flows with limited guard clauses.',
+            'Weak fallback or boundary handling in critical paths.',
+            'Patterns that make failure behavior unclear.',
+        ],
+        'recommendations' => [
+            'Use explicit guards and fail-fast patterns where appropriate.',
+            'Standardize error handling for expected failure modes.',
+            'Add tests for invalid input and boundary conditions.',
+        ],
+        'why' => 'Defensive coding reduces unexpected runtime behavior and incident risk.',
+    ],
+    '29' => [
+        'title' => '#29 SonarQube Technical Debt and Remediation Tracking',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check tracks debt signals and whether remediation pressure is increasing over time.',
+        'looks_for' => [
+            'Accumulated maintainability findings.',
+            'Growing backlog of unresolved quality issues.',
+            'Recurring hotspots without remediation ownership.',
+        ],
+        'recommendations' => [
+            'Define debt budgets per module and release.',
+            'Prioritize debt hotspots by risk and change frequency.',
+            'Track remediation progress with explicit ownership.',
+        ],
+        'why' => 'Technical debt compounds delivery risk and future remediation cost.',
+    ],
+    '30' => [
+        'title' => '#30 SonarQube Quality Gate Compliance Summary',
+        'tag' => 'SonarQube Code Quality',
+        'about' => 'This check summarizes whether selected quality rules meet your repository gate criteria.',
+        'looks_for' => [
+            'Threshold breaches in core quality dimensions.',
+            'High-severity findings that should block merge.',
+            'Trends that indicate declining code quality posture.',
+        ],
+        'recommendations' => [
+            'Define pass/fail criteria for severity and metric thresholds.',
+            'Block merges on unresolved high-severity quality failures.',
+            'Review gate outcomes regularly and tune thresholds responsibly.',
+        ],
+        'why' => 'Quality gates create a consistent baseline for sustainable engineering velocity.',
+    ],
 ];
 
 $content = $checkContent[$checkId] ?? $checkContent['1'];
@@ -224,6 +544,26 @@ $findingsByCheckCategory = [
     '8' => ['License'],
     '9' => ['Git History'],
     '10' => ['Security Config'],
+    '11' => ['Complexity'],
+    '12' => ['Complexity'],
+    '13' => ['Complexity'],
+    '14' => ['Complexity'],
+    '15' => ['Complexity'],
+    '16' => ['Complexity'],
+    '17' => ['Complexity'],
+    '18' => ['Complexity'],
+    '19' => ['Complexity'],
+    '20' => ['Complexity'],
+    '21' => ['Complexity'],
+    '22' => ['Complexity', 'Code Quality'],
+    '23' => ['Duplication'],
+    '24' => ['Complexity'],
+    '25' => ['Complexity'],
+    '26' => ['File Summary', 'Code Quality'],
+    '27' => ['Code Quality'],
+    '28' => ['Complexity'],
+    '29' => ['Complexity', 'Code Quality'],
+    '30' => ['Complexity', 'Duplication', 'Code Quality'],
 ];
 
 $findingsForCheck = [];
@@ -242,6 +582,26 @@ $recommendationKeywordsByCheck = [
     '8' => ['license', 'compliance', 'legal'],
     '9' => ['git history', 'history', 'commit', 'branch'],
     '10' => ['security header', 'config', 'configuration', 'hardening', 'tls', 'cookie'],
+    '11' => ['cyclomatic', 'complexity', 'average', 'branching'],
+    '12' => ['cyclomatic', 'complexity', 'maximum', 'hotspot'],
+    '13' => ['cognitive', 'complexity', 'average', 'readability'],
+    '14' => ['cognitive', 'complexity', 'maximum', 'nesting'],
+    '15' => ['function size', 'loc', 'average', 'method'],
+    '16' => ['function size', 'loc', 'maximum', 'oversized'],
+    '17' => ['class size', 'loc', 'average', 'cohesion'],
+    '18' => ['class size', 'loc', 'maximum', 'god class'],
+    '19' => ['nesting depth', 'average', 'complexity', 'guard clause'],
+    '20' => ['nesting depth', 'maximum', 'complexity', 'nested'],
+    '21' => ['reliability', 'bug', 'defect', 'branching', 'cyclomatic'],
+    '22' => ['code smell', 'maintainability', 'cognitive', 'readability'],
+    '23' => ['duplicate', 'duplication', 'copy', 'repeated'],
+    '24' => ['complexity', 'cyclomatic', 'cognitive', 'nesting'],
+    '25' => ['function size', 'class size', 'oversized', 'god class'],
+    '26' => ['naming', 'readability', 'convention', 'clarity'],
+    '27' => ['todo', 'fixme', 'commented-out', 'dead code'],
+    '28' => ['error handling', 'defensive', 'guard', 'fallback'],
+    '29' => ['technical debt', 'remediation', 'backlog', 'maintainability'],
+    '30' => ['quality gate', 'compliance', 'threshold', 'severity'],
 ];
 
 if ($scanId <= 0) {

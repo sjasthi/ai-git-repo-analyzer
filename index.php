@@ -166,6 +166,14 @@ try {
             gap: 0.75rem;
         }
 
+        .check-group-heading {
+            grid-column: 1 / -1;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #374151;
+            margin-top: 0.35rem;
+        }
+
         .check-tile {
             border-radius: 0.75rem;
             padding: 0.85rem 1rem;
@@ -533,8 +541,12 @@ try {
                             <button type="button" id="clear-checks" class="btn btn-sm btn-outline-secondary">Clear</button>
                         </div>
                         <div id="checks-selection-status" class="form-text mb-2"></div>
+                        <input type="hidden" name="checks_present" value="1">
                         <div class="border rounded p-3 bg-light">
                             <div class="row row-cols-1 row-cols-md-2 g-2">
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1">OWASP Checks</div>
+                                </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
                                         <div>
@@ -625,67 +637,190 @@ try {
                                         <a href="check_insecure_design.php?check_id=10" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-2">
-                                    <div class="small fw-semibold text-muted">Complexity Checks (Weight: 10%)</div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1 text-start">Complexity Checks (Weight: 10%)</div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_avg" id="check_complexity_cyclomatic_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_cyclomatic_avg"><strong>#11</strong> Cyclomatic Complexity Average</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_avg" id="check_complexity_cyclomatic_avg" checked>
+                                            <label class="form-check-label" for="check_complexity_cyclomatic_avg"><strong>#11</strong> Cyclomatic Complexity Average</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=11" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_max" id="check_complexity_cyclomatic_max" checked>
-                                        <label class="form-check-label" for="check_complexity_cyclomatic_max"><strong>#12</strong> Cyclomatic Complexity Maximum</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cyclomatic_max" id="check_complexity_cyclomatic_max" checked>
+                                            <label class="form-check-label" for="check_complexity_cyclomatic_max"><strong>#12</strong> Cyclomatic Complexity Maximum</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=12" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_avg" id="check_complexity_cognitive_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_cognitive_avg"><strong>#13</strong> Cognitive Complexity Average</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_avg" id="check_complexity_cognitive_avg" checked>
+                                            <label class="form-check-label" for="check_complexity_cognitive_avg"><strong>#13</strong> Cognitive Complexity Average</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=13" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_max" id="check_complexity_cognitive_max" checked>
-                                        <label class="form-check-label" for="check_complexity_cognitive_max"><strong>#14</strong> Cognitive Complexity Maximum</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_cognitive_max" id="check_complexity_cognitive_max" checked>
+                                            <label class="form-check-label" for="check_complexity_cognitive_max"><strong>#14</strong> Cognitive Complexity Maximum</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=14" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_avg" id="check_complexity_function_size_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_function_size_avg"><strong>#15</strong> Function Size Average</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_avg" id="check_complexity_function_size_avg" checked>
+                                            <label class="form-check-label" for="check_complexity_function_size_avg"><strong>#15</strong> Function Size Average</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=15" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_max" id="check_complexity_function_size_max" checked>
-                                        <label class="form-check-label" for="check_complexity_function_size_max"><strong>#16</strong> Function Size Maximum</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_function_size_max" id="check_complexity_function_size_max" checked>
+                                            <label class="form-check-label" for="check_complexity_function_size_max"><strong>#16</strong> Function Size Maximum</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=16" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_avg" id="check_complexity_class_size_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_class_size_avg"><strong>#17</strong> Class Size Average</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_avg" id="check_complexity_class_size_avg" checked>
+                                            <label class="form-check-label" for="check_complexity_class_size_avg"><strong>#17</strong> Class Size Average</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=17" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_max" id="check_complexity_class_size_max" checked>
-                                        <label class="form-check-label" for="check_complexity_class_size_max"><strong>#18</strong> Class Size Maximum</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_class_size_max" id="check_complexity_class_size_max" checked>
+                                            <label class="form-check-label" for="check_complexity_class_size_max"><strong>#18</strong> Class Size Maximum</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=18" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_avg" id="check_complexity_nesting_depth_avg" checked>
-                                        <label class="form-check-label" for="check_complexity_nesting_depth_avg"><strong>#19</strong> Nesting Depth Average</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_avg" id="check_complexity_nesting_depth_avg" checked>
+                                            <label class="form-check-label" for="check_complexity_nesting_depth_avg"><strong>#19</strong> Nesting Depth Average</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=19" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_max" id="check_complexity_nesting_depth_max" checked>
-                                        <label class="form-check-label" for="check_complexity_nesting_depth_max"><strong>#20</strong> Nesting Depth Maximum</label>
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="complexity_nesting_depth_max" id="check_complexity_nesting_depth_max" checked>
+                                            <label class="form-check-label" for="check_complexity_nesting_depth_max"><strong>#20</strong> Nesting Depth Maximum</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=20" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1">SonarQube Rules (Code Quality)</div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_bugs_reliability" id="sonar_check_1" checked>
+                                            <label class="form-check-label" for="sonar_check_1"><strong>#21</strong> Bugs and Reliability Issues</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=21" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_code_smells" id="sonar_check_2" checked>
+                                            <label class="form-check-label" for="sonar_check_2"><strong>#22</strong> Code Smells and Maintainability Issues</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=22" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_duplication_detection" id="sonar_check_3" checked>
+                                            <label class="form-check-label" for="sonar_check_3"><strong>#23</strong> Duplicated Code Detection</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=23" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_complexity_limits" id="sonar_check_4" checked>
+                                            <label class="form-check-label" for="sonar_check_4"><strong>#24</strong> Cyclomatic and Cognitive Complexity Limits</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=24" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_size_control" id="sonar_check_5" checked>
+                                            <label class="form-check-label" for="sonar_check_5"><strong>#25</strong> Function and Class Size Control</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=25" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_naming_readability" id="sonar_check_6" checked>
+                                            <label class="form-check-label" for="sonar_check_6"><strong>#26</strong> Naming Convention and Readability Checks</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=26" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_dead_code" id="sonar_check_7" checked>
+                                            <label class="form-check-label" for="sonar_check_7"><strong>#27</strong> Dead or Commented-Out Code Detection</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=27" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_error_handling" id="sonar_check_8" checked>
+                                            <label class="form-check-label" for="sonar_check_8"><strong>#28</strong> Error Handling and Defensive Coding Patterns</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=28" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_technical_debt" id="sonar_check_9" checked>
+                                            <label class="form-check-label" for="sonar_check_9"><strong>#29</strong> Technical Debt and Remediation Tracking</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=29" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="sonar_quality_gate_summary" id="sonar_check_10" checked>
+                                            <label class="form-check-label" for="sonar_check_10"><strong>#30</strong> Quality Gate Compliance Summary</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=30" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
                             </div>
@@ -924,7 +1059,7 @@ try {
     function checkDetailIdFromName(name) {
         const text = String(name || '').toLowerCase();
 
-        const numMatch = text.match(/#\s*(20|1[0-9]|[1-9])/);
+        const numMatch = text.match(/#\s*(30|2[0-9]|1[0-9]|[1-9])/);
         if (numMatch && numMatch[1]) {
             return numMatch[1];
         }
@@ -940,6 +1075,16 @@ try {
             ['8', /#?8\s*license compliance scanner|license compliance/],
             ['9', /#?9\s*git history risk analysis|git history risk/],
             ['10', /#?10\s*security header\s*&\s*config auditor|security header.*config auditor/],
+            ['21', /#?21\s*sonarqube bugs and reliability issues|bugs and reliability issues/],
+            ['22', /#?22\s*sonarqube code smells and maintainability issues|code smells and maintainability issues/],
+            ['23', /#?23\s*sonarqube duplicated code detection|duplicated code detection/],
+            ['24', /#?24\s*sonarqube cyclomatic and cognitive complexity limits|cyclomatic and cognitive complexity limits/],
+            ['25', /#?25\s*sonarqube function and class size control|function and class size control/],
+            ['26', /#?26\s*sonarqube naming convention and readability checks|naming convention and readability checks/],
+            ['27', /#?27\s*sonarqube dead or commented-out code detection|dead or commented-out code detection/],
+            ['28', /#?28\s*sonarqube error handling and defensive coding patterns|error handling and defensive coding patterns/],
+            ['29', /#?29\s*sonarqube technical debt and remediation tracking|technical debt and remediation tracking/],
+            ['30', /#?30\s*sonarqube quality gate compliance summary|quality gate compliance summary/],
         ];
 
         for (const entry of checks) {
@@ -969,7 +1114,7 @@ try {
             params.set('scan_id', String(scanId));
         }
 
-        if (Number(checkId) > 10) {
+        if (Number(checkId) > 30) {
             return '';
         }
 
@@ -1082,92 +1227,92 @@ try {
 
         // Checks summary tiles
         const checksGrid = $('#checks-grid').empty();
-        const allChecksInOrder = [
-            '#1 Insecure Design and Logic Flaws',
-            '#2 Vulnerable and Outdated Dependencies',
-            '#3 CI/CD and Software Integrity Risks',
-            '#4 Logging and Monitoring Coverage',
-            '#5 Code Quality, Performance and Repo Health',
-            '#6 Secret & Credential Scanner',
-            '#7 Dependency CVE Audit (OSV.dev)',
-            '#8 License Compliance Scanner',
-            '#9 Git History Risk Analysis',
-            '#10 Security Header & Config Auditor',
-            '#11 Cyclomatic Complexity Average',
-            '#12 Cyclomatic Complexity Maximum',
-            '#13 Cognitive Complexity Average',
-            '#14 Cognitive Complexity Maximum',
-            '#15 Function Size Average',
-            '#16 Function Size Maximum',
-            '#17 Class Size Average',
-            '#18 Class Size Maximum',
-            '#19 Nesting Depth Average',
-            '#20 Nesting Depth Maximum'
-        ];
+        const checksToRender = Array.isArray(data.checks) ? data.checks : [];
 
-        const checkMap = {};
-        if (Array.isArray(data.checks)) {
-            data.checks.forEach(function(c) {
-                const id = checkDetailIdFromName(c.name || '');
-                if (id) {
-                    checkMap[id] = c;
+        if (checksToRender.length) {
+            const groupedChecks = {
+                'OWASP Checks': [],
+                'Complexity Checks': [],
+                'SonarQube Rules (Code Quality)': []
+            };
+
+            checksToRender.forEach(function(c) {
+                const defaultName = String(c.name || '');
+                const checkId = checkDetailIdFromName(defaultName);
+                if (!checkId) {
+                    return;
+                }
+
+                const checkNumber = Number(checkId);
+                if (checkNumber >= 1 && checkNumber <= 10) {
+                    groupedChecks['OWASP Checks'].push(c);
+                } else if (checkNumber >= 11 && checkNumber <= 20) {
+                    groupedChecks['Complexity Checks'].push(c);
+                } else {
+                    groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
             });
-        }
 
-        if (allChecksInOrder.length) {
-            allChecksInOrder.forEach(function(defaultName) {
-                const checkId = checkDetailIdFromName(defaultName);
-                const existing = checkId ? checkMap[checkId] : null;
-                const c = existing || {
-                    name: defaultName,
-                    status: 'not_run',
-                    finding_count: 0
-                };
-
-                const status = String(c.status || 'unknown').toLowerCase();
-                const isClean = status === 'clean';
-                const isNotRun = status === 'not_run';
-                const tileClass = isNotRun ? '' : (isClean ? 'clean' : 'issues');
-                const icon = checkIcons[c.name] || 'fa-check-circle';
-
-                const countText = isNotRun
-                    ? '-'
-                    : String(Number(c.finding_count || 0));
-
-                const labelText = isNotRun
-                    ? 'Not run'
-                    : (isClean ? 'No issues' : (c.finding_count === 1 ? '1 issue' : c.finding_count + ' issues'));
-
-                const detailsUrl = checkId
-                    ? 'check_insecure_design.php?' + new URLSearchParams({
-                        check_id: checkId,
-                        name: String(c.name || defaultName),
-                        status: String(c.status || 'not_run'),
-                        count: String(Number(c.finding_count || 0)),
-                        scan_id: String(data.scan_id || '')
-                    }).toString()
-                    : '';
-                const canOpenDetails = Number(checkId) <= 10;
-
-                const tileHtml =
-                    `<div class="check-tile ${tileClass}">
-                        <span class="check-name"><i class="fas ${icon} me-1"></i>${esc(c.name || defaultName)}</span>
-                        <span class="check-count">${esc(countText)}</span>
-                        <span class="check-label">${esc(labelText)}</span>
-                    </div>`;
-
-                if (detailsUrl && canOpenDetails) {
-                    checksGrid.append(
-                        `<a class="check-tile-link check-details-trigger" href="${esc(detailsUrl)}" data-title="${esc(c.name || defaultName)}" title="Open check details">${tileHtml}</a>`
-                    );
-                } else {
-                    checksGrid.append(tileHtml);
+            Object.keys(groupedChecks).forEach(function(groupName) {
+                const groupItems = groupedChecks[groupName];
+                if (!groupItems.length) {
+                    return;
                 }
+
+                checksGrid.append(`<div class="check-group-heading">${esc(groupName)}</div>`);
+
+                groupItems.forEach(function(c) {
+                    const defaultName = String(c.name || '');
+                    const checkId = checkDetailIdFromName(defaultName);
+                    if (!checkId) {
+                        return;
+                    }
+
+                    const status = String(c.status || 'unknown').toLowerCase();
+                    const isClean = status === 'clean';
+                    const isNotRun = status === 'not_run';
+                    const tileClass = isNotRun ? '' : (isClean ? 'clean' : 'issues');
+                    const icon = checkIcons[c.name] || 'fa-check-circle';
+
+                    const countText = isNotRun
+                        ? '-'
+                        : String(Number(c.finding_count || 0));
+
+                    const labelText = isNotRun
+                        ? 'Not run'
+                        : (isClean ? 'No issues' : (c.finding_count === 1 ? '1 issue' : c.finding_count + ' issues'));
+
+                    const detailsUrl = checkId
+                        ? 'check_insecure_design.php?' + new URLSearchParams({
+                            check_id: checkId,
+                            name: defaultName,
+                            status: String(c.status || 'not_run'),
+                            count: String(Number(c.finding_count || 0)),
+                            scan_id: String(data.scan_id || '')
+                        }).toString()
+                        : '';
+                    const canOpenDetails = Number(checkId) <= 30;
+
+                    const tileHtml =
+                        `<div class="check-tile ${tileClass}">
+                            <span class="check-name"><i class="fas ${icon} me-1"></i>${esc(c.name || defaultName)}</span>
+                            <span class="check-count">${esc(countText)}</span>
+                            <span class="check-label">${esc(labelText)}</span>
+                        </div>`;
+
+                    if (detailsUrl && canOpenDetails) {
+                        checksGrid.append(
+                            `<a class="check-tile-link check-details-trigger" href="${esc(detailsUrl)}" data-title="${esc(defaultName)}" title="Open check details">${tileHtml}</a>`
+                        );
+                    } else {
+                        checksGrid.append(tileHtml);
+                    }
+                });
             });
             $('#checks-card').show();
         } else {
-            $('#checks-card').hide();
+            checksGrid.append('<p class="text-muted mb-0">No selected checks.</p>');
+            $('#checks-card').show();
         }
 
         // Selected Checks list
@@ -1191,18 +1336,57 @@ try {
             'complexity_class_size_avg': '#17 Class Size Average',
             'complexity_class_size_max': '#18 Class Size Maximum',
             'complexity_nesting_depth_avg': '#19 Nesting Depth Average',
-            'complexity_nesting_depth_max': '#20 Nesting Depth Maximum'
+            'complexity_nesting_depth_max': '#20 Nesting Depth Maximum',
+            'sonar_bugs_reliability': '#21 SonarQube Bugs and Reliability Issues',
+            'sonar_code_smells': '#22 SonarQube Code Smells and Maintainability Issues',
+            'sonar_duplication_detection': '#23 SonarQube Duplicated Code Detection',
+            'sonar_complexity_limits': '#24 SonarQube Cyclomatic and Cognitive Complexity Limits',
+            'sonar_size_control': '#25 SonarQube Function and Class Size Control',
+            'sonar_naming_readability': '#26 SonarQube Naming Convention and Readability Checks',
+            'sonar_dead_code': '#27 SonarQube Dead or Commented-Out Code Detection',
+            'sonar_error_handling': '#28 SonarQube Error Handling and Defensive Coding Patterns',
+            'sonar_technical_debt': '#29 SonarQube Technical Debt and Remediation Tracking',
+            'sonar_quality_gate_summary': '#30 SonarQube Quality Gate Compliance Summary'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
         if (data.selected_checks && data.selected_checks.length) {
+            const groups = {
+                'OWASP Checks': [],
+                'Complexity Checks': [],
+                'SonarQube Rules (Code Quality)': []
+            };
+
             data.selected_checks.forEach(function(checkId) {
                 const friendlyName = checkLabels[checkId] || checkId;
-                selectedChecksList.append(`<li class="list-group-item">${esc(friendlyName)}</li>`);
+                const numberMatch = String(friendlyName).match(/#\s*(\d+)/);
+                const checkNumber = numberMatch ? Number(numberMatch[1]) : 0;
+
+                if (checkNumber >= 1 && checkNumber <= 10) {
+                    groups['OWASP Checks'].push(friendlyName);
+                } else if (checkNumber >= 11 && checkNumber <= 20) {
+                    groups['Complexity Checks'].push(friendlyName);
+                } else {
+                    groups['SonarQube Rules (Code Quality)'].push(friendlyName);
+                }
             });
+
+            Object.keys(groups).forEach(function(groupName) {
+                const items = groups[groupName];
+                if (!items.length) {
+                    return;
+                }
+
+                selectedChecksList.append(`<li class="list-group-item fw-bold bg-light">${esc(groupName)}</li>`);
+                items.forEach(function(item) {
+                    selectedChecksList.append(`<li class="list-group-item">${esc(item)}</li>`);
+                });
+            });
+
             $('#selected-checks-card').show();
         } else {
-            $('#selected-checks-card').hide();
+            selectedChecksList.append('<li class="list-group-item text-muted">No selected checks.</li>');
+            $('#selected-checks-card').show();
         }
 
         // Check Results list
@@ -1281,22 +1465,81 @@ try {
 
         // Recommendations (High priority first)
         const recList = $('#recommendations-list').empty();
-        if (data.recommendations && data.recommendations.length) {
+        const hasFindings = Array.isArray(data.findings) && data.findings.length > 0;
+        const recommendations = Array.isArray(data.recommendations) ? data.recommendations : [];
+
+        if (hasFindings && recommendations.length) {
             const order = { High: 0, Medium: 1, Low: 2 };
-            const sorted = [...data.recommendations].sort((a, b) =>
-                (order[a.priority] ?? 3) - (order[b.priority] ?? 3)
-            );
-            sorted.forEach(function(r) {
-                recList.append(
-                    `<li class="list-group-item d-flex justify-content-between align-items-start gap-2">
-                        <span class="small">${esc(r.recommendation_text)}</span>
-                        ${priorityPill(r.priority)}
-                    </li>`
-                );
+
+            function recommendationCheckNumber(text) {
+                const match = String(text || '').match(/^#\s*(\d+)/);
+                return match ? Number(match[1]) : null;
+            }
+
+            const sorted = [...recommendations].sort((a, b) => {
+                const priorityDiff = (order[a.priority] ?? 3) - (order[b.priority] ?? 3);
+                if (priorityDiff !== 0) {
+                    return priorityDiff;
+                }
+
+                const aNum = recommendationCheckNumber(a.recommendation_text);
+                const bNum = recommendationCheckNumber(b.recommendation_text);
+
+                if (aNum !== null && bNum !== null) {
+                    return aNum - bNum;
+                }
+                if (aNum !== null) {
+                    return -1;
+                }
+                if (bNum !== null) {
+                    return 1;
+                }
+                return String(a.recommendation_text || '').localeCompare(String(b.recommendation_text || ''));
             });
+
+            const checkSpecific = [];
+            const general = [];
+            sorted.forEach(function(r) {
+                if (recommendationCheckNumber(r.recommendation_text) !== null) {
+                    checkSpecific.push(r);
+                } else {
+                    general.push(r);
+                }
+            });
+
+            function renderRecommendationGroup(title, items, showTitle) {
+                if (!items.length) {
+                    return;
+                }
+
+                if (showTitle) {
+                    recList.append(`<li class="list-group-item fw-bold bg-light">${esc(title)}</li>`);
+                }
+                items.forEach(function(r) {
+                    recList.append(
+                        `<li class="list-group-item d-flex justify-content-between align-items-start gap-2">
+                            <span class="small">${esc(r.recommendation_text)}</span>
+                            ${priorityPill(r.priority)}
+                        </li>`
+                    );
+                });
+            }
+
+            recList.append('<li class="list-group-item fw-bold bg-light">Fix Recommendations</li>');
+            const showSubgroupTitles = checkSpecific.length > 0 && general.length > 0;
+            renderRecommendationGroup('Check-specific Recommendations', checkSpecific, showSubgroupTitles);
+            renderRecommendationGroup('General Recommendations', general, showSubgroupTitles);
+            $('#recommendations-card').show();
+        } else if (hasFindings) {
+            recList.append('<li class="list-group-item text-muted">Findings detected, but no remediation text was generated for this scan.</li>');
             $('#recommendations-card').show();
         } else {
-            $('#recommendations-card').hide();
+            recList.append('<li class="list-group-item fw-bold bg-light">Preventive Best Practices</li>');
+            recList.append('<li class="list-group-item text-success">No issues detected in this scan.</li>');
+            recList.append('<li class="list-group-item small">Keep dependency, secret-scanning, and lint checks in CI for every pull request.</li>');
+            recList.append('<li class="list-group-item small">Enforce branch protection and require at least one reviewer before merge.</li>');
+            recList.append('<li class="list-group-item small">Schedule periodic audits for licenses, headers, and complexity trends.</li>');
+            $('#recommendations-card').show();
         }
 
         $('#result-section').show();

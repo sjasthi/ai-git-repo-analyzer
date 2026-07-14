@@ -16,7 +16,12 @@ require_once __DIR__ . '/checks/security/check_license.php';
 require_once __DIR__ . '/checks/security/check_git_history.php';
 require_once __DIR__ . '/checks/security/check_duplication.php';
 require_once __DIR__ . '/checks/security/check_security_config.php';
+require_once __DIR__ . '/checks/check_insecure_design.php';
+require_once __DIR__ . '/checks/check_dependency_hardening.php';
+require_once __DIR__ . '/checks/check_ci_cd_integrity.php';
+require_once __DIR__ . '/checks/check_logging_monitoring.php';
 require_once __DIR__ . '/checks/complexity/check_complexity_metrics.php';
+require_once __DIR__ . '/checks/sonarqube/check_sonarqube.php';
 
 header('Content-Type: application/json');
 
@@ -120,6 +125,16 @@ function getCheckLabel(string $checkId): string
         'complexity_class_size_max' => '#18 Class Size Maximum',
         'complexity_nesting_depth_avg' => '#19 Nesting Depth Average',
         'complexity_nesting_depth_max' => '#20 Nesting Depth Maximum',
+        'sonar_bugs_reliability' => '#21 SonarQube Bugs and Reliability Issues',
+        'sonar_code_smells' => '#22 SonarQube Code Smells and Maintainability Issues',
+        'sonar_duplication_detection' => '#23 SonarQube Duplicated Code Detection',
+        'sonar_complexity_limits' => '#24 SonarQube Cyclomatic and Cognitive Complexity Limits',
+        'sonar_size_control' => '#25 SonarQube Function and Class Size Control',
+        'sonar_naming_readability' => '#26 SonarQube Naming Convention and Readability Checks',
+        'sonar_dead_code' => '#27 SonarQube Dead or Commented-Out Code Detection',
+        'sonar_error_handling' => '#28 SonarQube Error Handling and Defensive Coding Patterns',
+        'sonar_technical_debt' => '#29 SonarQube Technical Debt and Remediation Tracking',
+        'sonar_quality_gate_summary' => '#30 SonarQube Quality Gate Compliance Summary',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -379,15 +394,25 @@ $sourceFiles      = tree_files_by_extensions($tree, $sourceExtensions, 25);
 // ---------------------------------------------------------------------------
 // Determine which checks were selected
 // ---------------------------------------------------------------------------
+$checksWereProvided = isset($inputData['checks']) || isset($_POST['checks'])
+    || isset($inputData['checks_present']) || isset($_POST['checks_present']);
+
 $rawChecks = $inputData['checks'] ?? $_POST['checks'] ?? [];
-if (!is_array($rawChecks) || empty($rawChecks)) {
-    // Default: all 10 checks enabled
+if (!is_array($rawChecks)) {
+    $rawChecks = [];
+}
+
+if (!$checksWereProvided) {
+    // Backward compatibility: if a client omits checks entirely, run all by default.
     $rawChecks = [
         'dependency_risk', 'hardening', 'performance', 'maintainability', 'code_intelligence',
         'secret_scanner', 'dependency_cve', 'license_check', 'git_history', 'security_config',
         'complexity_cyclomatic_avg', 'complexity_cyclomatic_max', 'complexity_cognitive_avg', 'complexity_cognitive_max',
         'complexity_function_size_avg', 'complexity_function_size_max', 'complexity_class_size_avg', 'complexity_class_size_max',
         'complexity_nesting_depth_avg', 'complexity_nesting_depth_max',
+        'sonar_bugs_reliability', 'sonar_code_smells', 'sonar_duplication_detection', 'sonar_complexity_limits',
+        'sonar_size_control', 'sonar_naming_readability', 'sonar_dead_code', 'sonar_error_handling',
+        'sonar_technical_debt', 'sonar_quality_gate_summary',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -407,12 +432,22 @@ $checkResults    = [];
 function run_check(string $name, callable $fn): array
 {
     $result = $fn();
+    $findings = $result['findings'] ?? [];
+    $hasFindings = !empty($findings);
+    $recommendations = $hasFindings ? ($result['recommendations'] ?? []) : [];
+    if ($hasFindings && empty($recommendations)) {
+        $recommendations = [[
+            'recommendation_text' => $name . ': Review reported findings and apply targeted remediation controls.',
+            'priority' => 'Medium',
+        ]];
+    }
+
     return [
         'name'            => $name,
-        'finding_count'   => count($result['findings'] ?? []),
-        'status'          => empty($result['findings']) ? 'clean' : 'issues_found',
-        'findings'        => $result['findings']        ?? [],
-        'recommendations' => $result['recommendations'] ?? [],
+        'finding_count'   => count($findings),
+        'status'          => $hasFindings ? 'issues_found' : 'clean',
+        'findings'        => $findings,
+        'recommendations' => $recommendations,
         'skills'          => $result['skills']          ?? [],
     ];
 }
@@ -429,10 +464,10 @@ function merge_check_outputs(array ...$outputs): array
 }
 
 $newCheckMap = [
-    'dependency_risk'  => ['#1 Insecure Design and Logic Flaws',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
-    'hardening'        => ['#2 Vulnerable and Outdated Dependencies', fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
-    'performance'      => ['#3 CI/CD and Software Integrity Risks',   fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
-    'maintainability'  => ['#4 Logging and Monitoring Coverage',      fn() => ['findings' => [], 'recommendations' => [], 'skills' => []]],
+    'dependency_risk'  => ['#1 Insecure Design and Logic Flaws',      fn() => check_insecure_design($owner, $repo, $pat, $sourceFiles)],
+    'hardening'        => ['#2 Vulnerable and Outdated Dependencies', fn() => check_dependency_hardening($owner, $repo, $pat, $tree)],
+    'performance'      => ['#3 CI/CD and Software Integrity Risks',   fn() => check_ci_cd_integrity($owner, $repo, $pat, $tree)],
+    'maintainability'  => ['#4 Logging and Monitoring Coverage',      fn() => check_logging_monitoring($owner, $repo, $pat, $tree, $sourceFiles)],
     'code_intelligence'=> ['#5 Code Quality, Performance and Repo Health', fn() => merge_check_outputs(
         check_file_summary($tree, $languages),
         check_complexity($owner, $repo, $pat, $sourceFiles),
@@ -454,6 +489,16 @@ $newCheckMap = [
     'complexity_class_size_max' => ['#18 Class Size Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_class_size_max')],
     'complexity_nesting_depth_avg' => ['#19 Nesting Depth Average', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_nesting_depth_avg')],
     'complexity_nesting_depth_max' => ['#20 Nesting Depth Maximum', fn() => check_complexity_metric($owner, $repo, $pat, $sourceFiles, 'complexity_nesting_depth_max')],
+    'sonar_bugs_reliability' => ['#21 SonarQube Bugs and Reliability Issues', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_bugs_reliability')],
+    'sonar_code_smells' => ['#22 SonarQube Code Smells and Maintainability Issues', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_code_smells')],
+    'sonar_duplication_detection' => ['#23 SonarQube Duplicated Code Detection', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_duplication_detection')],
+    'sonar_complexity_limits' => ['#24 SonarQube Cyclomatic and Cognitive Complexity Limits', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_complexity_limits')],
+    'sonar_size_control' => ['#25 SonarQube Function and Class Size Control', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_size_control')],
+    'sonar_naming_readability' => ['#26 SonarQube Naming Convention and Readability Checks', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_naming_readability')],
+    'sonar_dead_code' => ['#27 SonarQube Dead or Commented-Out Code Detection', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_dead_code')],
+    'sonar_error_handling' => ['#28 SonarQube Error Handling and Defensive Coding Patterns', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_error_handling')],
+    'sonar_technical_debt' => ['#29 SonarQube Technical Debt and Remediation Tracking', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_technical_debt')],
+    'sonar_quality_gate_summary' => ['#30 SonarQube Quality Gate Compliance Summary', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_quality_gate_summary')],
 ];
 
 foreach ($selectedChecks as $checkId) {
@@ -467,6 +512,24 @@ foreach ($selectedChecks as $checkId) {
     $allRecommendations   = array_merge($allRecommendations, $r['recommendations']);
     $allSkills            = array_merge($allSkills, $r['skills']);
 }
+
+$dedupFindings = [];
+foreach ($allFindings as $finding) {
+    $key = strtolower(trim((string) ($finding['category'] ?? ''))) . '|' .
+        strtolower(trim((string) ($finding['title'] ?? ''))) . '|' .
+        strtolower(trim((string) ($finding['description'] ?? ''))) . '|' .
+        strtolower(trim((string) ($finding['severity'] ?? '')));
+    $dedupFindings[$key] = $finding;
+}
+$allFindings = array_values($dedupFindings);
+
+$dedupRecommendations = [];
+foreach ($allRecommendations as $recommendation) {
+    $key = strtolower(trim((string) ($recommendation['recommendation_text'] ?? ''))) . '|' .
+        strtolower(trim((string) ($recommendation['priority'] ?? '')));
+    $dedupRecommendations[$key] = $recommendation;
+}
+$allRecommendations = array_values($dedupRecommendations);
 
 if (empty($allSkills) && !empty($languages)) {
     $langTotal = array_sum(array_values($languages));
@@ -612,7 +675,7 @@ try {
         'scan_id'         => $scanId,
         'report_urls'     => [
             'summary'  => 'api/report.php?scan_id=' . $scanId,
-            'download' => 'api/report.php?scan_id=' . $scanId . '&download=1&format=html',
+            'download' => 'api/report.php?scan_id=' . $scanId . '&download=1&format=doc',
         ],
         'repository'      => [
             'id'          => $repoMetadata['id']   ?? null,
