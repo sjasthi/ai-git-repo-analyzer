@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/database.php';
 
 $checkIdRaw = trim((string) ($_GET['check_id'] ?? '1'));
-$checkId = preg_match('/^(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
+$checkId = preg_match('/^(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
 $checkNameFromQuery = trim((string) ($_GET['name'] ?? ''));
 $statusRaw = strtolower(trim((string) ($_GET['status'] ?? '')));
 $countRaw = isset($_GET['count']) ? (int) $_GET['count'] : null;
@@ -1005,7 +1005,68 @@ $checkContent = [
     ],
 ];
 
-$content = $checkContent[$checkId] ?? $checkContent['1'];
+$dynamicCheckTitles = [
+    '61' => '#61 Performance Nested Loops and Deep Iterations',
+    '62' => '#62 Performance Expensive Operation Hotspots',
+    '63' => '#63 Performance N+1 and Repeated Data Access Patterns',
+    '64' => '#64 Performance Repeated External API Call Patterns',
+    '65' => '#65 Performance Blocking Operation Risks',
+    '66' => '#66 Performance Unbounded Query and Scan Risks',
+    '67' => '#67 Performance Large Payload and Serialization Costs',
+    '68' => '#68 Performance Cache Strategy and Miss Risks',
+    '69' => '#69 Performance Synchronous I/O Hotspots',
+    '70' => '#70 Performance Build and Runtime Efficiency Controls',
+    '71' => '#71 Reliability Logging Coverage and Signal Quality',
+    '72' => '#72 Reliability Retry Strategy and Backoff Safety',
+    '73' => '#73 Reliability Timeout and Circuit Controls',
+    '74' => '#74 Reliability Exception Handling Discipline',
+    '75' => '#75 Reliability Null Safety and Defensive Guards',
+    '76' => '#76 Reliability Resource Cleanup and Lifecycle Safety',
+    '77' => '#77 Reliability Input Validation and Sanitization',
+    '78' => '#78 Reliability Idempotency and Duplicate Request Safety',
+    '79' => '#79 Reliability Fallback and Degradation Paths',
+    '80' => '#80 Reliability Observability and Alerting Readiness',
+    '81' => '#81 Testing FIRST Principle Alignment',
+    '82' => '#82 Testing Arrange-Act-Assert Pattern Discipline',
+    '83' => '#83 Testing Test Data Management and Isolation',
+    '84' => '#84 Testing Flaky Test Risk Detection',
+    '85' => '#85 Testing Boundary and Negative Path Coverage',
+    '86' => '#86 Testing API Contract and Response Validation',
+    '87' => '#87 Testing Security-Critical Path Coverage',
+    '88' => '#88 Testing Performance-Critical Path Coverage',
+    '89' => '#89 Testing CI Gate and Execution Reliability',
+    '90' => '#90 Testing Suite Maintainability and Structure',
+];
+
+$content = $checkContent[$checkId] ?? null;
+if ($content === null) {
+    $dynamicTitle = $dynamicCheckTitles[$checkId] ?? ($checkNameFromQuery !== '' ? $checkNameFromQuery : ('#' . $checkId . ' Analysis Check'));
+    $dynamicTag = 'Quality Focus';
+    if ((int) $checkId >= 61 && (int) $checkId <= 70) {
+        $dynamicTag = 'Performance Focus';
+    } elseif ((int) $checkId >= 71 && (int) $checkId <= 80) {
+        $dynamicTag = 'Reliability Focus';
+    } elseif ((int) $checkId >= 81 && (int) $checkId <= 90) {
+        $dynamicTag = 'Testing Focus';
+    }
+
+    $content = [
+        'title' => $dynamicTitle,
+        'tag' => $dynamicTag,
+        'about' => 'This check evaluates repository signals for this selected quality task and highlights actionable evidence.',
+        'looks_for' => [
+            'Repository evidence linked to this task.',
+            'Patterns that increase implementation or operational risk.',
+            'Gaps that can be addressed through targeted remediation.',
+        ],
+        'recommendations' => [
+            'Address high-severity findings first and verify fixes in CI.',
+            'Track this task with measurable thresholds and ownership.',
+            'Use repeatable checks to prevent regressions.',
+        ],
+        'why' => 'Consistent task-level checks improve delivery quality and reduce hidden risk over time.',
+    ];
+}
 $pageTitle = $content['title'];
 $resolvedCheckName = $checkNameFromQuery !== '' ? $checkNameFromQuery : $pageTitle;
 
@@ -1085,6 +1146,36 @@ $findingsByCheckCategory = [
     '58' => ['Testing'],
     '59' => ['Testing'],
     '60' => ['Testing'],
+    '61' => ['Performance'],
+    '62' => ['Performance'],
+    '63' => ['Performance'],
+    '64' => ['Performance'],
+    '65' => ['Performance'],
+    '66' => ['Performance'],
+    '67' => ['Performance'],
+    '68' => ['Performance'],
+    '69' => ['Performance'],
+    '70' => ['Performance'],
+    '71' => ['Reliability'],
+    '72' => ['Reliability'],
+    '73' => ['Reliability'],
+    '74' => ['Reliability'],
+    '75' => ['Reliability'],
+    '76' => ['Reliability'],
+    '77' => ['Reliability'],
+    '78' => ['Reliability'],
+    '79' => ['Reliability'],
+    '80' => ['Reliability'],
+    '81' => ['Testing'],
+    '82' => ['Testing'],
+    '83' => ['Testing'],
+    '84' => ['Testing'],
+    '85' => ['Testing'],
+    '86' => ['Testing'],
+    '87' => ['Testing'],
+    '88' => ['Testing'],
+    '89' => ['Testing'],
+    '90' => ['Testing'],
 ];
 
 $findingsForCheck = [];
@@ -1160,6 +1251,36 @@ $recommendationKeywordsByCheck = [
     '58' => ['error', 'invalid', 'exception', 'negative', 'fail'],
     '59' => ['regression', 'bug', 'fix', 'issue', 'defect'],
     '60' => ['organization', 'maintainability', 'structure', 'folder', 'naming'],
+    '61' => ['performance', 'nested', 'loop', 'iteration', 'complexity'],
+    '62' => ['performance', 'expensive', 'operation', 'hotspot', 'cost'],
+    '63' => ['performance', 'n+1', 'duplicate', 'query', 'access'],
+    '64' => ['performance', 'api', 'repeated', 'network', 'call'],
+    '65' => ['performance', 'blocking', 'sync', 'operation', 'latency'],
+    '66' => ['performance', 'unbounded', 'scan', 'query', 'pagination'],
+    '67' => ['performance', 'payload', 'serialization', 'size', 'transport'],
+    '68' => ['performance', 'cache', 'miss', 'reuse', 'memoization'],
+    '69' => ['performance', 'sync io', 'io', 'hotspot', 'latency'],
+    '70' => ['performance', 'build', 'runtime', 'efficiency', 'pipeline'],
+    '71' => ['reliability', 'logging', 'signal', 'trace', 'audit'],
+    '72' => ['reliability', 'retry', 'backoff', 'transient', 'resilience'],
+    '73' => ['reliability', 'timeout', 'circuit', 'limit', 'latency'],
+    '74' => ['reliability', 'exception', 'error handling', 'failure', 'guard'],
+    '75' => ['reliability', 'null', 'defensive', 'guard', 'validation'],
+    '76' => ['reliability', 'cleanup', 'resource', 'lifecycle', 'release'],
+    '77' => ['reliability', 'validation', 'input', 'sanitize', 'boundary'],
+    '78' => ['reliability', 'idempotency', 'duplicate', 'request', 'safe'],
+    '79' => ['reliability', 'fallback', 'degradation', 'resilience', 'backup'],
+    '80' => ['reliability', 'observability', 'alert', 'monitor', 'slo'],
+    '81' => ['testing', 'first', 'fast', 'isolated', 'repeatable'],
+    '82' => ['testing', 'aaa', 'arrange', 'act', 'assert'],
+    '83' => ['testing', 'data', 'fixture', 'isolation', 'deterministic'],
+    '84' => ['testing', 'flaky', 'stability', 'timing', 'determinism'],
+    '85' => ['testing', 'boundary', 'negative', 'error', 'invalid'],
+    '86' => ['testing', 'contract', 'api', 'schema', 'response'],
+    '87' => ['testing', 'security', 'auth', 'permission', 'abuse'],
+    '88' => ['testing', 'performance', 'latency', 'throughput', 'hot path'],
+    '89' => ['testing', 'ci', 'gate', 'pipeline', 'merge'],
+    '90' => ['testing', 'suite', 'maintainability', 'structure', 'organization'],
 ];
 
 if ($scanId <= 0) {

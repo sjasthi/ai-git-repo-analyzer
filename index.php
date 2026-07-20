@@ -205,6 +205,31 @@ try {
         .check-tile.issues .check-count { color: #DC2626; }
         .check-tile .check-label { font-size: 0.7rem; color: #6B7280; }
 
+        .checks-folder-header {
+            border: 1px solid var(--border);
+            border-radius: 0.6rem;
+            background: var(--surface-emphasis);
+            padding: 0.55rem 0.75rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checks-folder-header .folder-caret {
+            transition: transform 0.18s ease;
+        }
+
+        .checks-folder-header.folder-open .folder-caret {
+            transform: rotate(90deg);
+        }
+
+        .checks-folder-item {
+            transition: opacity 0.15s ease;
+        }
+
+        .checks-folder-item.folder-hidden {
+            display: none;
+        }
+
         /* Findings grouped by category */
         .finding-category-header {
             font-size: 0.72rem;
@@ -546,6 +571,7 @@ try {
                             <div class="row row-cols-1 row-cols-md-2 g-2">
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1">OWASP Checks</div>
+                                    <div class="small text-muted mb-1">Source: OWASP Top 10 (2021)</div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -639,6 +665,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1 text-start">Complexity Checks (Weight: 10%)</div>
+                                    <div class="small text-muted mb-1">Source: McCabe Cyclomatic + Cognitive Complexity metrics</div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -732,6 +759,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1">SonarQube Rules (Code Quality)</div>
+                                    <div class="small text-muted mb-1">Source: SonarQube quality rules and maintainability model</div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -1105,6 +1133,56 @@ try {
                                         <a href="check_insecure_design.php?check_id=60" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">Performance Checks (Weight: 10%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">Source: Performance analysis checklist from repository standards</div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_nested_loops" id="performance_1" checked><label class="form-check-label" for="performance_1"><strong>#61</strong> Nested Loops and Deep Iterations</label></div><a href="check_insecure_design.php?check_id=61" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_expensive_operations" id="performance_2" checked><label class="form-check-label" for="performance_2"><strong>#62</strong> Expensive Operation Hotspots</label></div><a href="check_insecure_design.php?check_id=62" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_n_plus_one_patterns" id="performance_3" checked><label class="form-check-label" for="performance_3"><strong>#63</strong> N+1 and Repeated Data Access Patterns</label></div><a href="check_insecure_design.php?check_id=63" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_repeated_api_calls" id="performance_4" checked><label class="form-check-label" for="performance_4"><strong>#64</strong> Repeated External API Calls</label></div><a href="check_insecure_design.php?check_id=64" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_blocking_operations" id="performance_5" checked><label class="form-check-label" for="performance_5"><strong>#65</strong> Blocking Operation Risks</label></div><a href="check_insecure_design.php?check_id=65" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_unbounded_queries" id="performance_6" checked><label class="form-check-label" for="performance_6"><strong>#66</strong> Unbounded Query and Scan Risks</label></div><a href="check_insecure_design.php?check_id=66" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_large_payloads" id="performance_7" checked><label class="form-check-label" for="performance_7"><strong>#67</strong> Large Payload and Serialization Costs</label></div><a href="check_insecure_design.php?check_id=67" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_cache_miss_risk" id="performance_8" checked><label class="form-check-label" for="performance_8"><strong>#68</strong> Cache Strategy and Miss Risks</label></div><a href="check_insecure_design.php?check_id=68" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_sync_io_hotspots" id="performance_9" checked><label class="form-check-label" for="performance_9"><strong>#69</strong> Synchronous I/O Hotspots</label></div><a href="check_insecure_design.php?check_id=69" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_build_runtime_cost" id="performance_10" checked><label class="form-check-label" for="performance_10"><strong>#70</strong> Build and Runtime Efficiency Controls</label></div><a href="check_insecure_design.php?check_id=70" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">Reliability Checks (Weight: 10%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">Source: Google Site Reliability Engineering (SRE) concepts</div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_logging_coverage" id="reliability_1" checked><label class="form-check-label" for="reliability_1"><strong>#71</strong> Logging Coverage and Signal Quality</label></div><a href="check_insecure_design.php?check_id=71" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_retry_strategy" id="reliability_2" checked><label class="form-check-label" for="reliability_2"><strong>#72</strong> Retry Strategy and Backoff Safety</label></div><a href="check_insecure_design.php?check_id=72" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_timeout_controls" id="reliability_3" checked><label class="form-check-label" for="reliability_3"><strong>#73</strong> Timeout and Circuit Controls</label></div><a href="check_insecure_design.php?check_id=73" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_exception_handling" id="reliability_4" checked><label class="form-check-label" for="reliability_4"><strong>#74</strong> Exception Handling Discipline</label></div><a href="check_insecure_design.php?check_id=74" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_null_safety" id="reliability_5" checked><label class="form-check-label" for="reliability_5"><strong>#75</strong> Null Safety and Defensive Guards</label></div><a href="check_insecure_design.php?check_id=75" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_resource_cleanup" id="reliability_6" checked><label class="form-check-label" for="reliability_6"><strong>#76</strong> Resource Cleanup and Lifecycle Safety</label></div><a href="check_insecure_design.php?check_id=76" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_input_validation" id="reliability_7" checked><label class="form-check-label" for="reliability_7"><strong>#77</strong> Input Validation and Sanitization</label></div><a href="check_insecure_design.php?check_id=77" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_idempotency" id="reliability_8" checked><label class="form-check-label" for="reliability_8"><strong>#78</strong> Idempotency and Duplicate Request Safety</label></div><a href="check_insecure_design.php?check_id=78" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_fallback_paths" id="reliability_9" checked><label class="form-check-label" for="reliability_9"><strong>#79</strong> Fallback and Degradation Paths</label></div><a href="check_insecure_design.php?check_id=79" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_observability_alerting" id="reliability_10" checked><label class="form-check-label" for="reliability_10"><strong>#80</strong> Observability and Alerting Readiness</label></div><a href="check_insecure_design.php?check_id=80" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">Testing Plus Checks (Weight: 10%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">Source: FIRST Principles + Arrange-Act-Assert (AAA) pattern</div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_first_principles" id="testing_plus_1" checked><label class="form-check-label" for="testing_plus_1"><strong>#81</strong> FIRST Principle Alignment</label></div><a href="check_insecure_design.php?check_id=81" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_aaa_pattern" id="testing_plus_2" checked><label class="form-check-label" for="testing_plus_2"><strong>#82</strong> Arrange-Act-Assert Pattern Discipline</label></div><a href="check_insecure_design.php?check_id=82" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_test_data_management" id="testing_plus_3" checked><label class="form-check-label" for="testing_plus_3"><strong>#83</strong> Test Data Management and Isolation</label></div><a href="check_insecure_design.php?check_id=83" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_flaky_test_risk" id="testing_plus_4" checked><label class="form-check-label" for="testing_plus_4"><strong>#84</strong> Flaky Test Risk Detection</label></div><a href="check_insecure_design.php?check_id=84" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_boundary_case_coverage" id="testing_plus_5" checked><label class="form-check-label" for="testing_plus_5"><strong>#85</strong> Boundary and Negative Path Coverage</label></div><a href="check_insecure_design.php?check_id=85" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_contract_validation" id="testing_plus_6" checked><label class="form-check-label" for="testing_plus_6"><strong>#86</strong> API Contract and Response Validation</label></div><a href="check_insecure_design.php?check_id=86" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_security_paths" id="testing_plus_7" checked><label class="form-check-label" for="testing_plus_7"><strong>#87</strong> Security-Critical Path Coverage</label></div><a href="check_insecure_design.php?check_id=87" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_performance_paths" id="testing_plus_8" checked><label class="form-check-label" for="testing_plus_8"><strong>#88</strong> Performance-Critical Path Coverage</label></div><a href="check_insecure_design.php?check_id=88" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_ci_gate_readiness" id="testing_plus_9" checked><label class="form-check-label" for="testing_plus_9"><strong>#89</strong> CI Gate and Execution Reliability</label></div><a href="check_insecure_design.php?check_id=89" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_suite_maintainability" id="testing_plus_10" checked><label class="form-check-label" for="testing_plus_10"><strong>#90</strong> Suite Maintainability and Structure</label></div><a href="check_insecure_design.php?check_id=90" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                             </div>
                         </div>
                     </div>
@@ -1342,7 +1420,7 @@ try {
     function checkDetailIdFromName(name) {
         const text = String(name || '').toLowerCase();
 
-        const numMatch = text.match(/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/);
+        const numMatch = text.match(/#\s*(\d{1,2})/);
         if (numMatch && numMatch[1]) {
             return numMatch[1];
         }
@@ -1427,7 +1505,7 @@ try {
             params.set('scan_id', String(scanId));
         }
 
-        if (Number(checkId) > 60) {
+        if (Number(checkId) > 90) {
             return '';
         }
 
@@ -1549,7 +1627,10 @@ try {
                 'SonarQube Rules (Code Quality)': [],
                 'Clean Code Checks (Weight: 10%)': [],
                 'Architecture Checks (Weight: 10%)': [],
-                'Testing Checks (Weight: 10%)': []
+                'Testing Checks (Weight: 10%)': [],
+                'Performance Checks (Weight: 10%)': [],
+                'Reliability Checks (Weight: 10%)': [],
+                'Testing Plus Checks (Weight: 10%)': []
             };
 
             checksToRender.forEach(function(c) {
@@ -1570,6 +1651,12 @@ try {
                     groupedChecks['Architecture Checks (Weight: 10%)'].push(c);
                 } else if (checkNumber >= 51 && checkNumber <= 60) {
                     groupedChecks['Testing Checks (Weight: 10%)'].push(c);
+                } else if (checkNumber >= 61 && checkNumber <= 70) {
+                    groupedChecks['Performance Checks (Weight: 10%)'].push(c);
+                } else if (checkNumber >= 71 && checkNumber <= 80) {
+                    groupedChecks['Reliability Checks (Weight: 10%)'].push(c);
+                } else if (checkNumber >= 81 && checkNumber <= 90) {
+                    groupedChecks['Testing Plus Checks (Weight: 10%)'].push(c);
                 } else {
                     groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
@@ -1613,7 +1700,7 @@ try {
                             scan_id: String(data.scan_id || '')
                         }).toString()
                         : '';
-                    const canOpenDetails = Number(checkId) <= 60;
+                    const canOpenDetails = Number(checkId) <= 90;
 
                     const tileHtml =
                         `<div class="check-tile ${tileClass}">
@@ -1698,7 +1785,37 @@ try {
             'testing_api_response_validation': '#57 Test Pyramid API Response Validation',
             'testing_error_path_testing': '#58 Test Pyramid Error Path Testing',
             'testing_regression_coverage': '#59 Test Pyramid Regression Test Coverage',
-            'testing_organization_maintainability': '#60 Test Pyramid Test Organization and Maintainability'
+            'testing_organization_maintainability': '#60 Test Pyramid Test Organization and Maintainability',
+            'performance_nested_loops': '#61 Performance Nested Loops and Deep Iterations',
+            'performance_expensive_operations': '#62 Performance Expensive Operation Hotspots',
+            'performance_n_plus_one_patterns': '#63 Performance N+1 and Repeated Data Access Patterns',
+            'performance_repeated_api_calls': '#64 Performance Repeated External API Call Patterns',
+            'performance_blocking_operations': '#65 Performance Blocking Operation Risks',
+            'performance_unbounded_queries': '#66 Performance Unbounded Query and Scan Risks',
+            'performance_large_payloads': '#67 Performance Large Payload and Serialization Costs',
+            'performance_cache_miss_risk': '#68 Performance Cache Strategy and Miss Risks',
+            'performance_sync_io_hotspots': '#69 Performance Synchronous I/O Hotspots',
+            'performance_build_runtime_cost': '#70 Performance Build and Runtime Efficiency Controls',
+            'reliability_logging_coverage': '#71 Reliability Logging Coverage and Signal Quality',
+            'reliability_retry_strategy': '#72 Reliability Retry Strategy and Backoff Safety',
+            'reliability_timeout_controls': '#73 Reliability Timeout and Circuit Controls',
+            'reliability_exception_handling': '#74 Reliability Exception Handling Discipline',
+            'reliability_null_safety': '#75 Reliability Null Safety and Defensive Guards',
+            'reliability_resource_cleanup': '#76 Reliability Resource Cleanup and Lifecycle Safety',
+            'reliability_input_validation': '#77 Reliability Input Validation and Sanitization',
+            'reliability_idempotency': '#78 Reliability Idempotency and Duplicate Request Safety',
+            'reliability_fallback_paths': '#79 Reliability Fallback and Degradation Paths',
+            'reliability_observability_alerting': '#80 Reliability Observability and Alerting Readiness',
+            'testing_first_principles': '#81 Testing FIRST Principle Alignment',
+            'testing_aaa_pattern': '#82 Testing Arrange-Act-Assert Pattern Discipline',
+            'testing_test_data_management': '#83 Testing Test Data Management and Isolation',
+            'testing_flaky_test_risk': '#84 Testing Flaky Test Risk Detection',
+            'testing_boundary_case_coverage': '#85 Testing Boundary and Negative Path Coverage',
+            'testing_contract_validation': '#86 Testing API Contract and Response Validation',
+            'testing_security_paths': '#87 Testing Security-Critical Path Coverage',
+            'testing_performance_paths': '#88 Testing Performance-Critical Path Coverage',
+            'testing_ci_gate_readiness': '#89 Testing CI Gate and Execution Reliability',
+            'testing_suite_maintainability': '#90 Testing Suite Maintainability and Structure'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
@@ -1709,7 +1826,10 @@ try {
                 'SonarQube Rules (Code Quality)': [],
                 'Clean Code Checks (Weight: 10%)': [],
                 'Architecture Checks (Weight: 10%)': [],
-                'Testing Checks (Weight: 10%)': []
+                'Testing Checks (Weight: 10%)': [],
+                'Performance Checks (Weight: 10%)': [],
+                'Reliability Checks (Weight: 10%)': [],
+                'Testing Plus Checks (Weight: 10%)': []
             };
 
             data.selected_checks.forEach(function(checkId) {
@@ -1727,6 +1847,12 @@ try {
                     groups['Architecture Checks (Weight: 10%)'].push(friendlyName);
                 } else if (checkNumber >= 51 && checkNumber <= 60) {
                     groups['Testing Checks (Weight: 10%)'].push(friendlyName);
+                } else if (checkNumber >= 61 && checkNumber <= 70) {
+                    groups['Performance Checks (Weight: 10%)'].push(friendlyName);
+                } else if (checkNumber >= 71 && checkNumber <= 80) {
+                    groups['Reliability Checks (Weight: 10%)'].push(friendlyName);
+                } else if (checkNumber >= 81 && checkNumber <= 90) {
+                    groups['Testing Plus Checks (Weight: 10%)'].push(friendlyName);
                 } else {
                     groups['SonarQube Rules (Code Quality)'].push(friendlyName);
                 }
@@ -1920,6 +2046,76 @@ try {
         $('#checks-selection-status').text(selected + ' of ' + total + ' checks selected');
     }
 
+    function initChecksFolderView() {
+        const row = $('#analyze-repository-section .row.row-cols-1.row-cols-md-2.g-2').first();
+        if (!row.length) {
+            return;
+        }
+
+        const children = row.children('.col, .col-12');
+        let currentGroupId = '';
+        let groupIndex = 0;
+
+        children.each(function () {
+            const cell = $(this);
+            const title = cell.find('.h6.fw-bold').first();
+            const isHeader = title.length > 0;
+
+            if (isHeader) {
+                groupIndex += 1;
+                currentGroupId = 'check-folder-group-' + groupIndex;
+                cell.attr('data-folder-group', currentGroupId).addClass('checks-folder-header');
+
+                if (!title.find('.folder-caret').length) {
+                    const countSpanId = currentGroupId + '-count';
+                    title.prepend('<i class="fas fa-chevron-right folder-caret me-2" aria-hidden="true"></i>');
+                    title.append(' <span class="text-muted small" id="' + countSpanId + '"></span>');
+
+                    let groupCount = 0;
+                    let next = cell.next();
+                    while (next.length) {
+                        const nextIsHeader = next.find('.h6.fw-bold').length > 0;
+                        if (nextIsHeader) {
+                            break;
+                        }
+                        groupCount += next.find('input[name="checks[]"]').length;
+                        next = next.next();
+                    }
+                    $('#' + countSpanId).text(groupCount > 0 ? '(' + groupCount + ' skills)' : '');
+                }
+
+                return;
+            }
+
+            if (currentGroupId !== '') {
+                cell.attr('data-folder-child', currentGroupId).addClass('checks-folder-item folder-hidden');
+            }
+        });
+
+        row.on('click', '.checks-folder-header', function (event) {
+            if ($(event.target).closest('select, option, a, button, input, label').length) {
+                return;
+            }
+
+            const header = $(this);
+            const groupId = String(header.attr('data-folder-group') || '');
+            if (groupId === '') {
+                return;
+            }
+
+            const items = row.children('[data-folder-child="' + groupId + '"]');
+            const isOpen = header.hasClass('folder-open');
+
+            if (isOpen) {
+                items.addClass('folder-hidden');
+                header.removeClass('folder-open');
+            } else {
+                items.removeClass('folder-hidden');
+                header.addClass('folder-open');
+            }
+        });
+    }
+
     $('#select-all-checks').on('click', function () {
         $('input[name="checks[]"]').prop('checked', true).trigger('change');
         updateChecksSelectionStatus();
@@ -2015,6 +2211,7 @@ try {
     });
 
     initThemeToggle();
+    initChecksFolderView();
     updateChecksSelectionStatus();
     loadRememberedRepoUrl();
 </script>

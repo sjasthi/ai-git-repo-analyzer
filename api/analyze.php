@@ -25,6 +25,9 @@ require_once __DIR__ . '/checks/sonarqube/check_sonarqube.php';
 require_once __DIR__ . '/checks/clean_code/check_clean_code.php';
 require_once __DIR__ . '/checks/architecture/check_architecture.php';
 require_once __DIR__ . '/checks/testing/check_testing.php';
+require_once __DIR__ . '/checks/performance/check_performance.php';
+require_once __DIR__ . '/checks/reliability/check_reliability.php';
+require_once __DIR__ . '/checks/testing_plus/check_testing_plus.php';
 
 header('Content-Type: application/json');
 
@@ -168,6 +171,36 @@ function getCheckLabel(string $checkId): string
         'testing_error_path_testing' => '#58 Test Pyramid Error Path Testing',
         'testing_regression_coverage' => '#59 Test Pyramid Regression Test Coverage',
         'testing_organization_maintainability' => '#60 Test Pyramid Test Organization and Maintainability',
+        'performance_nested_loops' => '#61 Performance Nested Loops and Deep Iterations',
+        'performance_expensive_operations' => '#62 Performance Expensive Operation Hotspots',
+        'performance_n_plus_one_patterns' => '#63 Performance N+1 and Repeated Data Access Patterns',
+        'performance_repeated_api_calls' => '#64 Performance Repeated External API Call Patterns',
+        'performance_blocking_operations' => '#65 Performance Blocking Operation Risks',
+        'performance_unbounded_queries' => '#66 Performance Unbounded Query and Scan Risks',
+        'performance_large_payloads' => '#67 Performance Large Payload and Serialization Costs',
+        'performance_cache_miss_risk' => '#68 Performance Cache Strategy and Miss Risks',
+        'performance_sync_io_hotspots' => '#69 Performance Synchronous I/O Hotspots',
+        'performance_build_runtime_cost' => '#70 Performance Build and Runtime Efficiency Controls',
+        'reliability_logging_coverage' => '#71 Reliability Logging Coverage and Signal Quality',
+        'reliability_retry_strategy' => '#72 Reliability Retry Strategy and Backoff Safety',
+        'reliability_timeout_controls' => '#73 Reliability Timeout and Circuit Controls',
+        'reliability_exception_handling' => '#74 Reliability Exception Handling Discipline',
+        'reliability_null_safety' => '#75 Reliability Null Safety and Defensive Guards',
+        'reliability_resource_cleanup' => '#76 Reliability Resource Cleanup and Lifecycle Safety',
+        'reliability_input_validation' => '#77 Reliability Input Validation and Sanitization',
+        'reliability_idempotency' => '#78 Reliability Idempotency and Duplicate Request Safety',
+        'reliability_fallback_paths' => '#79 Reliability Fallback and Degradation Paths',
+        'reliability_observability_alerting' => '#80 Reliability Observability and Alerting Readiness',
+        'testing_first_principles' => '#81 Testing FIRST Principle Alignment',
+        'testing_aaa_pattern' => '#82 Testing Arrange-Act-Assert Pattern Discipline',
+        'testing_test_data_management' => '#83 Testing Test Data Management and Isolation',
+        'testing_flaky_test_risk' => '#84 Testing Flaky Test Risk Detection',
+        'testing_boundary_case_coverage' => '#85 Testing Boundary and Negative Path Coverage',
+        'testing_contract_validation' => '#86 Testing API Contract and Response Validation',
+        'testing_security_paths' => '#87 Testing Security-Critical Path Coverage',
+        'testing_performance_paths' => '#88 Testing Performance-Critical Path Coverage',
+        'testing_ci_gate_readiness' => '#89 Testing CI Gate and Execution Reliability',
+        'testing_suite_maintainability' => '#90 Testing Suite Maintainability and Structure',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -455,6 +488,15 @@ if (!$checksWereProvided) {
         'testing_unit_coverage', 'testing_integration_coverage', 'testing_end_to_end_coverage', 'testing_fast_feedback',
         'testing_mocking_external_apis', 'testing_database_isolation', 'testing_api_response_validation', 'testing_error_path_testing',
         'testing_regression_coverage', 'testing_organization_maintainability',
+        'performance_nested_loops', 'performance_expensive_operations', 'performance_n_plus_one_patterns', 'performance_repeated_api_calls',
+        'performance_blocking_operations', 'performance_unbounded_queries', 'performance_large_payloads', 'performance_cache_miss_risk',
+        'performance_sync_io_hotspots', 'performance_build_runtime_cost',
+        'reliability_logging_coverage', 'reliability_retry_strategy', 'reliability_timeout_controls', 'reliability_exception_handling',
+        'reliability_null_safety', 'reliability_resource_cleanup', 'reliability_input_validation', 'reliability_idempotency',
+        'reliability_fallback_paths', 'reliability_observability_alerting',
+        'testing_first_principles', 'testing_aaa_pattern', 'testing_test_data_management', 'testing_flaky_test_risk',
+        'testing_boundary_case_coverage', 'testing_contract_validation', 'testing_security_paths', 'testing_performance_paths',
+        'testing_ci_gate_readiness', 'testing_suite_maintainability',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -571,6 +613,36 @@ $newCheckMap = [
     'testing_error_path_testing' => ['#58 Test Pyramid Error Path Testing', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_error_path_testing')],
     'testing_regression_coverage' => ['#59 Test Pyramid Regression Test Coverage', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_regression_coverage')],
     'testing_organization_maintainability' => ['#60 Test Pyramid Test Organization and Maintainability', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_organization_maintainability')],
+    'performance_nested_loops' => ['#61 Performance Nested Loops and Deep Iterations', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_nested_loops')],
+    'performance_expensive_operations' => ['#62 Performance Expensive Operation Hotspots', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_expensive_operations')],
+    'performance_n_plus_one_patterns' => ['#63 Performance N+1 and Repeated Data Access Patterns', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_n_plus_one_patterns')],
+    'performance_repeated_api_calls' => ['#64 Performance Repeated External API Call Patterns', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_repeated_api_calls')],
+    'performance_blocking_operations' => ['#65 Performance Blocking Operation Risks', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_blocking_operations')],
+    'performance_unbounded_queries' => ['#66 Performance Unbounded Query and Scan Risks', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_unbounded_queries')],
+    'performance_large_payloads' => ['#67 Performance Large Payload and Serialization Costs', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_large_payloads')],
+    'performance_cache_miss_risk' => ['#68 Performance Cache Strategy and Miss Risks', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_cache_miss_risk')],
+    'performance_sync_io_hotspots' => ['#69 Performance Synchronous I/O Hotspots', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_sync_io_hotspots')],
+    'performance_build_runtime_cost' => ['#70 Performance Build and Runtime Efficiency Controls', fn() => check_performance($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'performance_build_runtime_cost')],
+    'reliability_logging_coverage' => ['#71 Reliability Logging Coverage and Signal Quality', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_logging_coverage')],
+    'reliability_retry_strategy' => ['#72 Reliability Retry Strategy and Backoff Safety', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_retry_strategy')],
+    'reliability_timeout_controls' => ['#73 Reliability Timeout and Circuit Controls', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_timeout_controls')],
+    'reliability_exception_handling' => ['#74 Reliability Exception Handling Discipline', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_exception_handling')],
+    'reliability_null_safety' => ['#75 Reliability Null Safety and Defensive Guards', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_null_safety')],
+    'reliability_resource_cleanup' => ['#76 Reliability Resource Cleanup and Lifecycle Safety', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_resource_cleanup')],
+    'reliability_input_validation' => ['#77 Reliability Input Validation and Sanitization', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_input_validation')],
+    'reliability_idempotency' => ['#78 Reliability Idempotency and Duplicate Request Safety', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_idempotency')],
+    'reliability_fallback_paths' => ['#79 Reliability Fallback and Degradation Paths', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_fallback_paths')],
+    'reliability_observability_alerting' => ['#80 Reliability Observability and Alerting Readiness', fn() => check_reliability($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'reliability_observability_alerting')],
+    'testing_first_principles' => ['#81 Testing FIRST Principle Alignment', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_first_principles')],
+    'testing_aaa_pattern' => ['#82 Testing Arrange-Act-Assert Pattern Discipline', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_aaa_pattern')],
+    'testing_test_data_management' => ['#83 Testing Test Data Management and Isolation', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_test_data_management')],
+    'testing_flaky_test_risk' => ['#84 Testing Flaky Test Risk Detection', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_flaky_test_risk')],
+    'testing_boundary_case_coverage' => ['#85 Testing Boundary and Negative Path Coverage', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_boundary_case_coverage')],
+    'testing_contract_validation' => ['#86 Testing API Contract and Response Validation', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_contract_validation')],
+    'testing_security_paths' => ['#87 Testing Security-Critical Path Coverage', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_security_paths')],
+    'testing_performance_paths' => ['#88 Testing Performance-Critical Path Coverage', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_performance_paths')],
+    'testing_ci_gate_readiness' => ['#89 Testing CI Gate and Execution Reliability', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_ci_gate_readiness')],
+    'testing_suite_maintainability' => ['#90 Testing Suite Maintainability and Structure', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_suite_maintainability')],
 ];
 
 foreach ($selectedChecks as $checkId) {

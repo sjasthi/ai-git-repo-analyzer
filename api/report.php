@@ -68,7 +68,7 @@ function checkDetailIdFromName(string $checkName): ?string
 {
     $normalized = strtolower(trim($checkName));
 
-    if (preg_match('/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
+    if (preg_match('/#\s*(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
         return (string) $numberMatch[1];
     }
 
@@ -653,6 +653,36 @@ function findingsByCheckCategoryMap(): array
         '28' => ['Complexity'],
         '29' => ['Complexity', 'Code Quality'],
         '30' => ['Complexity', 'Duplication', 'Code Quality'],
+        '61' => ['Performance'],
+        '62' => ['Performance'],
+        '63' => ['Performance'],
+        '64' => ['Performance'],
+        '65' => ['Performance'],
+        '66' => ['Performance'],
+        '67' => ['Performance'],
+        '68' => ['Performance'],
+        '69' => ['Performance'],
+        '70' => ['Performance'],
+        '71' => ['Reliability'],
+        '72' => ['Reliability'],
+        '73' => ['Reliability'],
+        '74' => ['Reliability'],
+        '75' => ['Reliability'],
+        '76' => ['Reliability'],
+        '77' => ['Reliability'],
+        '78' => ['Reliability'],
+        '79' => ['Reliability'],
+        '80' => ['Reliability'],
+        '81' => ['Testing'],
+        '82' => ['Testing'],
+        '83' => ['Testing'],
+        '84' => ['Testing'],
+        '85' => ['Testing'],
+        '86' => ['Testing'],
+        '87' => ['Testing'],
+        '88' => ['Testing'],
+        '89' => ['Testing'],
+        '90' => ['Testing'],
     ];
 }
 
@@ -689,6 +719,36 @@ function recommendationKeywordsByCheckMap(): array
         '28' => ['error handling', 'defensive', 'guard', 'fallback'],
         '29' => ['technical debt', 'remediation', 'backlog', 'maintainability'],
         '30' => ['quality gate', 'compliance', 'threshold', 'severity'],
+        '61' => ['performance', 'nested', 'loop', 'iteration', 'complexity'],
+        '62' => ['performance', 'expensive', 'operation', 'hotspot', 'cost'],
+        '63' => ['performance', 'n+1', 'duplicate', 'query', 'access'],
+        '64' => ['performance', 'api', 'repeated', 'network', 'call'],
+        '65' => ['performance', 'blocking', 'sync', 'operation', 'latency'],
+        '66' => ['performance', 'unbounded', 'scan', 'query', 'pagination'],
+        '67' => ['performance', 'payload', 'serialization', 'size', 'transport'],
+        '68' => ['performance', 'cache', 'miss', 'reuse', 'memoization'],
+        '69' => ['performance', 'sync io', 'io', 'hotspot', 'latency'],
+        '70' => ['performance', 'build', 'runtime', 'efficiency', 'pipeline'],
+        '71' => ['reliability', 'logging', 'signal', 'trace', 'audit'],
+        '72' => ['reliability', 'retry', 'backoff', 'transient', 'resilience'],
+        '73' => ['reliability', 'timeout', 'circuit', 'limit', 'latency'],
+        '74' => ['reliability', 'exception', 'error handling', 'failure', 'guard'],
+        '75' => ['reliability', 'null', 'defensive', 'guard', 'validation'],
+        '76' => ['reliability', 'cleanup', 'resource', 'lifecycle', 'release'],
+        '77' => ['reliability', 'validation', 'input', 'sanitize', 'boundary'],
+        '78' => ['reliability', 'idempotency', 'duplicate', 'request', 'safe'],
+        '79' => ['reliability', 'fallback', 'degradation', 'resilience', 'backup'],
+        '80' => ['reliability', 'observability', 'alert', 'monitor', 'slo'],
+        '81' => ['testing', 'first', 'fast', 'isolated', 'repeatable'],
+        '82' => ['testing', 'aaa', 'arrange', 'act', 'assert'],
+        '83' => ['testing', 'data', 'fixture', 'isolation', 'deterministic'],
+        '84' => ['testing', 'flaky', 'stability', 'timing', 'determinism'],
+        '85' => ['testing', 'boundary', 'negative', 'error', 'invalid'],
+        '86' => ['testing', 'contract', 'api', 'schema', 'response'],
+        '87' => ['testing', 'security', 'auth', 'permission', 'abuse'],
+        '88' => ['testing', 'performance', 'latency', 'throughput', 'hot path'],
+        '89' => ['testing', 'ci', 'gate', 'pipeline', 'merge'],
+        '90' => ['testing', 'suite', 'maintainability', 'structure', 'organization'],
     ];
 }
 
@@ -830,6 +890,36 @@ try {
         'testing_error_path_testing' => '#58 Test Pyramid Error Path Testing',
         'testing_regression_coverage' => '#59 Test Pyramid Regression Test Coverage',
         'testing_organization_maintainability' => '#60 Test Pyramid Test Organization and Maintainability',
+        'performance_nested_loops' => '#61 Performance Nested Loops and Deep Iterations',
+        'performance_expensive_operations' => '#62 Performance Expensive Operation Hotspots',
+        'performance_n_plus_one_patterns' => '#63 Performance N+1 and Repeated Data Access Patterns',
+        'performance_repeated_api_calls' => '#64 Performance Repeated External API Call Patterns',
+        'performance_blocking_operations' => '#65 Performance Blocking Operation Risks',
+        'performance_unbounded_queries' => '#66 Performance Unbounded Query and Scan Risks',
+        'performance_large_payloads' => '#67 Performance Large Payload and Serialization Costs',
+        'performance_cache_miss_risk' => '#68 Performance Cache Strategy and Miss Risks',
+        'performance_sync_io_hotspots' => '#69 Performance Synchronous I/O Hotspots',
+        'performance_build_runtime_cost' => '#70 Performance Build and Runtime Efficiency Controls',
+        'reliability_logging_coverage' => '#71 Reliability Logging Coverage and Signal Quality',
+        'reliability_retry_strategy' => '#72 Reliability Retry Strategy and Backoff Safety',
+        'reliability_timeout_controls' => '#73 Reliability Timeout and Circuit Controls',
+        'reliability_exception_handling' => '#74 Reliability Exception Handling Discipline',
+        'reliability_null_safety' => '#75 Reliability Null Safety and Defensive Guards',
+        'reliability_resource_cleanup' => '#76 Reliability Resource Cleanup and Lifecycle Safety',
+        'reliability_input_validation' => '#77 Reliability Input Validation and Sanitization',
+        'reliability_idempotency' => '#78 Reliability Idempotency and Duplicate Request Safety',
+        'reliability_fallback_paths' => '#79 Reliability Fallback and Degradation Paths',
+        'reliability_observability_alerting' => '#80 Reliability Observability and Alerting Readiness',
+        'testing_first_principles' => '#81 Testing FIRST Principle Alignment',
+        'testing_aaa_pattern' => '#82 Testing Arrange-Act-Assert Pattern Discipline',
+        'testing_test_data_management' => '#83 Testing Test Data Management and Isolation',
+        'testing_flaky_test_risk' => '#84 Testing Flaky Test Risk Detection',
+        'testing_boundary_case_coverage' => '#85 Testing Boundary and Negative Path Coverage',
+        'testing_contract_validation' => '#86 Testing API Contract and Response Validation',
+        'testing_security_paths' => '#87 Testing Security-Critical Path Coverage',
+        'testing_performance_paths' => '#88 Testing Performance-Critical Path Coverage',
+        'testing_ci_gate_readiness' => '#89 Testing CI Gate and Execution Reliability',
+        'testing_suite_maintainability' => '#90 Testing Suite Maintainability and Structure',
     ];
 
     $selectedCheckLabels = [];
@@ -850,7 +940,7 @@ try {
     foreach ($checkLabels as $id => $label) {
         $labelRaw = preg_replace('/\s*\([^)]*\)\s*$/', '', $label);
         $labelCheckId = null;
-        if (preg_match('/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
+        if (preg_match('/#\s*(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
             $labelCheckId = (string) $numberMatch[1];
         }
 
@@ -1012,6 +1102,9 @@ try {
             'Clean Code Checks (Weight: 10%)' => [],
             'Architecture Checks (Weight: 10%)' => [],
             'Testing Checks (Weight: 10%)' => [],
+            'Performance Checks (Weight: 10%)' => [],
+            'Reliability Checks (Weight: 10%)' => [],
+            'Testing Plus Checks (Weight: 10%)' => [],
         ];
         foreach ($selectedCheckLabels as $check) {
             $number = 0;
@@ -1028,6 +1121,12 @@ try {
                 $selectedGroups['Architecture Checks (Weight: 10%)'][] = (string) $check;
             } elseif ($number >= 51 && $number <= 60) {
                 $selectedGroups['Testing Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 61 && $number <= 70) {
+                $selectedGroups['Performance Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 71 && $number <= 80) {
+                $selectedGroups['Reliability Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 81 && $number <= 90) {
+                $selectedGroups['Testing Plus Checks (Weight: 10%)'][] = (string) $check;
             } else {
                 $selectedGroups['SonarQube Rules (Code Quality)'][] = (string) $check;
             }
@@ -1058,6 +1157,9 @@ try {
             'Clean Code Checks (Weight: 10%)' => [],
             'Architecture Checks (Weight: 10%)' => [],
             'Testing Checks (Weight: 10%)' => [],
+            'Performance Checks (Weight: 10%)' => [],
+            'Reliability Checks (Weight: 10%)' => [],
+            'Testing Plus Checks (Weight: 10%)' => [],
         ];
 
         foreach ($checkRuns as $cr) {
@@ -1076,6 +1178,12 @@ try {
                 $analysisGroups['Architecture Checks (Weight: 10%)'][] = $cr;
             } elseif ($num >= 51 && $num <= 60) {
                 $analysisGroups['Testing Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 61 && $num <= 70) {
+                $analysisGroups['Performance Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 71 && $num <= 80) {
+                $analysisGroups['Reliability Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 81 && $num <= 90) {
+                $analysisGroups['Testing Plus Checks (Weight: 10%)'][] = $cr;
             } else {
                 $analysisGroups['SonarQube Rules (Code Quality)'][] = $cr;
             }
@@ -1096,7 +1204,7 @@ try {
             $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
             $detailsUrl = '';
             $checkId = checkDetailIdFromName($checkNameRaw);
-            if ($checkId !== null && (int) $checkId <= 60) {
+            if ($checkId !== null && (int) $checkId <= 90) {
                 $detailsUrl = absoluteCheckDetailsUrl([
                     'check_id' => $checkId,
                     'name' => $checkNameRaw,
