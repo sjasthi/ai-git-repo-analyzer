@@ -823,6 +823,288 @@ try {
                                         <a href="check_insecure_design.php?check_id=30" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
                                     </div>
                                 </div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1 text-start">Clean Code Checks (Weight: 10%)</div>
+                                    <div class="small text-muted mb-1">Robert C. Martin's Clean Code principles</div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_solid" id="clean_code_1" checked>
+                                            <label class="form-check-label" for="clean_code_1"><strong>#31</strong> SOLID Principles</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=31" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_dry" id="clean_code_2" checked>
+                                            <label class="form-check-label" for="clean_code_2"><strong>#32</strong> DRY Principle</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=32" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_kiss" id="clean_code_3" checked>
+                                            <label class="form-check-label" for="clean_code_3"><strong>#33</strong> KISS Principle</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=33" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_yagni" id="clean_code_4" checked>
+                                            <label class="form-check-label" for="clean_code_4"><strong>#34</strong> YAGNI Principle</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=34" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_single_responsibility" id="clean_code_5" checked>
+                                            <label class="form-check-label" for="clean_code_5"><strong>#35</strong> Single Responsibility</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=35" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_separation_of_concerns" id="clean_code_6" checked>
+                                            <label class="form-check-label" for="clean_code_6"><strong>#36</strong> Separation of Concerns</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=36" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_meaningful_names" id="clean_code_7" checked>
+                                            <label class="form-check-label" for="clean_code_7"><strong>#37</strong> Meaningful Naming</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=37" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_small_functions" id="clean_code_8" checked>
+                                            <label class="form-check-label" for="clean_code_8"><strong>#38</strong> Small Functions</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=38" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_formatting" id="clean_code_9" checked>
+                                            <label class="form-check-label" for="clean_code_9"><strong>#39</strong> Consistent Formatting</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=39" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="clean_code_error_handling" id="clean_code_10" checked>
+                                            <label class="form-check-label" for="clean_code_10"><strong>#40</strong> Explicit Error Handling</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=40" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1 text-start">Architecture Checks (Weight: 10%)</div>
+                                    <div class="small text-muted mb-1">Robert C. Martin's Clean Architecture</div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_layered_boundaries" id="architecture_1" checked>
+                                            <label class="form-check-label" for="architecture_1"><strong>#41</strong> Clean Architecture Layered Boundaries</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=41" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_dependency_rule" id="architecture_2" checked>
+                                            <label class="form-check-label" for="architecture_2"><strong>#42</strong> Clean Architecture Dependency Rule</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=42" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_framework_independence" id="architecture_3" checked>
+                                            <label class="form-check-label" for="architecture_3"><strong>#43</strong> Clean Architecture Framework Independence</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=43" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_presentation_isolation" id="architecture_4" checked>
+                                            <label class="form-check-label" for="architecture_4"><strong>#44</strong> Clean Architecture Presentation Isolation</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=44" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_use_case_separation" id="architecture_5" checked>
+                                            <label class="form-check-label" for="architecture_5"><strong>#45</strong> Clean Architecture Use Case Separation</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=45" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_domain_purity" id="architecture_6" checked>
+                                            <label class="form-check-label" for="architecture_6"><strong>#46</strong> Clean Architecture Domain Purity</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=46" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_data_access_abstraction" id="architecture_7" checked>
+                                            <label class="form-check-label" for="architecture_7"><strong>#47</strong> Clean Architecture Data Access Abstraction</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=47" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_interface_adapter_separation" id="architecture_8" checked>
+                                            <label class="form-check-label" for="architecture_8"><strong>#48</strong> Clean Architecture Interface Adapter Separation</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=48" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_package_cohesion" id="architecture_9" checked>
+                                            <label class="form-check-label" for="architecture_9"><strong>#49</strong> Clean Architecture Package Cohesion</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=49" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="architecture_no_cyclic_dependencies" id="architecture_10" checked>
+                                            <label class="form-check-label" for="architecture_10"><strong>#50</strong> Clean Architecture No Cyclic Dependencies</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=50" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="h6 fw-bold mb-1 text-start">Testing Checks (Weight: 10%)</div>
+                                    <div class="small text-muted mb-1">Test Pyramid</div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_unit_coverage" id="testing_1" checked>
+                                            <label class="form-check-label" for="testing_1"><strong>#51</strong> Test Pyramid Unit Coverage</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=51" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_integration_coverage" id="testing_2" checked>
+                                            <label class="form-check-label" for="testing_2"><strong>#52</strong> Test Pyramid Integration Coverage</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=52" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_end_to_end_coverage" id="testing_3" checked>
+                                            <label class="form-check-label" for="testing_3"><strong>#53</strong> Test Pyramid End-to-End Coverage</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=53" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_fast_feedback" id="testing_4" checked>
+                                            <label class="form-check-label" for="testing_4"><strong>#54</strong> Test Pyramid Fast Feedback</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=54" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_mocking_external_apis" id="testing_5" checked>
+                                            <label class="form-check-label" for="testing_5"><strong>#55</strong> Test Pyramid Mocking External APIs</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=55" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_database_isolation" id="testing_6" checked>
+                                            <label class="form-check-label" for="testing_6"><strong>#56</strong> Test Pyramid Database Test Isolation</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=56" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_api_response_validation" id="testing_7" checked>
+                                            <label class="form-check-label" for="testing_7"><strong>#57</strong> Test Pyramid API Response Validation</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=57" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_error_path_testing" id="testing_8" checked>
+                                            <label class="form-check-label" for="testing_8"><strong>#58</strong> Test Pyramid Error Path Testing</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=58" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_regression_coverage" id="testing_9" checked>
+                                            <label class="form-check-label" for="testing_9"><strong>#59</strong> Test Pyramid Regression Test Coverage</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=59" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <input class="form-check-input" type="checkbox" name="checks[]" value="testing_organization_maintainability" id="testing_10" checked>
+                                            <label class="form-check-label" for="testing_10"><strong>#60</strong> Test Pyramid Test Organization and Maintainability</label>
+                                        </div>
+                                        <a href="check_insecure_design.php?check_id=60" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1044,6 +1326,7 @@ try {
         'OWASP':           'fa-shield-alt',
         'Dependencies':    'fa-box-open',
         'Complexity':      'fa-project-diagram',
+        'Architecture':    'fa-layer-group',
         'File Summary':    'fa-folder-open',
         'Code Quality':    'fa-clipboard-list',
         'License':         'fa-file-contract',
@@ -1059,7 +1342,7 @@ try {
     function checkDetailIdFromName(name) {
         const text = String(name || '').toLowerCase();
 
-        const numMatch = text.match(/#\s*(30|2[0-9]|1[0-9]|[1-9])/);
+        const numMatch = text.match(/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/);
         if (numMatch && numMatch[1]) {
             return numMatch[1];
         }
@@ -1085,6 +1368,36 @@ try {
             ['28', /#?28\s*sonarqube error handling and defensive coding patterns|error handling and defensive coding patterns/],
             ['29', /#?29\s*sonarqube technical debt and remediation tracking|technical debt and remediation tracking/],
             ['30', /#?30\s*sonarqube quality gate compliance summary|quality gate compliance summary/],
+            ['31', /#?31\s*clean code solid principles|solid principles/],
+            ['32', /#?32\s*clean code dry principle|dry principle/],
+            ['33', /#?33\s*clean code kiss principle|kiss principle/],
+            ['34', /#?34\s*clean code yagni principle|yagni principle/],
+            ['35', /#?35\s*clean code single responsibility|single responsibility/],
+            ['36', /#?36\s*clean code separation of concerns|separation of concerns/],
+            ['37', /#?37\s*clean code meaningful naming|meaningful naming/],
+            ['38', /#?38\s*clean code small functions|small functions/],
+            ['39', /#?39\s*clean code consistent formatting|consistent formatting/],
+            ['40', /#?40\s*clean code explicit error handling|explicit error handling/],
+            ['41', /#?41\s*clean architecture layered boundaries|layered boundaries/],
+            ['42', /#?42\s*clean architecture dependency rule|dependency rule/],
+            ['43', /#?43\s*clean architecture framework independence|framework independence/],
+            ['44', /#?44\s*clean architecture presentation isolation|presentation isolation/],
+            ['45', /#?45\s*clean architecture use case separation|use case separation/],
+            ['46', /#?46\s*clean architecture domain purity|domain purity/],
+            ['47', /#?47\s*clean architecture data access abstraction|data access abstraction/],
+            ['48', /#?48\s*clean architecture interface adapter separation|interface adapter separation/],
+            ['49', /#?49\s*clean architecture package cohesion|package cohesion/],
+            ['50', /#?50\s*clean architecture no cyclic dependencies|no cyclic dependencies/],
+            ['51', /#?51\s*test pyramid unit coverage|unit coverage/],
+            ['52', /#?52\s*test pyramid integration coverage|integration coverage/],
+            ['53', /#?53\s*test pyramid end-to-end coverage|end-to-end coverage/],
+            ['54', /#?54\s*test pyramid fast feedback|fast feedback/],
+            ['55', /#?55\s*test pyramid mocking external apis|mocking external apis/],
+            ['56', /#?56\s*test pyramid database test isolation|database test isolation/],
+            ['57', /#?57\s*test pyramid api response validation|api response validation/],
+            ['58', /#?58\s*test pyramid error path testing|error path testing/],
+            ['59', /#?59\s*test pyramid regression test coverage|regression test coverage/],
+            ['60', /#?60\s*test pyramid test organization and maintainability|test organization and maintainability/],
         ];
 
         for (const entry of checks) {
@@ -1114,7 +1427,7 @@ try {
             params.set('scan_id', String(scanId));
         }
 
-        if (Number(checkId) > 30) {
+        if (Number(checkId) > 60) {
             return '';
         }
 
@@ -1233,7 +1546,10 @@ try {
             const groupedChecks = {
                 'OWASP Checks': [],
                 'Complexity Checks': [],
-                'SonarQube Rules (Code Quality)': []
+                'SonarQube Rules (Code Quality)': [],
+                'Clean Code Checks (Weight: 10%)': [],
+                'Architecture Checks (Weight: 10%)': [],
+                'Testing Checks (Weight: 10%)': []
             };
 
             checksToRender.forEach(function(c) {
@@ -1248,6 +1564,12 @@ try {
                     groupedChecks['OWASP Checks'].push(c);
                 } else if (checkNumber >= 11 && checkNumber <= 20) {
                     groupedChecks['Complexity Checks'].push(c);
+                } else if (checkNumber >= 31 && checkNumber <= 40) {
+                    groupedChecks['Clean Code Checks (Weight: 10%)'].push(c);
+                } else if (checkNumber >= 41 && checkNumber <= 50) {
+                    groupedChecks['Architecture Checks (Weight: 10%)'].push(c);
+                } else if (checkNumber >= 51 && checkNumber <= 60) {
+                    groupedChecks['Testing Checks (Weight: 10%)'].push(c);
                 } else {
                     groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
@@ -1291,7 +1613,7 @@ try {
                             scan_id: String(data.scan_id || '')
                         }).toString()
                         : '';
-                    const canOpenDetails = Number(checkId) <= 30;
+                    const canOpenDetails = Number(checkId) <= 60;
 
                     const tileHtml =
                         `<div class="check-tile ${tileClass}">
@@ -1346,7 +1668,37 @@ try {
             'sonar_dead_code': '#27 SonarQube Dead or Commented-Out Code Detection',
             'sonar_error_handling': '#28 SonarQube Error Handling and Defensive Coding Patterns',
             'sonar_technical_debt': '#29 SonarQube Technical Debt and Remediation Tracking',
-            'sonar_quality_gate_summary': '#30 SonarQube Quality Gate Compliance Summary'
+            'sonar_quality_gate_summary': '#30 SonarQube Quality Gate Compliance Summary',
+            'clean_code_solid': '#31 Clean Code SOLID Principles',
+            'clean_code_dry': '#32 Clean Code DRY Principle',
+            'clean_code_kiss': '#33 Clean Code KISS Principle',
+            'clean_code_yagni': '#34 Clean Code YAGNI Principle',
+            'clean_code_single_responsibility': '#35 Clean Code Single Responsibility',
+            'clean_code_separation_of_concerns': '#36 Clean Code Separation of Concerns',
+            'clean_code_meaningful_names': '#37 Clean Code Meaningful Naming',
+            'clean_code_small_functions': '#38 Clean Code Small Functions',
+            'clean_code_formatting': '#39 Clean Code Consistent Formatting',
+            'clean_code_error_handling': '#40 Clean Code Explicit Error Handling',
+            'architecture_layered_boundaries': '#41 Clean Architecture Layered Boundaries',
+            'architecture_dependency_rule': '#42 Clean Architecture Dependency Rule',
+            'architecture_framework_independence': '#43 Clean Architecture Framework Independence',
+            'architecture_presentation_isolation': '#44 Clean Architecture Presentation Isolation',
+            'architecture_use_case_separation': '#45 Clean Architecture Use Case Separation',
+            'architecture_domain_purity': '#46 Clean Architecture Domain Purity',
+            'architecture_data_access_abstraction': '#47 Clean Architecture Data Access Abstraction',
+            'architecture_interface_adapter_separation': '#48 Clean Architecture Interface Adapter Separation',
+            'architecture_package_cohesion': '#49 Clean Architecture Package Cohesion',
+            'architecture_no_cyclic_dependencies': '#50 Clean Architecture No Cyclic Dependencies',
+            'testing_unit_coverage': '#51 Test Pyramid Unit Coverage',
+            'testing_integration_coverage': '#52 Test Pyramid Integration Coverage',
+            'testing_end_to_end_coverage': '#53 Test Pyramid End-to-End Coverage',
+            'testing_fast_feedback': '#54 Test Pyramid Fast Feedback',
+            'testing_mocking_external_apis': '#55 Test Pyramid Mocking External APIs',
+            'testing_database_isolation': '#56 Test Pyramid Database Test Isolation',
+            'testing_api_response_validation': '#57 Test Pyramid API Response Validation',
+            'testing_error_path_testing': '#58 Test Pyramid Error Path Testing',
+            'testing_regression_coverage': '#59 Test Pyramid Regression Test Coverage',
+            'testing_organization_maintainability': '#60 Test Pyramid Test Organization and Maintainability'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
@@ -1354,7 +1706,10 @@ try {
             const groups = {
                 'OWASP Checks': [],
                 'Complexity Checks': [],
-                'SonarQube Rules (Code Quality)': []
+                'SonarQube Rules (Code Quality)': [],
+                'Clean Code Checks (Weight: 10%)': [],
+                'Architecture Checks (Weight: 10%)': [],
+                'Testing Checks (Weight: 10%)': []
             };
 
             data.selected_checks.forEach(function(checkId) {
@@ -1366,6 +1721,12 @@ try {
                     groups['OWASP Checks'].push(friendlyName);
                 } else if (checkNumber >= 11 && checkNumber <= 20) {
                     groups['Complexity Checks'].push(friendlyName);
+                } else if (checkNumber >= 31 && checkNumber <= 40) {
+                    groups['Clean Code Checks (Weight: 10%)'].push(friendlyName);
+                } else if (checkNumber >= 41 && checkNumber <= 50) {
+                    groups['Architecture Checks (Weight: 10%)'].push(friendlyName);
+                } else if (checkNumber >= 51 && checkNumber <= 60) {
+                    groups['Testing Checks (Weight: 10%)'].push(friendlyName);
                 } else {
                     groups['SonarQube Rules (Code Quality)'].push(friendlyName);
                 }

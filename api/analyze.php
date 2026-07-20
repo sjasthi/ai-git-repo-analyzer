@@ -22,6 +22,9 @@ require_once __DIR__ . '/checks/check_ci_cd_integrity.php';
 require_once __DIR__ . '/checks/check_logging_monitoring.php';
 require_once __DIR__ . '/checks/complexity/check_complexity_metrics.php';
 require_once __DIR__ . '/checks/sonarqube/check_sonarqube.php';
+require_once __DIR__ . '/checks/clean_code/check_clean_code.php';
+require_once __DIR__ . '/checks/architecture/check_architecture.php';
+require_once __DIR__ . '/checks/testing/check_testing.php';
 
 header('Content-Type: application/json');
 
@@ -135,6 +138,36 @@ function getCheckLabel(string $checkId): string
         'sonar_error_handling' => '#28 SonarQube Error Handling and Defensive Coding Patterns',
         'sonar_technical_debt' => '#29 SonarQube Technical Debt and Remediation Tracking',
         'sonar_quality_gate_summary' => '#30 SonarQube Quality Gate Compliance Summary',
+        'clean_code_solid' => '#31 Clean Code SOLID Principles',
+        'clean_code_dry' => '#32 Clean Code DRY Principle',
+        'clean_code_kiss' => '#33 Clean Code KISS Principle',
+        'clean_code_yagni' => '#34 Clean Code YAGNI Principle',
+        'clean_code_single_responsibility' => '#35 Clean Code Single Responsibility',
+        'clean_code_separation_of_concerns' => '#36 Clean Code Separation of Concerns',
+        'clean_code_meaningful_names' => '#37 Clean Code Meaningful Naming',
+        'clean_code_small_functions' => '#38 Clean Code Small Functions',
+        'clean_code_formatting' => '#39 Clean Code Consistent Formatting',
+        'clean_code_error_handling' => '#40 Clean Code Explicit Error Handling',
+        'architecture_layered_boundaries' => '#41 Clean Architecture Layered Boundaries',
+        'architecture_dependency_rule' => '#42 Clean Architecture Dependency Rule',
+        'architecture_framework_independence' => '#43 Clean Architecture Framework Independence',
+        'architecture_presentation_isolation' => '#44 Clean Architecture Presentation Isolation',
+        'architecture_use_case_separation' => '#45 Clean Architecture Use Case Separation',
+        'architecture_domain_purity' => '#46 Clean Architecture Domain Purity',
+        'architecture_data_access_abstraction' => '#47 Clean Architecture Data Access Abstraction',
+        'architecture_interface_adapter_separation' => '#48 Clean Architecture Interface Adapter Separation',
+        'architecture_package_cohesion' => '#49 Clean Architecture Package Cohesion',
+        'architecture_no_cyclic_dependencies' => '#50 Clean Architecture No Cyclic Dependencies',
+        'testing_unit_coverage' => '#51 Test Pyramid Unit Coverage',
+        'testing_integration_coverage' => '#52 Test Pyramid Integration Coverage',
+        'testing_end_to_end_coverage' => '#53 Test Pyramid End-to-End Coverage',
+        'testing_fast_feedback' => '#54 Test Pyramid Fast Feedback',
+        'testing_mocking_external_apis' => '#55 Test Pyramid Mocking External APIs',
+        'testing_database_isolation' => '#56 Test Pyramid Database Test Isolation',
+        'testing_api_response_validation' => '#57 Test Pyramid API Response Validation',
+        'testing_error_path_testing' => '#58 Test Pyramid Error Path Testing',
+        'testing_regression_coverage' => '#59 Test Pyramid Regression Test Coverage',
+        'testing_organization_maintainability' => '#60 Test Pyramid Test Organization and Maintainability',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -413,6 +446,15 @@ if (!$checksWereProvided) {
         'sonar_bugs_reliability', 'sonar_code_smells', 'sonar_duplication_detection', 'sonar_complexity_limits',
         'sonar_size_control', 'sonar_naming_readability', 'sonar_dead_code', 'sonar_error_handling',
         'sonar_technical_debt', 'sonar_quality_gate_summary',
+        'clean_code_solid', 'clean_code_dry', 'clean_code_kiss', 'clean_code_yagni',
+        'clean_code_single_responsibility', 'clean_code_separation_of_concerns',
+        'clean_code_meaningful_names', 'clean_code_small_functions', 'clean_code_formatting', 'clean_code_error_handling',
+        'architecture_layered_boundaries', 'architecture_dependency_rule', 'architecture_framework_independence', 'architecture_presentation_isolation',
+        'architecture_use_case_separation', 'architecture_domain_purity', 'architecture_data_access_abstraction', 'architecture_interface_adapter_separation',
+        'architecture_package_cohesion', 'architecture_no_cyclic_dependencies',
+        'testing_unit_coverage', 'testing_integration_coverage', 'testing_end_to_end_coverage', 'testing_fast_feedback',
+        'testing_mocking_external_apis', 'testing_database_isolation', 'testing_api_response_validation', 'testing_error_path_testing',
+        'testing_regression_coverage', 'testing_organization_maintainability',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -499,6 +541,36 @@ $newCheckMap = [
     'sonar_error_handling' => ['#28 SonarQube Error Handling and Defensive Coding Patterns', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_error_handling')],
     'sonar_technical_debt' => ['#29 SonarQube Technical Debt and Remediation Tracking', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_technical_debt')],
     'sonar_quality_gate_summary' => ['#30 SonarQube Quality Gate Compliance Summary', fn() => check_sonarqube_rule($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'sonar_quality_gate_summary')],
+    'clean_code_solid' => ['#31 Clean Code SOLID Principles', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_solid')],
+    'clean_code_dry' => ['#32 Clean Code DRY Principle', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_dry')],
+    'clean_code_kiss' => ['#33 Clean Code KISS Principle', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_kiss')],
+    'clean_code_yagni' => ['#34 Clean Code YAGNI Principle', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_yagni')],
+    'clean_code_single_responsibility' => ['#35 Clean Code Single Responsibility', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_single_responsibility')],
+    'clean_code_separation_of_concerns' => ['#36 Clean Code Separation of Concerns', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_separation_of_concerns')],
+    'clean_code_meaningful_names' => ['#37 Clean Code Meaningful Naming', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_meaningful_names')],
+    'clean_code_small_functions' => ['#38 Clean Code Small Functions', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_small_functions')],
+    'clean_code_formatting' => ['#39 Clean Code Consistent Formatting', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_formatting')],
+    'clean_code_error_handling' => ['#40 Clean Code Explicit Error Handling', fn() => call_user_func('check_clean_code', $owner, $repo, $pat, $tree, $languages, $sourceFiles, 'clean_code_error_handling')],
+    'architecture_layered_boundaries' => ['#41 Clean Architecture Layered Boundaries', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_layered_boundaries')],
+    'architecture_dependency_rule' => ['#42 Clean Architecture Dependency Rule', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_dependency_rule')],
+    'architecture_framework_independence' => ['#43 Clean Architecture Framework Independence', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_framework_independence')],
+    'architecture_presentation_isolation' => ['#44 Clean Architecture Presentation Isolation', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_presentation_isolation')],
+    'architecture_use_case_separation' => ['#45 Clean Architecture Use Case Separation', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_use_case_separation')],
+    'architecture_domain_purity' => ['#46 Clean Architecture Domain Purity', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_domain_purity')],
+    'architecture_data_access_abstraction' => ['#47 Clean Architecture Data Access Abstraction', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_data_access_abstraction')],
+    'architecture_interface_adapter_separation' => ['#48 Clean Architecture Interface Adapter Separation', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_interface_adapter_separation')],
+    'architecture_package_cohesion' => ['#49 Clean Architecture Package Cohesion', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_package_cohesion')],
+    'architecture_no_cyclic_dependencies' => ['#50 Clean Architecture No Cyclic Dependencies', fn() => check_architecture($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'architecture_no_cyclic_dependencies')],
+    'testing_unit_coverage' => ['#51 Test Pyramid Unit Coverage', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_unit_coverage')],
+    'testing_integration_coverage' => ['#52 Test Pyramid Integration Coverage', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_integration_coverage')],
+    'testing_end_to_end_coverage' => ['#53 Test Pyramid End-to-End Coverage', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_end_to_end_coverage')],
+    'testing_fast_feedback' => ['#54 Test Pyramid Fast Feedback', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_fast_feedback')],
+    'testing_mocking_external_apis' => ['#55 Test Pyramid Mocking External APIs', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_mocking_external_apis')],
+    'testing_database_isolation' => ['#56 Test Pyramid Database Test Isolation', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_database_isolation')],
+    'testing_api_response_validation' => ['#57 Test Pyramid API Response Validation', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_api_response_validation')],
+    'testing_error_path_testing' => ['#58 Test Pyramid Error Path Testing', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_error_path_testing')],
+    'testing_regression_coverage' => ['#59 Test Pyramid Regression Test Coverage', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_regression_coverage')],
+    'testing_organization_maintainability' => ['#60 Test Pyramid Test Organization and Maintainability', fn() => check_testing($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_organization_maintainability')],
 ];
 
 foreach ($selectedChecks as $checkId) {

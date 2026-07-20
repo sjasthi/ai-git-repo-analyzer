@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/database.php';
 
 $checkIdRaw = trim((string) ($_GET['check_id'] ?? '1'));
-$checkId = preg_match('/^(30|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
+$checkId = preg_match('/^(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
 $checkNameFromQuery = trim((string) ($_GET['name'] ?? ''));
 $statusRaw = strtolower(trim((string) ($_GET['status'] ?? '')));
 $countRaw = isset($_GET['count']) ? (int) $_GET['count'] : null;
@@ -512,6 +512,497 @@ $checkContent = [
         ],
         'why' => 'Quality gates create a consistent baseline for sustainable engineering velocity.',
     ],
+    '31' => [
+        'title' => '#31 Clean Code SOLID Principles',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for modules and abstractions that violate the SOLID design principles.',
+        'looks_for' => [
+            'Large modules with too many reasons to change.',
+            'Interfaces or services that are broader than they need to be.',
+            'Classes that bundle unrelated responsibilities.',
+            'Designs that are hard to extend without touching many files.',
+        ],
+        'recommendations' => [
+            'Split responsibilities into smaller classes or services with a single purpose.',
+            'Keep abstractions narrow and favor composition over broad dependencies.',
+            'Refactor hotspots that change for unrelated reasons.',
+        ],
+        'why' => 'SOLID design keeps the codebase easier to extend, test, and safely refactor.',
+    ],
+    '32' => [
+        'title' => '#32 Clean Code DRY Principle',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check highlights repeated logic and copy-pasted blocks that should be shared.',
+        'looks_for' => [
+            'Repeated blocks of code across files.',
+            'Similar logic implemented in multiple places.',
+            'Duplicated validation or transformation steps.',
+            'Copy-paste patterns that increase bug risk.',
+        ],
+        'recommendations' => [
+            'Extract common behavior into helpers, services, or shared modules.',
+            'Add duplication checks to CI so repeated code does not spread.',
+            'Prefer reuse over rewriting the same logic in a second place.',
+        ],
+        'why' => 'Removing duplication reduces maintenance cost and keeps fixes consistent.',
+    ],
+    '33' => [
+        'title' => '#33 Clean Code KISS Principle',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for code that is more complex than it needs to be.',
+        'looks_for' => [
+            'Deeply nested conditionals.',
+            'Long functions with many branches.',
+            'Control flow that is hard to read at a glance.',
+            'Logic that could be simplified with early returns or helpers.',
+        ],
+        'recommendations' => [
+            'Break complex routines into smaller steps with clear names.',
+            'Use early returns and guard clauses to flatten logic.',
+            'Prefer direct, readable code over clever but dense patterns.',
+        ],
+        'why' => 'Simple code is easier to understand, test, and change safely.',
+    ],
+    '34' => [
+        'title' => '#34 Clean Code YAGNI Principle',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check surfaces unfinished or speculative code that may not be needed yet.',
+        'looks_for' => [
+            'TODO, FIXME, HACK, or temporary markers.',
+            'Placeholder branches and half-finished features.',
+            'Code paths that appear to exist for future use only.',
+            'Dead scaffolding that adds noise without value.',
+        ],
+        'recommendations' => [
+            'Move unfinished work into tracked issues instead of leaving it in production code.',
+            'Remove speculative code until there is a real requirement for it.',
+            'Keep the main path focused on what is needed now.',
+        ],
+        'why' => 'Avoiding speculative code keeps the repository smaller, clearer, and less fragile.',
+    ],
+    '35' => [
+        'title' => '#35 Clean Code Single Responsibility',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for files that try to do too many jobs at once.',
+        'looks_for' => [
+            'Modules that mix orchestration, data access, and presentation.',
+            'Files that grow into catch-all utility buckets.',
+            'Classes or scripts with many unrelated methods.',
+            'Responsibilities that would be easier to test separately.',
+        ],
+        'recommendations' => [
+            'Move each responsibility into a focused class or function.',
+            'Keep business logic, transport logic, and rendering separate.',
+            'Refactor large files before they become hard to maintain.',
+        ],
+        'why' => 'A single responsibility per module improves readability and reduces change risk.',
+    ],
+    '36' => [
+        'title' => '#36 Clean Code Separation of Concerns',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for code that mixes layers or concerns that should stay separate.',
+        'looks_for' => [
+            'UI markup mixed with persistence or business logic.',
+            'Controller code that also renders complex views.',
+            'Database, HTTP, and formatting concerns in one file.',
+            'Layer boundaries that are unclear or inconsistent.',
+        ],
+        'recommendations' => [
+            'Split the code into presentation, application, and persistence layers.',
+            'Use service objects or helper modules to isolate orchestration from UI code.',
+            'Keep layer boundaries explicit and consistent.',
+        ],
+        'why' => 'Clear concern boundaries make the code easier to understand and evolve.',
+    ],
+    '37' => [
+        'title' => '#37 Clean Code Meaningful Naming',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for generic or ambiguous identifiers that make intent hard to understand.',
+        'looks_for' => [
+            'Variables with names like data, temp, item, or value used broadly.',
+            'Functions whose names do not clearly describe what they do.',
+            'Classes or methods that hide purpose behind vague labels.',
+            'Identifiers that force readers to inspect implementation to understand intent.',
+        ],
+        'recommendations' => [
+            'Rename identifiers to reflect domain intent, ownership, and behavior.',
+            'Prefer specific names over placeholder or one-size-fits-all labels.',
+            'Use names as documentation for future readers.',
+        ],
+        'why' => 'Meaningful naming reduces cognitive load and makes code easier to review.',
+    ],
+    '38' => [
+        'title' => '#38 Clean Code Small Functions',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for functions that do too much and should be split into smaller helpers.',
+        'looks_for' => [
+            'Long functions with multiple distinct steps.',
+            'Procedures that mix validation, transformation, and persistence.',
+            'Methods that are hard to scan or test in one sitting.',
+            'Large blocks of code that would be clearer as small helpers.',
+        ],
+        'recommendations' => [
+            'Extract sub-steps into focused helper functions.',
+            'Keep functions short enough to explain in one sentence.',
+            'Use guard clauses and early returns to simplify flow.',
+        ],
+        'why' => 'Small functions are easier to read, test, and reuse.',
+    ],
+    '39' => [
+        'title' => '#39 Clean Code Consistent Formatting',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for style inconsistencies that make the code harder to scan.',
+        'looks_for' => [
+            'Long lines and inconsistent spacing.',
+            'Trailing whitespace or formatting noise.',
+            'Mixed indentation or irregular layout patterns.',
+            'Code that would benefit from an automatic formatter.',
+        ],
+        'recommendations' => [
+            'Use a formatter and style guide consistently across the repository.',
+            'Automate formatting in CI or pre-commit hooks.',
+            'Keep line length and indentation conventions consistent.',
+        ],
+        'why' => 'Consistent formatting makes intent easier to see quickly.',
+    ],
+    '40' => [
+        'title' => '#40 Clean Code Explicit Error Handling',
+        'tag' => 'Clean Code Focus',
+        'about' => 'This check looks for silent failures, swallowed exceptions, or suppressed error paths.',
+        'looks_for' => [
+            'Empty catch blocks or ignored exceptions.',
+            'Error suppression that hides failure conditions.',
+            'Return paths that fail without logging or propagation.',
+            'Defensive checks that do not surface the underlying problem.',
+        ],
+        'recommendations' => [
+            'Handle failures explicitly with logs, retries, or rethrows where appropriate.',
+            'Avoid silent suppression of exceptions and warnings.',
+            'Make failure modes visible to callers and operators.',
+        ],
+        'why' => 'Explicit error handling keeps failures visible and debuggable.',
+    ],
+    '41' => [
+        'title' => '#41 Clean Architecture Layered Boundaries',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check verifies that presentation, application, infrastructure, and feature concerns remain separated.',
+        'looks_for' => [
+            'Presentation files staying at the edge of the system.',
+            'Application services separated from UI code.',
+            'Feature folders grouped by responsibility.',
+            'Boundary rules that match Clean Architecture layers.',
+        ],
+        'recommendations' => [
+            'Keep each layer focused on its own responsibility.',
+            'Avoid pushing framework concerns into the core modules.',
+            'Preserve a consistent layered structure as the project grows.',
+        ],
+        'why' => 'Layered boundaries make the codebase easier to extend and reason about.',
+    ],
+    '42' => [
+        'title' => '#42 Clean Architecture Dependency Rule',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check looks for dependencies that point outward instead of inward toward policy.',
+        'looks_for' => [
+            'Inner modules importing UI entry points.',
+            'Application code depending on concrete presentation files.',
+            'Direction-of-dependency violations across layers.',
+        ],
+        'recommendations' => [
+            'Make dependencies flow toward business rules and abstractions.',
+            'Replace direct outer-layer references with adapters or interfaces.',
+            'Keep UI code dependent on the core, not the other way around.',
+        ],
+        'why' => 'The dependency rule protects core logic from outer-layer churn.',
+    ],
+    '43' => [
+        'title' => '#43 Clean Architecture Framework Independence',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check verifies that core modules remain usable without presentation framework artifacts.',
+        'looks_for' => [
+            'HTML or CSS embedded in core modules.',
+            'Bootstrap or similar framework artifacts in analyzers.',
+            'Logic that would break if the UI framework changed.',
+        ],
+        'recommendations' => [
+            'Keep framework-specific code in the outermost layer.',
+            'Return structured data from analyzers and render it elsewhere.',
+            'Avoid coupling core code to markup or client libraries.',
+        ],
+        'why' => 'Framework independence makes the project easier to maintain and port.',
+    ],
+    '44' => [
+        'title' => '#44 Clean Architecture Presentation Isolation',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check looks for presentation code that mixes with persistence or remote orchestration.',
+        'looks_for' => [
+            'Views that also query databases.',
+            'Pages that make HTTP calls directly.',
+            'Presentation files coordinating unrelated infrastructure tasks.',
+        ],
+        'recommendations' => [
+            'Keep presentation files focused on rendering only.',
+            'Move data retrieval and orchestration behind a service boundary.',
+            'Pass prepared data into the UI instead of pulling it from the view.',
+        ],
+        'why' => 'Presentation isolation keeps the outer layer simple and replaceable.',
+    ],
+    '45' => [
+        'title' => '#45 Clean Architecture Use Case Separation',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check validates whether orchestration logic is separate from storage and transport details.',
+        'looks_for' => [
+            'Application services that coordinate behavior without owning SQL.',
+            'Use cases mixed with repository implementation details.',
+            'Orchestration layers that know too much about persistence.',
+        ],
+        'recommendations' => [
+            'Keep use cases thin and focused on business flow.',
+            'Push persistence and transport concerns into adapters.',
+            'Define clear boundaries between orchestration and infrastructure.',
+        ],
+        'why' => 'Use case separation makes the application logic easier to test and evolve.',
+    ],
+    '46' => [
+        'title' => '#46 Clean Architecture Domain Purity',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check looks for feature modules that stay pure and avoid leaking infrastructure concerns.',
+        'looks_for' => [
+            'Analyzers that print HTML or headers directly.',
+            'Core feature code that talks to storage.',
+            'Modules that combine logic with output formatting.',
+        ],
+        'recommendations' => [
+            'Keep core feature modules logic-only.',
+            'Return arrays or objects instead of rendering directly.',
+            'Move output and infrastructure work to outer adapters.',
+        ],
+        'why' => 'Pure domain logic is easier to test and less likely to break when infrastructure changes.',
+    ],
+    '47' => [
+        'title' => '#47 Clean Architecture Data Access Abstraction',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check verifies that data access is routed through shared helpers or adapters.',
+        'looks_for' => [
+            'Duplicated HTTP or repository calls across modules.',
+            'Direct curl usage outside shared helpers.',
+            'Repeated access logic instead of one adapter boundary.',
+        ],
+        'recommendations' => [
+            'Centralize external access behind one adapter.',
+            'Keep repository and API communication out of feature modules.',
+            'Reuse helpers instead of duplicating transport code.',
+        ],
+        'why' => 'A single data-access abstraction reduces duplication and change risk.',
+    ],
+    '48' => [
+        'title' => '#48 Clean Architecture Interface Adapter Separation',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check ensures adapters return data and do not take over presentation duties.',
+        'looks_for' => [
+            'Adapters that render HTML or echo output.',
+            'Boundary code that mixes data shaping with UI rendering.',
+            'Presentation responsibilities embedded in adapter modules.',
+        ],
+        'recommendations' => [
+            'Keep adapters responsible for translating data only.',
+            'Render views in the presentation layer, not in core modules.',
+            'Use explicit data contracts between layers.',
+        ],
+        'why' => 'Adapter separation keeps concerns clean and prevents layered coupling.',
+    ],
+    '49' => [
+        'title' => '#49 Clean Architecture Package Cohesion',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check evaluates whether related analysis code is grouped into cohesive folders.',
+        'looks_for' => [
+            'One folder per concern.',
+            'Feature modules grouped by responsibility.',
+            'Legacy wrapper files fragmenting the layout.',
+        ],
+        'recommendations' => [
+            'Keep check families together under dedicated folders.',
+            'Avoid scattering related rules across unrelated locations.',
+            'Prefer cohesive packages that are easy to discover.',
+        ],
+        'why' => 'Cohesive packages make the project easier to navigate and extend.',
+    ],
+    '50' => [
+        'title' => '#50 Clean Architecture No Cyclic Dependencies',
+        'tag' => 'Clean Architecture Focus',
+        'about' => 'This check looks for dependency loops or upward references that break the inward flow of Clean Architecture.',
+        'looks_for' => [
+            'Inner layers depending on UI entry points.',
+            'Modules that create circular include paths.',
+            'Layer coupling that makes changes ripple outward.',
+        ],
+        'recommendations' => [
+            'Refactor imports so dependencies point inward only.',
+            'Break cycles by introducing interfaces or adapters.',
+            'Keep layer boundaries acyclic as new modules are added.',
+        ],
+        'why' => 'An acyclic dependency graph is a practical requirement for maintainable architecture.',
+    ],
+    '51' => [
+        'title' => '#51 Test Pyramid Unit Coverage',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for a strong unit-test layer around the repository analyzer core.',
+        'looks_for' => [
+            'PHPUnit unit test files and unit-oriented folders.',
+            'Fast, isolated tests for helpers and analyzers.',
+            'Unit coverage signals across the core application logic.',
+        ],
+        'recommendations' => [
+            'Add PHPUnit unit tests for each analyzer helper and parser.',
+            'Keep unit tests fast and isolated from external services.',
+            'Use unit tests as the main layer of the Test Pyramid.',
+        ],
+        'why' => 'Unit tests provide the fastest and most reliable feedback in a Test Pyramid.',
+    ],
+    '52' => [
+        'title' => '#52 Test Pyramid Integration Coverage',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for integration tests that validate boundaries like APIs, persistence, and report generation.',
+        'looks_for' => [
+            'Tests that hit API endpoints or database boundaries.',
+            'Integration-oriented test folders or naming patterns.',
+            'Coverage of application wiring beyond isolated units.',
+        ],
+        'recommendations' => [
+            'Add integration tests for API, database, and report flows.',
+            'Keep boundary tests smaller in number than unit tests.',
+            'Focus integration assertions on contracts and wiring.',
+        ],
+        'why' => 'Integration tests prove that the major layers work together correctly.',
+    ],
+    '53' => [
+        'title' => '#53 Test Pyramid End-to-End Coverage',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for a minimal end-to-end suite that validates the full user path.',
+        'looks_for' => [
+            'E2E tools like Playwright, Cypress, Selenium, or Codeception.',
+            'Repository-level smoke tests for the main analyzer journey.',
+            'User-flow tests that cover the application from input to report.',
+        ],
+        'recommendations' => [
+            'Keep end-to-end tests small and focused on critical journeys.',
+            'Do not depend on e2e tests for broad functional coverage.',
+            'Use e2e tests as the smallest layer of the Test Pyramid.',
+        ],
+        'why' => 'End-to-end tests catch the highest-level workflow failures.',
+    ],
+    '54' => [
+        'title' => '#54 Test Pyramid Fast Feedback',
+        'tag' => 'Testing Focus',
+        'about' => 'This check evaluates whether the test suite provides quick local feedback.',
+        'looks_for' => [
+            'A phpunit.xml configuration or a clearly runnable test suite.',
+            'Fast unit-style assertions that can run on every change.',
+            'Separation between quick and slow tests.',
+        ],
+        'recommendations' => [
+            'Keep the default suite fast enough for frequent execution.',
+            'Split slow boundary tests into a separate group.',
+            'Optimize test startup and fixture setup.',
+        ],
+        'why' => 'Fast feedback keeps the Test Pyramid practical during development.',
+    ],
+    '55' => [
+        'title' => '#55 Test Pyramid Mocking External APIs',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for mocks, stubs, and fakes around GitHub, GitLab, and other external boundaries.',
+        'looks_for' => [
+            'Mock objects for API clients and HTTP calls.',
+            'Stubs or fakes for repository and database boundaries.',
+            'Deterministic tests that do not depend on live services.',
+        ],
+        'recommendations' => [
+            'Mock external APIs so tests stay deterministic.',
+            'Prefer interface seams around GitHub and database access.',
+            'Avoid live network calls in unit tests.',
+        ],
+        'why' => 'Mocking external APIs keeps the Test Pyramid stable and repeatable.',
+    ],
+    '56' => [
+        'title' => '#56 Test Pyramid Database Test Isolation',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for isolation techniques that keep database tests from leaking state.',
+        'looks_for' => [
+            'In-memory databases or separate test databases.',
+            'Transaction rollback or reset patterns.',
+            'State isolation between test cases.',
+        ],
+        'recommendations' => [
+            'Use an isolated database for test execution.',
+            'Reset state between tests using transactions or fixtures.',
+            'Do not let tests depend on each other.',
+        ],
+        'why' => 'Database isolation prevents flaky test behavior and hidden coupling.',
+    ],
+    '57' => [
+        'title' => '#57 Test Pyramid API Response Validation',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for assertions on API response structure, status, and error payloads.',
+        'looks_for' => [
+            'JSON structure or schema assertions.',
+            'HTTP status code expectations.',
+            'Error payload validation at the API boundary.',
+        ],
+        'recommendations' => [
+            'Validate JSON and HTTP status codes in boundary tests.',
+            'Check both success and error payloads.',
+            'Keep response assertions close to the API contract.',
+        ],
+        'why' => 'API response validation protects the contract exposed by the analyzer.',
+    ],
+    '58' => [
+        'title' => '#58 Test Pyramid Error Path Testing',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for tests that exercise invalid input and failure handling paths.',
+        'looks_for' => [
+            'Invalid repository URLs and missing token cases.',
+            'Exception and error handling assertions.',
+            'Negative-path coverage for API and parsing failures.',
+        ],
+        'recommendations' => [
+            'Add negative tests for invalid inputs and boundary errors.',
+            'Assert failure modes explicitly instead of only happy paths.',
+            'Cover exception handling in the core analyzers.',
+        ],
+        'why' => 'Error-path testing prevents regressions in failure handling.',
+    ],
+    '59' => [
+        'title' => '#59 Test Pyramid Regression Test Coverage',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for tests that protect against previously fixed bugs and edge cases.',
+        'looks_for' => [
+            'Regression-focused test names or issue references.',
+            'Bug-fix coverage for analyzer edge cases.',
+            'Tests that preserve behavior after repairs.',
+        ],
+        'recommendations' => [
+            'Add regression tests for every important bug fix.',
+            'Keep bug-linked tests in the default suite.',
+            'Use regressions to protect the analyzer from reintroducing defects.',
+        ],
+        'why' => 'Regression tests stop known problems from coming back.',
+    ],
+    '60' => [
+        'title' => '#60 Test Pyramid Test Organization and Maintainability',
+        'tag' => 'Testing Focus',
+        'about' => 'This check looks for a clear and maintainable test layout across unit, integration, and E2E layers.',
+        'looks_for' => [
+            'Dedicated unit, integration, and E2E folders.',
+            'Readable test naming and helper reuse.',
+            'A test structure that is easy to extend.',
+        ],
+        'recommendations' => [
+            'Organize tests by pyramid layer and responsibility.',
+            'Keep fixtures and helpers reusable.',
+            'Make the test suite easy to navigate and expand.',
+        ],
+        'why' => 'Maintainable test organization keeps the pyramid healthy as the project grows.',
+    ],
 ];
 
 $content = $checkContent[$checkId] ?? $checkContent['1'];
@@ -535,9 +1026,9 @@ if ($countRaw !== null && $countRaw >= 0) {
 
 $findingsByCheckCategory = [
     '1' => ['OWASP'],
-    '2' => [],
-    '3' => [],
-    '4' => [],
+    '2' => ['Dependencies'],
+    '3' => ['CI/CD Integrity'],
+    '4' => ['Logging'],
     '5' => ['Code Quality', 'Complexity', 'Duplication', 'File Summary'],
     '6' => ['Secret Scanner'],
     '7' => ['Dependencies'],
@@ -564,6 +1055,36 @@ $findingsByCheckCategory = [
     '28' => ['Complexity'],
     '29' => ['Complexity', 'Code Quality'],
     '30' => ['Complexity', 'Duplication', 'Code Quality'],
+    '31' => ['Clean Code'],
+    '32' => ['Clean Code'],
+    '33' => ['Clean Code'],
+    '34' => ['Clean Code'],
+    '35' => ['Clean Code'],
+    '36' => ['Clean Code'],
+    '37' => ['Clean Code'],
+    '38' => ['Clean Code'],
+    '39' => ['Clean Code'],
+    '40' => ['Clean Code'],
+    '41' => ['Architecture'],
+    '42' => ['Architecture'],
+    '43' => ['Architecture'],
+    '44' => ['Architecture'],
+    '45' => ['Architecture'],
+    '46' => ['Architecture'],
+    '47' => ['Architecture'],
+    '48' => ['Architecture'],
+    '49' => ['Architecture'],
+    '50' => ['Architecture'],
+    '51' => ['Testing'],
+    '52' => ['Testing'],
+    '53' => ['Testing'],
+    '54' => ['Testing'],
+    '55' => ['Testing'],
+    '56' => ['Testing'],
+    '57' => ['Testing'],
+    '58' => ['Testing'],
+    '59' => ['Testing'],
+    '60' => ['Testing'],
 ];
 
 $findingsForCheck = [];
@@ -571,9 +1092,16 @@ $findingsInfo = '';
 $scanRecommendationsForCheck = [];
 $recommendationsInfo = '';
 
+$findingsKeywordsByCheck = [
+    '1' => ['owasp', 'authorization', 'access', 'validation', 'logic flaw', 'insecure'],
+    '2' => ['dependenc', 'package', 'vulnerab', 'outdated', 'cve', 'osv', 'manifest', 'lock'],
+    '3' => ['ci', 'cd', 'workflow', 'pipeline', 'integrity', 'github actions', 'permissions', 'sha'],
+    '4' => ['logging', 'monitoring', 'telemetry', 'audit', 'alert', 'error suppression'],
+];
+
 $recommendationKeywordsByCheck = [
     '1' => ['authorization', 'access', 'logic', 'validation', 'design', 'owasp'],
-    '2' => ['dependency', 'dependencies', 'package', 'outdated', 'upgrade'],
+    '2' => ['dependency', 'dependencies', 'package', 'outdated', 'upgrade', 'lockfile', 'manifest'],
     '3' => ['ci', 'cd', 'pipeline', 'workflow', 'integrity', 'build', 'deploy'],
     '4' => ['logging', 'monitoring', 'audit', 'alert', 'telemetry'],
     '5' => ['quality', 'performance', 'complexity', 'duplication', 'maintainability', 'repo health'],
@@ -602,6 +1130,36 @@ $recommendationKeywordsByCheck = [
     '28' => ['error handling', 'defensive', 'guard', 'fallback'],
     '29' => ['technical debt', 'remediation', 'backlog', 'maintainability'],
     '30' => ['quality gate', 'compliance', 'threshold', 'severity'],
+    '31' => ['solid', 'single responsibility', 'open-closed', 'liskov', 'interface segregation', 'dependency inversion'],
+    '32' => ['dry', 'duplicate', 'duplication', 'reuse', 'copy'],
+    '33' => ['kiss', 'simple', 'complexity', 'simplify', 'readability'],
+    '34' => ['yagni', 'speculative', 'future feature', 'todo', 'placeholder'],
+    '35' => ['single responsibility', 'responsibility', 'cohesion', 'separation'],
+    '36' => ['separation of concerns', 'layer', 'boundary', 'concern'],
+    '37' => ['naming', 'meaningful', 'identifier', 'readability'],
+    '38' => ['small function', 'function size', 'method length', 'extract method'],
+    '39' => ['formatting', 'style', 'lint', 'indentation', 'line length'],
+    '40' => ['error handling', 'exception', 'try catch', 'failure', 'fallback'],
+    '41' => ['layered', 'boundary', 'architecture', 'presentation', 'application', 'infrastructure'],
+    '42' => ['dependency rule', 'dependency', 'inner', 'outer', 'architecture'],
+    '43' => ['framework', 'independence', 'bootstrap', 'html', 'presentation'],
+    '44' => ['presentation', 'isolation', 'view', 'database', 'http'],
+    '45' => ['use case', 'orchestration', 'application', 'persistence'],
+    '46' => ['domain', 'purity', 'core', 'logic', 'adapter'],
+    '47' => ['data access', 'abstraction', 'helper', 'adapter', 'curl'],
+    '48' => ['interface adapter', 'adapter', 'render', 'presentation'],
+    '49' => ['package', 'cohesion', 'folder', 'module'],
+    '50' => ['cyclic', 'dependency', 'loop', 'inward'],
+    '51' => ['unit', 'coverage', 'phpunit', 'assert', 'fast'],
+    '52' => ['integration', 'database', 'api', 'client', 'boundary'],
+    '53' => ['e2e', 'end-to-end', 'playwright', 'cypress', 'selenium'],
+    '54' => ['fast feedback', 'phpunit', 'quick', 'local', 'suite'],
+    '55' => ['mock', 'stub', 'fake', 'external api', 'deterministic'],
+    '56' => ['sqlite', 'memory', 'transaction', 'rollback', 'isolation'],
+    '57' => ['response', 'json', 'status', 'schema', 'api'],
+    '58' => ['error', 'invalid', 'exception', 'negative', 'fail'],
+    '59' => ['regression', 'bug', 'fix', 'issue', 'defect'],
+    '60' => ['organization', 'maintainability', 'structure', 'folder', 'naming'],
 ];
 
 if ($scanId <= 0) {
@@ -628,6 +1186,78 @@ if ($scanId <= 0) {
             $params = array_merge([$scanId], $categories);
             $stmt->execute($params);
             $findingsForCheck = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $categoryScopedFindings = $findingsForCheck;
+
+            $expectedTitle = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $pageTitle)));
+            $expectedFromQuery = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $resolvedCheckName)));
+            $expectedTitles = array_values(array_filter([$expectedTitle, $expectedFromQuery], static fn($value) => $value !== ''));
+
+            if (!empty($findingsForCheck) && !empty($expectedTitles)) {
+                $filteredFindings = [];
+                $keywordMatches = $findingsKeywordsByCheck[$checkId] ?? [];
+                foreach ($findingsForCheck as $finding) {
+                    $findingTitleRaw = (string) ($finding['title'] ?? '');
+                    $findingTitle = strtolower(trim($findingTitleRaw));
+                    $findingTitleNoNumber = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $findingTitle)));
+                    $findingDescription = strtolower(trim((string) ($finding['description'] ?? '')));
+
+                    $isMatch = false;
+                    if (preg_match('/#\s*(\d+)/', $findingTitleRaw, $numberMatch) === 1 && $numberMatch[1] === $checkId) {
+                        $isMatch = true;
+                    }
+
+                    if (!$isMatch) {
+                        foreach ($expectedTitles as $expected) {
+                            if ($expected === '') {
+                                continue;
+                            }
+                            if ($findingTitleNoNumber === $expected
+                                || str_contains($findingTitleNoNumber, $expected)
+                                || str_contains($expected, $findingTitleNoNumber)) {
+                                $isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$isMatch && !empty($keywordMatches)) {
+                        foreach ($keywordMatches as $keyword) {
+                            if ($keyword === '') {
+                                continue;
+                            }
+                            if (str_contains($findingTitle, $keyword) || str_contains($findingDescription, $keyword)) {
+                                $isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($isMatch) {
+                        $filteredFindings[] = $finding;
+                    }
+                }
+
+                $findingsForCheck = $filteredFindings;
+            }
+
+            if (empty($findingsForCheck) && !empty($categoryScopedFindings) && $countRaw !== null && $countRaw > 0) {
+                $expectedForSimilarity = $expectedTitles[0] ?? '';
+                if ($expectedForSimilarity !== '') {
+                    usort($categoryScopedFindings, static function (array $a, array $b) use ($expectedForSimilarity): int {
+                        $titleA = strtolower(trim((string) ($a['title'] ?? '')));
+                        $titleB = strtolower(trim((string) ($b['title'] ?? '')));
+
+                        similar_text($expectedForSimilarity, $titleA, $scoreA);
+                        similar_text($expectedForSimilarity, $titleB, $scoreB);
+
+                        if ($scoreA === $scoreB) {
+                            return 0;
+                        }
+                        return $scoreA < $scoreB ? 1 : -1;
+                    });
+                }
+                $findingsForCheck = array_slice($categoryScopedFindings, 0, max(1, $countRaw));
+            }
 
             if (empty($findingsForCheck)) {
                 $findingsInfo = 'No matching finding rows were found for this check in the saved scan details.';
@@ -640,6 +1270,8 @@ if ($scanId <= 0) {
 
 if ($scanId <= 0) {
     $recommendationsInfo = 'Scan ID is not available, so scan recommendations cannot be loaded.';
+} elseif ($countRaw !== null && $countRaw === 0) {
+    $recommendationsInfo = 'No scan-specific recommendations were generated for this check in this scan, showing baseline guidance below.';
 } else {
     try {
         if (!isset($pdo) || !$pdo instanceof PDO) {
@@ -656,16 +1288,102 @@ if ($scanId <= 0) {
         $allScanRecommendations = $recommendationStmt->fetchAll(PDO::FETCH_ASSOC);
 
         $keywords = $recommendationKeywordsByCheck[$checkId] ?? [];
-        if (!empty($keywords)) {
-            foreach ($allScanRecommendations as $rec) {
-                $text = strtolower((string) ($rec['recommendation_text'] ?? ''));
-                foreach ($keywords as $keyword) {
-                    if ($keyword !== '' && strpos($text, $keyword) !== false) {
-                        $scanRecommendationsForCheck[] = $rec;
-                        break;
-                    }
+        $expectedRecTitle = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $pageTitle)));
+        $titleStopWords = ['clean', 'code', 'test', 'tests', 'pyramid', 'and', 'the', 'for', 'with', 'rule', 'checks'];
+        $titleTokens = array_values(array_filter(
+            preg_split('/[^a-z0-9]+/', $expectedRecTitle) ?: [],
+            static fn($token) => $token !== '' && strlen($token) >= 4 && !in_array($token, $titleStopWords, true)
+        ));
+
+        $scoredRecommendations = [];
+        foreach ($allScanRecommendations as $rec) {
+            $text = strtolower((string) ($rec['recommendation_text'] ?? ''));
+            $score = 0;
+            $mentionsCheckId = false;
+            $hasExactTitle = false;
+
+            if ($checkId !== '' && preg_match('/#\s*' . preg_quote($checkId, '/') . '\b/', $text) === 1) {
+                $score += 5;
+                $mentionsCheckId = true;
+            }
+            if ($expectedRecTitle !== '' && str_contains($text, $expectedRecTitle)) {
+                $score += 4;
+                $hasExactTitle = true;
+            }
+
+            $keywordMatches = 0;
+            foreach ($keywords as $keyword) {
+                if ($keyword !== '' && str_contains($text, strtolower($keyword))) {
+                    $keywordMatches++;
                 }
             }
+            $score += $keywordMatches * 2;
+
+            $tokenMatches = 0;
+            foreach ($titleTokens as $token) {
+                if (str_contains($text, $token)) {
+                    $tokenMatches++;
+                }
+            }
+            if ($tokenMatches >= 2) {
+                $score += 2;
+            }
+
+            $maxBaselineSimilarity = 0.0;
+            foreach ((array) ($content['recommendations'] ?? []) as $baselineRec) {
+                $baselineText = strtolower(trim((string) $baselineRec));
+                if ($baselineText === '') {
+                    continue;
+                }
+                similar_text($baselineText, $text, $similarityPercent);
+                if ($similarityPercent > $maxBaselineSimilarity) {
+                    $maxBaselineSimilarity = $similarityPercent;
+                }
+            }
+            if ($maxBaselineSimilarity >= 45.0) {
+                $score += 3;
+            } elseif ($maxBaselineSimilarity >= 35.0) {
+                $score += 2;
+            }
+
+            $isEligible = $mentionsCheckId
+                || $hasExactTitle
+                || ($keywordMatches >= 2)
+                || ($keywordMatches >= 1 && $tokenMatches >= 1)
+                || ($keywordMatches >= 1 && $maxBaselineSimilarity >= 35.0);
+
+            if ($isEligible && $score >= 4) {
+                $scoredRecommendations[] = ['score' => $score, 'rec' => $rec];
+            }
+        }
+
+        if (!empty($scoredRecommendations)) {
+            $priorityRank = ['High' => 3, 'Medium' => 2, 'Low' => 1];
+            usort($scoredRecommendations, static function (array $a, array $b) use ($priorityRank): int {
+                $scoreA = (int) ($a['score'] ?? 0);
+                $scoreB = (int) ($b['score'] ?? 0);
+                if ($scoreA !== $scoreB) {
+                    return $scoreA < $scoreB ? 1 : -1;
+                }
+
+                $priorityA = (string) (($a['rec']['priority'] ?? 'Low'));
+                $priorityB = (string) (($b['rec']['priority'] ?? 'Low'));
+                $rankA = $priorityRank[$priorityA] ?? 0;
+                $rankB = $priorityRank[$priorityB] ?? 0;
+                if ($rankA === $rankB) {
+                    return 0;
+                }
+                return $rankA < $rankB ? 1 : -1;
+            });
+
+            $maxRecommendations = 3;
+            if ($countRaw !== null && $countRaw > 0) {
+                $maxRecommendations = max(1, min(3, $countRaw));
+            }
+            $scanRecommendationsForCheck = array_values(array_map(
+                static fn($item) => $item['rec'],
+                array_slice($scoredRecommendations, 0, $maxRecommendations)
+            ));
         }
 
         if (empty($scanRecommendationsForCheck)) {

@@ -68,7 +68,7 @@ function checkDetailIdFromName(string $checkName): ?string
 {
     $normalized = strtolower(trim($checkName));
 
-    if (preg_match('/#\s*(30|2[0-9]|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
+    if (preg_match('/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
         return (string) $numberMatch[1];
     }
 
@@ -624,9 +624,9 @@ function findingsByCheckCategoryMap(): array
 {
     return [
         '1' => ['OWASP'],
-        '2' => [],
-        '3' => [],
-        '4' => [],
+        '2' => ['Dependencies'],
+        '3' => ['CI/CD Integrity'],
+        '4' => ['Logging'],
         '5' => ['Code Quality', 'Complexity', 'Duplication', 'File Summary'],
         '6' => ['Secret Scanner'],
         '7' => ['Dependencies'],
@@ -660,7 +660,7 @@ function recommendationKeywordsByCheckMap(): array
 {
     return [
         '1' => ['authorization', 'access', 'logic', 'validation', 'design', 'owasp'],
-        '2' => ['dependency', 'dependencies', 'package', 'outdated', 'upgrade'],
+        '2' => ['dependency', 'dependencies', 'package', 'outdated', 'upgrade', 'lockfile', 'manifest'],
         '3' => ['ci', 'cd', 'pipeline', 'workflow', 'integrity', 'build', 'deploy'],
         '4' => ['logging', 'monitoring', 'audit', 'alert', 'telemetry'],
         '5' => ['quality', 'performance', 'complexity', 'duplication', 'maintainability', 'repo health'],
@@ -800,6 +800,36 @@ try {
         'sonar_error_handling' => '#28 SonarQube Error Handling and Defensive Coding Patterns',
         'sonar_technical_debt' => '#29 SonarQube Technical Debt and Remediation Tracking',
         'sonar_quality_gate_summary' => '#30 SonarQube Quality Gate Compliance Summary',
+        'clean_code_solid' => '#31 Clean Code SOLID Principles',
+        'clean_code_dry' => '#32 Clean Code DRY Principle',
+        'clean_code_kiss' => '#33 Clean Code KISS Principle',
+        'clean_code_yagni' => '#34 Clean Code YAGNI Principle',
+        'clean_code_single_responsibility' => '#35 Clean Code Single Responsibility',
+        'clean_code_separation_of_concerns' => '#36 Clean Code Separation of Concerns',
+        'clean_code_meaningful_names' => '#37 Clean Code Meaningful Naming',
+        'clean_code_small_functions' => '#38 Clean Code Small Functions',
+        'clean_code_formatting' => '#39 Clean Code Consistent Formatting',
+        'clean_code_error_handling' => '#40 Clean Code Explicit Error Handling',
+        'architecture_layered_boundaries' => '#41 Clean Architecture Layered Boundaries',
+        'architecture_dependency_rule' => '#42 Clean Architecture Dependency Rule',
+        'architecture_framework_independence' => '#43 Clean Architecture Framework Independence',
+        'architecture_presentation_isolation' => '#44 Clean Architecture Presentation Isolation',
+        'architecture_use_case_separation' => '#45 Clean Architecture Use Case Separation',
+        'architecture_domain_purity' => '#46 Clean Architecture Domain Purity',
+        'architecture_data_access_abstraction' => '#47 Clean Architecture Data Access Abstraction',
+        'architecture_interface_adapter_separation' => '#48 Clean Architecture Interface Adapter Separation',
+        'architecture_package_cohesion' => '#49 Clean Architecture Package Cohesion',
+        'architecture_no_cyclic_dependencies' => '#50 Clean Architecture No Cyclic Dependencies',
+        'testing_unit_coverage' => '#51 Test Pyramid Unit Coverage',
+        'testing_integration_coverage' => '#52 Test Pyramid Integration Coverage',
+        'testing_end_to_end_coverage' => '#53 Test Pyramid End-to-End Coverage',
+        'testing_fast_feedback' => '#54 Test Pyramid Fast Feedback',
+        'testing_mocking_external_apis' => '#55 Test Pyramid Mocking External APIs',
+        'testing_database_isolation' => '#56 Test Pyramid Database Test Isolation',
+        'testing_api_response_validation' => '#57 Test Pyramid API Response Validation',
+        'testing_error_path_testing' => '#58 Test Pyramid Error Path Testing',
+        'testing_regression_coverage' => '#59 Test Pyramid Regression Test Coverage',
+        'testing_organization_maintainability' => '#60 Test Pyramid Test Organization and Maintainability',
     ];
 
     $selectedCheckLabels = [];
@@ -820,7 +850,7 @@ try {
     foreach ($checkLabels as $id => $label) {
         $labelRaw = preg_replace('/\s*\([^)]*\)\s*$/', '', $label);
         $labelCheckId = null;
-        if (preg_match('/#\s*(30|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
+        if (preg_match('/#\s*(60|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
             $labelCheckId = (string) $numberMatch[1];
         }
 
@@ -979,6 +1009,9 @@ try {
             'OWASP Checks' => [],
             'Complexity Checks' => [],
             'SonarQube Rules (Code Quality)' => [],
+            'Clean Code Checks (Weight: 10%)' => [],
+            'Architecture Checks (Weight: 10%)' => [],
+            'Testing Checks (Weight: 10%)' => [],
         ];
         foreach ($selectedCheckLabels as $check) {
             $number = 0;
@@ -989,6 +1022,12 @@ try {
                 $selectedGroups['OWASP Checks'][] = (string) $check;
             } elseif ($number >= 11 && $number <= 20) {
                 $selectedGroups['Complexity Checks'][] = (string) $check;
+            } elseif ($number >= 31 && $number <= 40) {
+                $selectedGroups['Clean Code Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 41 && $number <= 50) {
+                $selectedGroups['Architecture Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 51 && $number <= 60) {
+                $selectedGroups['Testing Checks (Weight: 10%)'][] = (string) $check;
             } else {
                 $selectedGroups['SonarQube Rules (Code Quality)'][] = (string) $check;
             }
@@ -1016,6 +1055,9 @@ try {
             'OWASP Checks' => [],
             'Complexity Checks' => [],
             'SonarQube Rules (Code Quality)' => [],
+            'Clean Code Checks (Weight: 10%)' => [],
+            'Architecture Checks (Weight: 10%)' => [],
+            'Testing Checks (Weight: 10%)' => [],
         ];
 
         foreach ($checkRuns as $cr) {
@@ -1028,6 +1070,12 @@ try {
                 $analysisGroups['OWASP Checks'][] = $cr;
             } elseif ($num >= 11 && $num <= 20) {
                 $analysisGroups['Complexity Checks'][] = $cr;
+            } elseif ($num >= 31 && $num <= 40) {
+                $analysisGroups['Clean Code Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 41 && $num <= 50) {
+                $analysisGroups['Architecture Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 51 && $num <= 60) {
+                $analysisGroups['Testing Checks (Weight: 10%)'][] = $cr;
             } else {
                 $analysisGroups['SonarQube Rules (Code Quality)'][] = $cr;
             }
@@ -1048,7 +1096,7 @@ try {
             $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
             $detailsUrl = '';
             $checkId = checkDetailIdFromName($checkNameRaw);
-            if ($checkId !== null && (int) $checkId <= 30) {
+            if ($checkId !== null && (int) $checkId <= 60) {
                 $detailsUrl = absoluteCheckDetailsUrl([
                     'check_id' => $checkId,
                     'name' => $checkNameRaw,
@@ -1117,12 +1165,80 @@ try {
             } elseif (empty($categories)) {
                 $findingsInfo = 'Detailed per-check finding mapping is not available for this check yet.';
             } else {
+                $categoryScopedFindings = [];
                 foreach ($findings as $finding) {
                     $category = (string) ($finding['category'] ?? '');
                     if (in_array($category, $categories, true)) {
+                        $categoryScopedFindings[] = $finding;
+                    }
+                }
+
+                $expectedTitle = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', (string) ($detail['title'] ?? ''))));
+                $expectedFromCheckName = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $checkNameRaw)));
+                $expectedTitles = array_values(array_filter([$expectedTitle, $expectedFromCheckName], static fn($value) => $value !== ''));
+                $keywordMatches = [];
+
+                foreach ($categoryScopedFindings as $finding) {
+                    $findingTitleRaw = (string) ($finding['title'] ?? '');
+                    $findingTitle = strtolower(trim($findingTitleRaw));
+                    $findingTitleNoNumber = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', $findingTitle)));
+                    $findingDescription = strtolower(trim((string) ($finding['description'] ?? '')));
+
+                    $isMatch = false;
+                    if (preg_match('/#\s*(\d+)/', $findingTitleRaw, $numberMatch) === 1 && $numberMatch[1] === $checkId) {
+                        $isMatch = true;
+                    }
+
+                    if (!$isMatch) {
+                        foreach ($expectedTitles as $expected) {
+                            if ($expected === '') {
+                                continue;
+                            }
+                            if ($findingTitleNoNumber === $expected
+                                || str_contains($findingTitleNoNumber, $expected)
+                                || str_contains($expected, $findingTitleNoNumber)) {
+                                $isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$isMatch && !empty($keywordMatches)) {
+                        foreach ($keywordMatches as $keyword) {
+                            if ($keyword === '') {
+                                continue;
+                            }
+                            if (str_contains($findingTitle, $keyword) || str_contains($findingDescription, $keyword)) {
+                                $isMatch = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($isMatch) {
                         $findingsForCheck[] = $finding;
                     }
                 }
+
+                if (empty($findingsForCheck) && !empty($categoryScopedFindings) && $count > 0) {
+                    $expectedForSimilarity = $expectedTitles[0] ?? '';
+                    if ($expectedForSimilarity !== '') {
+                        usort($categoryScopedFindings, static function (array $a, array $b) use ($expectedForSimilarity): int {
+                            $titleA = strtolower(trim((string) ($a['title'] ?? '')));
+                            $titleB = strtolower(trim((string) ($b['title'] ?? '')));
+
+                            similar_text($expectedForSimilarity, $titleA, $scoreA);
+                            similar_text($expectedForSimilarity, $titleB, $scoreB);
+
+                            if ($scoreA === $scoreB) {
+                                return 0;
+                            }
+                            return $scoreA < $scoreB ? 1 : -1;
+                        });
+                    }
+                    $findingsForCheck = array_slice($categoryScopedFindings, 0, max(1, $count));
+                }
+
                 if (empty($findingsForCheck)) {
                     $findingsInfo = 'No matching finding rows were found for this check in the saved scan details.';
                 }
@@ -1132,18 +1248,106 @@ try {
             $recommendationsInfo = '';
             if ($scanId <= 0) {
                 $recommendationsInfo = 'Scan ID is not available, so scan recommendations cannot be loaded.';
+            } elseif ($count === 0) {
+                $recommendationsInfo = 'No scan-specific recommendations were generated for this check in this scan, showing baseline guidance below.';
             } else {
                 $keywords = $recommendationKeywordMap[$checkId] ?? [];
-                if (!empty($keywords)) {
-                    foreach ($recommendations as $rec) {
-                        $text = strtolower((string) ($rec['recommendation_text'] ?? ''));
-                        foreach ($keywords as $keyword) {
-                            if ($keyword !== '' && strpos($text, $keyword) !== false) {
-                                $scanRecommendationsForCheck[] = $rec;
-                                break;
-                            }
+                $expectedRecTitle = strtolower(trim((string) preg_replace('/^#\s*\d+\s*/', '', (string) ($detail['title'] ?? $checkNameRaw))));
+                $titleStopWords = ['clean', 'code', 'test', 'tests', 'pyramid', 'and', 'the', 'for', 'with', 'rule', 'checks'];
+                $titleTokens = array_values(array_filter(
+                    preg_split('/[^a-z0-9]+/', $expectedRecTitle) ?: [],
+                    static fn($token) => $token !== '' && strlen($token) >= 4 && !in_array($token, $titleStopWords, true)
+                ));
+
+                $scoredRecommendations = [];
+                foreach ($recommendations as $rec) {
+                    $text = strtolower((string) ($rec['recommendation_text'] ?? ''));
+                    $score = 0;
+                    $mentionsCheckId = false;
+                    $hasExactTitle = false;
+
+                    if ($checkId !== '' && preg_match('/#\s*' . preg_quote($checkId, '/') . '\b/', $text) === 1) {
+                        $score += 5;
+                        $mentionsCheckId = true;
+                    }
+                    if ($expectedRecTitle !== '' && str_contains($text, $expectedRecTitle)) {
+                        $score += 4;
+                        $hasExactTitle = true;
+                    }
+
+                    $keywordMatches = 0;
+                    foreach ($keywords as $keyword) {
+                        if ($keyword !== '' && str_contains($text, strtolower($keyword))) {
+                            $keywordMatches++;
                         }
                     }
+                    $score += $keywordMatches * 2;
+
+                    $tokenMatches = 0;
+                    foreach ($titleTokens as $token) {
+                        if (str_contains($text, $token)) {
+                            $tokenMatches++;
+                        }
+                    }
+                    if ($tokenMatches >= 2) {
+                        $score += 2;
+                    }
+
+                    $maxBaselineSimilarity = 0.0;
+                    foreach ((array) ($detail['recommendations'] ?? []) as $baselineRec) {
+                        $baselineText = strtolower(trim((string) $baselineRec));
+                        if ($baselineText === '') {
+                            continue;
+                        }
+                        similar_text($baselineText, $text, $similarityPercent);
+                        if ($similarityPercent > $maxBaselineSimilarity) {
+                            $maxBaselineSimilarity = $similarityPercent;
+                        }
+                    }
+                    if ($maxBaselineSimilarity >= 45.0) {
+                        $score += 3;
+                    } elseif ($maxBaselineSimilarity >= 35.0) {
+                        $score += 2;
+                    }
+
+                    $isEligible = $mentionsCheckId
+                        || $hasExactTitle
+                        || ($keywordMatches >= 2)
+                        || ($keywordMatches >= 1 && $tokenMatches >= 1)
+                        || ($keywordMatches >= 1 && $maxBaselineSimilarity >= 35.0);
+
+                    if ($isEligible && $score >= 4) {
+                        $scoredRecommendations[] = ['score' => $score, 'rec' => $rec];
+                    }
+                }
+
+                if (!empty($scoredRecommendations)) {
+                    $priorityRank = ['High' => 3, 'Medium' => 2, 'Low' => 1];
+                    usort($scoredRecommendations, static function (array $a, array $b) use ($priorityRank): int {
+                        $scoreA = (int) ($a['score'] ?? 0);
+                        $scoreB = (int) ($b['score'] ?? 0);
+                        if ($scoreA !== $scoreB) {
+                            return $scoreA < $scoreB ? 1 : -1;
+                        }
+
+                        $priorityA = (string) (($a['rec']['priority'] ?? 'Low'));
+                        $priorityB = (string) (($b['rec']['priority'] ?? 'Low'));
+                        $rankA = $priorityRank[$priorityA] ?? 0;
+                        $rankB = $priorityRank[$priorityB] ?? 0;
+                        if ($rankA === $rankB) {
+                            return 0;
+                        }
+                        return $rankA < $rankB ? 1 : -1;
+                    });
+
+                    $maxRecommendations = 3;
+                    if ($count > 0) {
+                        $maxRecommendations = max(1, min(3, $count));
+                    }
+                    $scanRecommendationsForCheck = array_values(array_map(
+                        static fn($item) => $item['rec'],
+                        array_slice($scoredRecommendations, 0, $maxRecommendations)
+                    ));
                 }
                 if (empty($scanRecommendationsForCheck)) {
                     $recommendationsInfo = 'No scan-specific recommendation text matched this check, showing baseline guidance below.';
