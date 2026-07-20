@@ -1169,20 +1169,20 @@ try {
 
                                 <div class="col-12 w-100 mt-2">
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
-                                        <div class="h6 fw-bold mb-0 text-start">Testing Plus Checks (Weight: 10%)</div>
+                                        <div class="h6 fw-bold mb-0 text-start">Documentation Checks (Weight: 5%)</div>
                                     </div>
-                                    <div class="small text-muted mb-1">Source: FIRST Principles + Arrange-Act-Assert (AAA) pattern</div>
+                                    <div class="small text-muted mb-1">Source: README best practices, API docs, ADR, and documentation quality standards</div>
                                 </div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_first_principles" id="testing_plus_1" checked><label class="form-check-label" for="testing_plus_1"><strong>#81</strong> FIRST Principle Alignment</label></div><a href="check_insecure_design.php?check_id=81" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_aaa_pattern" id="testing_plus_2" checked><label class="form-check-label" for="testing_plus_2"><strong>#82</strong> Arrange-Act-Assert Pattern Discipline</label></div><a href="check_insecure_design.php?check_id=82" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_test_data_management" id="testing_plus_3" checked><label class="form-check-label" for="testing_plus_3"><strong>#83</strong> Test Data Management and Isolation</label></div><a href="check_insecure_design.php?check_id=83" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_flaky_test_risk" id="testing_plus_4" checked><label class="form-check-label" for="testing_plus_4"><strong>#84</strong> Flaky Test Risk Detection</label></div><a href="check_insecure_design.php?check_id=84" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_boundary_case_coverage" id="testing_plus_5" checked><label class="form-check-label" for="testing_plus_5"><strong>#85</strong> Boundary and Negative Path Coverage</label></div><a href="check_insecure_design.php?check_id=85" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_contract_validation" id="testing_plus_6" checked><label class="form-check-label" for="testing_plus_6"><strong>#86</strong> API Contract and Response Validation</label></div><a href="check_insecure_design.php?check_id=86" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_security_paths" id="testing_plus_7" checked><label class="form-check-label" for="testing_plus_7"><strong>#87</strong> Security-Critical Path Coverage</label></div><a href="check_insecure_design.php?check_id=87" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_performance_paths" id="testing_plus_8" checked><label class="form-check-label" for="testing_plus_8"><strong>#88</strong> Performance-Critical Path Coverage</label></div><a href="check_insecure_design.php?check_id=88" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_ci_gate_readiness" id="testing_plus_9" checked><label class="form-check-label" for="testing_plus_9"><strong>#89</strong> CI Gate and Execution Reliability</label></div><a href="check_insecure_design.php?check_id=89" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
-                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_suite_maintainability" id="testing_plus_10" checked><label class="form-check-label" for="testing_plus_10"><strong>#90</strong> Suite Maintainability and Structure</label></div><a href="check_insecure_design.php?check_id=90" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_first_principles" id="testing_plus_1" checked><label class="form-check-label" for="testing_plus_1"><strong>#81</strong> README Completeness and Clarity</label></div><a href="check_insecure_design.php?check_id=81" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_aaa_pattern" id="testing_plus_2" checked><label class="form-check-label" for="testing_plus_2"><strong>#82</strong> Installation and Usage Guide Quality</label></div><a href="check_insecure_design.php?check_id=82" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_test_data_management" id="testing_plus_3" checked><label class="form-check-label" for="testing_plus_3"><strong>#83</strong> API Reference and Endpoint Notes</label></div><a href="check_insecure_design.php?check_id=83" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_flaky_test_risk" id="testing_plus_4" checked><label class="form-check-label" for="testing_plus_4"><strong>#84</strong> Architecture and Design Decision Notes</label></div><a href="check_insecure_design.php?check_id=84" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_boundary_case_coverage" id="testing_plus_5" checked><label class="form-check-label" for="testing_plus_5"><strong>#85</strong> Changelog and Release Notes Hygiene</label></div><a href="check_insecure_design.php?check_id=85" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_contract_validation" id="testing_plus_6" checked><label class="form-check-label" for="testing_plus_6"><strong>#86</strong> Configuration and Environment Guide</label></div><a href="check_insecure_design.php?check_id=86" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_security_paths" id="testing_plus_7" checked><label class="form-check-label" for="testing_plus_7"><strong>#87</strong> Security and Compliance Notes</label></div><a href="check_insecure_design.php?check_id=87" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_performance_paths" id="testing_plus_8" checked><label class="form-check-label" for="testing_plus_8"><strong>#88</strong> Troubleshooting and FAQ Coverage</label></div><a href="check_insecure_design.php?check_id=88" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_ci_gate_readiness" id="testing_plus_9" checked><label class="form-check-label" for="testing_plus_9"><strong>#89</strong> Contribution and Workflow Guidelines</label></div><a href="check_insecure_design.php?check_id=89" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_suite_maintainability" id="testing_plus_10" checked><label class="form-check-label" for="testing_plus_10"><strong>#90</strong> Documentation Freshness and Maintainability</label></div><a href="check_insecure_design.php?check_id=90" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                             </div>
                         </div>
                     </div>
@@ -1630,7 +1630,7 @@ try {
                 'Testing Checks (Weight: 10%)': [],
                 'Performance Checks (Weight: 10%)': [],
                 'Reliability Checks (Weight: 10%)': [],
-                'Testing Plus Checks (Weight: 10%)': []
+                'Documentation Checks (Weight: 5%)': []
             };
 
             checksToRender.forEach(function(c) {
@@ -1656,7 +1656,7 @@ try {
                 } else if (checkNumber >= 71 && checkNumber <= 80) {
                     groupedChecks['Reliability Checks (Weight: 10%)'].push(c);
                 } else if (checkNumber >= 81 && checkNumber <= 90) {
-                    groupedChecks['Testing Plus Checks (Weight: 10%)'].push(c);
+                    groupedChecks['Documentation Checks (Weight: 5%)'].push(c);
                 } else {
                     groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
@@ -1806,16 +1806,16 @@ try {
             'reliability_idempotency': '#78 Reliability Idempotency and Duplicate Request Safety',
             'reliability_fallback_paths': '#79 Reliability Fallback and Degradation Paths',
             'reliability_observability_alerting': '#80 Reliability Observability and Alerting Readiness',
-            'testing_first_principles': '#81 Testing FIRST Principle Alignment',
-            'testing_aaa_pattern': '#82 Testing Arrange-Act-Assert Pattern Discipline',
-            'testing_test_data_management': '#83 Testing Test Data Management and Isolation',
-            'testing_flaky_test_risk': '#84 Testing Flaky Test Risk Detection',
-            'testing_boundary_case_coverage': '#85 Testing Boundary and Negative Path Coverage',
-            'testing_contract_validation': '#86 Testing API Contract and Response Validation',
-            'testing_security_paths': '#87 Testing Security-Critical Path Coverage',
-            'testing_performance_paths': '#88 Testing Performance-Critical Path Coverage',
-            'testing_ci_gate_readiness': '#89 Testing CI Gate and Execution Reliability',
-            'testing_suite_maintainability': '#90 Testing Suite Maintainability and Structure'
+            'testing_first_principles': '#81 Documentation README Completeness and Clarity',
+            'testing_aaa_pattern': '#82 Documentation Installation and Usage Guide Quality',
+            'testing_test_data_management': '#83 Documentation API Reference and Endpoint Notes',
+            'testing_flaky_test_risk': '#84 Documentation Architecture and Design Decision Notes',
+            'testing_boundary_case_coverage': '#85 Documentation Changelog and Release Notes Hygiene',
+            'testing_contract_validation': '#86 Documentation Configuration and Environment Guide',
+            'testing_security_paths': '#87 Documentation Security and Compliance Notes',
+            'testing_performance_paths': '#88 Documentation Troubleshooting and FAQ Coverage',
+            'testing_ci_gate_readiness': '#89 Documentation Contribution and Workflow Guidelines',
+            'testing_suite_maintainability': '#90 Documentation Freshness and Maintainability'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
@@ -1829,7 +1829,7 @@ try {
                 'Testing Checks (Weight: 10%)': [],
                 'Performance Checks (Weight: 10%)': [],
                 'Reliability Checks (Weight: 10%)': [],
-                'Testing Plus Checks (Weight: 10%)': []
+                'Documentation Checks (Weight: 5%)': []
             };
 
             data.selected_checks.forEach(function(checkId) {
@@ -1852,7 +1852,7 @@ try {
                 } else if (checkNumber >= 71 && checkNumber <= 80) {
                     groups['Reliability Checks (Weight: 10%)'].push(friendlyName);
                 } else if (checkNumber >= 81 && checkNumber <= 90) {
-                    groups['Testing Plus Checks (Weight: 10%)'].push(friendlyName);
+                    groups['Documentation Checks (Weight: 5%)'].push(friendlyName);
                 } else {
                     groups['SonarQube Rules (Code Quality)'].push(friendlyName);
                 }
