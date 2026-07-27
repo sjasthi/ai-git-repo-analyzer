@@ -123,6 +123,16 @@ function checkDetailIdFromName(string $checkName): ?string
         '108' => '/#?108\s*devops deployment automation signals|deployment automation signals/i',
         '109' => '/#?109\s*devops operational observability hooks|operational observability hooks/i',
         '110' => '/#?110\s*devops runbook and recovery documentation|runbook and recovery documentation/i',
+        '111' => '/#?111\s*ai readiness rich readme for ai onboarding|rich readme for ai onboarding/i',
+        '112' => '/#?112\s*ai readiness usage examples and snippets|usage examples and snippets/i',
+        '113' => '/#?113\s*ai readiness clear api reference documentation|clear api reference documentation/i',
+        '114' => '/#?114\s*ai readiness assistant context files|ai assistant context files/i',
+        '115' => '/#?115\s*ai readiness explicit dependency manifest|explicit dependency manifest/i',
+        '116' => '/#?116\s*ai readiness descriptive naming for ai context|descriptive naming for ai context/i',
+        '117' => '/#?117\s*ai readiness small, single-purpose functions|single-purpose functions/i',
+        '118' => '/#?118\s*ai readiness modular design and boundaries|modular design and boundaries/i',
+        '119' => '/#?119\s*ai readiness consistent coding style|consistent coding style/i',
+        '120' => '/#?120\s*ai readiness inline documentation and docstrings|inline documentation and docstrings/i',
     ];
 
     foreach ($patterns as $checkId => $pattern) {
@@ -980,6 +990,16 @@ try {
         'devops_deployment_automation' => '#108 DevOps Deployment Automation Signals',
         'devops_observability_ops' => '#109 DevOps Operational Observability Hooks',
         'devops_incident_recovery_docs' => '#110 DevOps Runbook and Recovery Documentation',
+        'ai_readme_richness' => '#111 AI Readiness Rich README for AI Onboarding',
+        'ai_usage_examples' => '#112 AI Readiness Usage Examples and Snippets',
+        'ai_api_clarity' => '#113 AI Readiness Clear API Reference Documentation',
+        'ai_context_files' => '#114 AI Readiness Assistant Context Files',
+        'ai_dependency_manifest' => '#115 AI Readiness Explicit Dependency Manifest',
+        'ai_naming_clarity' => '#116 AI Readiness Descriptive Naming for AI Context',
+        'ai_function_granularity' => '#117 AI Readiness Small, Single-Purpose Functions',
+        'ai_modular_structure' => '#118 AI Readiness Modular Design and Boundaries',
+        'ai_consistent_style' => '#119 AI Readiness Consistent Coding Style',
+        'ai_docstring_coverage' => '#120 AI Readiness Inline Documentation and Docstrings',
     ];
 
     $selectedCheckLabels = [];
@@ -1167,6 +1187,7 @@ try {
             'Testing Plus Checks (Weight: 10%)' => [],
             'Dependency SBOM Checks (Weight: 5%)' => [],
             'DevOps Readiness Checks (Weight: 5%)' => [],
+            'AI Readiness Checks (Weight: 5%)' => [],
         ];
         foreach ($selectedCheckLabels as $check) {
             $number = 0;
@@ -1193,6 +1214,8 @@ try {
                 $selectedGroups['Dependency SBOM Checks (Weight: 5%)'][] = (string) $check;
             } elseif ($number >= 101 && $number <= 110) {
                 $selectedGroups['DevOps Readiness Checks (Weight: 5%)'][] = (string) $check;
+            } elseif ($number >= 111 && $number <= 120) {
+                $selectedGroups['AI Readiness Checks (Weight: 5%)'][] = (string) $check;
             } else {
                 $selectedGroups['SonarQube Rules (Code Quality)'][] = (string) $check;
             }
@@ -1228,6 +1251,7 @@ try {
             'Testing Plus Checks (Weight: 10%)' => [],
             'Dependency SBOM Checks (Weight: 5%)' => [],
             'DevOps Readiness Checks (Weight: 5%)' => [],
+            'AI Readiness Checks (Weight: 5%)' => [],
         ];
 
         foreach ($checkRuns as $cr) {
@@ -1256,6 +1280,8 @@ try {
                 $analysisGroups['Dependency SBOM Checks (Weight: 5%)'][] = $cr;
             } elseif ($num >= 101 && $num <= 110) {
                 $analysisGroups['DevOps Readiness Checks (Weight: 5%)'][] = $cr;
+            } elseif ($num >= 111 && $num <= 120) {
+                $analysisGroups['AI Readiness Checks (Weight: 5%)'][] = $cr;
             } else {
                 $analysisGroups['SonarQube Rules (Code Quality)'][] = $cr;
             }
@@ -1276,7 +1302,7 @@ try {
             $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
             $detailsUrl = '';
             $checkId = checkDetailIdFromName($checkNameRaw);
-            if ($checkId !== null && (int) $checkId <= 110) {
+            if ($checkId !== null && (int) $checkId <= 120) {
                 $detailsUrl = absoluteCheckDetailsUrl([
                     'check_id' => $checkId,
                     'name' => $checkNameRaw,

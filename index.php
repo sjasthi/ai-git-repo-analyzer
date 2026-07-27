@@ -1224,6 +1224,23 @@ try {
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_deployment_automation" id="devops_8" checked><label class="form-check-label" for="devops_8"><strong>#108</strong> Deployment Automation Signals</label></div><a href="check_insecure_design.php?check_id=108" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_observability_ops" id="devops_9" checked><label class="form-check-label" for="devops_9"><strong>#109</strong> Operational Observability Hooks</label></div><a href="check_insecure_design.php?check_id=109" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_incident_recovery_docs" id="devops_10" checked><label class="form-check-label" for="devops_10"><strong>#110</strong> Runbook and Recovery Documentation</label></div><a href="check_insecure_design.php?check_id=110" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">AI Readiness Checks (Weight: 5%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://agents.md/" target="_blank" rel="noopener">AGENTS.md / AI assistant context conventions</a> (naming, modularity, docs, examples, clear APIs)</div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_readme_richness" id="ai_readiness_1" checked><label class="form-check-label" for="ai_readiness_1"><strong>#111</strong> Rich README for AI Onboarding</label></div><a href="check_insecure_design.php?check_id=111" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_usage_examples" id="ai_readiness_2" checked><label class="form-check-label" for="ai_readiness_2"><strong>#112</strong> Usage Examples and Snippets</label></div><a href="check_insecure_design.php?check_id=112" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_api_clarity" id="ai_readiness_3" checked><label class="form-check-label" for="ai_readiness_3"><strong>#113</strong> Clear API Reference Documentation</label></div><a href="check_insecure_design.php?check_id=113" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_context_files" id="ai_readiness_4" checked><label class="form-check-label" for="ai_readiness_4"><strong>#114</strong> AI Assistant Context Files</label></div><a href="check_insecure_design.php?check_id=114" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_dependency_manifest" id="ai_readiness_5" checked><label class="form-check-label" for="ai_readiness_5"><strong>#115</strong> Explicit Dependency Manifest</label></div><a href="check_insecure_design.php?check_id=115" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_naming_clarity" id="ai_readiness_6" checked><label class="form-check-label" for="ai_readiness_6"><strong>#116</strong> Descriptive Naming for AI Context</label></div><a href="check_insecure_design.php?check_id=116" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_function_granularity" id="ai_readiness_7" checked><label class="form-check-label" for="ai_readiness_7"><strong>#117</strong> Small, Single-Purpose Functions</label></div><a href="check_insecure_design.php?check_id=117" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_modular_structure" id="ai_readiness_8" checked><label class="form-check-label" for="ai_readiness_8"><strong>#118</strong> Modular Design and Boundaries</label></div><a href="check_insecure_design.php?check_id=118" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_consistent_style" id="ai_readiness_9" checked><label class="form-check-label" for="ai_readiness_9"><strong>#119</strong> Consistent Coding Style</label></div><a href="check_insecure_design.php?check_id=119" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="ai_docstring_coverage" id="ai_readiness_10" checked><label class="form-check-label" for="ai_readiness_10"><strong>#120</strong> Inline Documentation and Docstrings</label></div><a href="check_insecure_design.php?check_id=120" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                             </div>
                         </div>
                     </div>
@@ -1548,7 +1565,7 @@ try {
             params.set('scan_id', String(scanId));
         }
 
-        if (Number(checkId) > 110) {
+        if (Number(checkId) > 120) {
             return '';
         }
 
@@ -1677,7 +1694,8 @@ try {
                 'Reliability Checks (Weight: 10%)': [],
                 'Documentation Checks (Weight: 5%)': [],
                 'Dependency SBOM Checks (Weight: 5%)': [],
-                'DevOps Readiness Checks (Weight: 5%)': []
+                'DevOps Readiness Checks (Weight: 5%)': [],
+                'AI Readiness Checks (Weight: 5%)': []
             };
 
             checksToRender.forEach(function(c) {
@@ -1708,6 +1726,8 @@ try {
                     groupedChecks['Dependency SBOM Checks (Weight: 5%)'].push(c);
                 } else if (checkNumber >= 101 && checkNumber <= 110) {
                     groupedChecks['DevOps Readiness Checks (Weight: 5%)'].push(c);
+                } else if (checkNumber >= 111 && checkNumber <= 120) {
+                    groupedChecks['AI Readiness Checks (Weight: 5%)'].push(c);
                 } else {
                     groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
@@ -1751,7 +1771,7 @@ try {
                             scan_id: String(data.scan_id || '')
                         }).toString()
                         : '';
-                    const canOpenDetails = Number(checkId) <= 110;
+                    const canOpenDetails = Number(checkId) <= 120;
 
                     const tileHtml =
                         `<div class="check-tile ${tileClass}">
@@ -1886,7 +1906,17 @@ try {
             'devops_branch_pr_signals': '#107 DevOps Pull Request and Branch Quality Gates',
             'devops_deployment_automation': '#108 DevOps Deployment Automation Signals',
             'devops_observability_ops': '#109 DevOps Operational Observability Hooks',
-            'devops_incident_recovery_docs': '#110 DevOps Runbook and Recovery Documentation'
+            'devops_incident_recovery_docs': '#110 DevOps Runbook and Recovery Documentation',
+            'ai_readme_richness': '#111 AI Readiness Rich README for AI Onboarding',
+            'ai_usage_examples': '#112 AI Readiness Usage Examples and Snippets',
+            'ai_api_clarity': '#113 AI Readiness Clear API Reference Documentation',
+            'ai_context_files': '#114 AI Readiness Assistant Context Files',
+            'ai_dependency_manifest': '#115 AI Readiness Explicit Dependency Manifest',
+            'ai_naming_clarity': '#116 AI Readiness Descriptive Naming for AI Context',
+            'ai_function_granularity': '#117 AI Readiness Small, Single-Purpose Functions',
+            'ai_modular_structure': '#118 AI Readiness Modular Design and Boundaries',
+            'ai_consistent_style': '#119 AI Readiness Consistent Coding Style',
+            'ai_docstring_coverage': '#120 AI Readiness Inline Documentation and Docstrings'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
@@ -1902,7 +1932,8 @@ try {
                 'Reliability Checks (Weight: 10%)': [],
                 'Documentation Checks (Weight: 5%)': [],
                 'Dependency SBOM Checks (Weight: 5%)': [],
-                'DevOps Readiness Checks (Weight: 5%)': []
+                'DevOps Readiness Checks (Weight: 5%)': [],
+                'AI Readiness Checks (Weight: 5%)': []
             };
 
             data.selected_checks.forEach(function(checkId) {
@@ -1930,6 +1961,8 @@ try {
                     groups['Dependency SBOM Checks (Weight: 5%)'].push(friendlyName);
                 } else if (checkNumber >= 101 && checkNumber <= 110) {
                     groups['DevOps Readiness Checks (Weight: 5%)'].push(friendlyName);
+                } else if (checkNumber >= 111 && checkNumber <= 120) {
+                    groups['AI Readiness Checks (Weight: 5%)'].push(friendlyName);
                 } else {
                     groups['SonarQube Rules (Code Quality)'].push(friendlyName);
                 }

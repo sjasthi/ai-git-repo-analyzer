@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/database.php';
 
 $checkIdRaw = trim((string) ($_GET['check_id'] ?? '1'));
-$checkId = preg_match('/^(110|10[0-9]|100|9[0-9]|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
+$checkId = preg_match('/^(11[0-9]|120|10[0-9]|100|9[0-9]|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
 $checkNameFromQuery = trim((string) ($_GET['name'] ?? ''));
 $statusRaw = strtolower(trim((string) ($_GET['status'] ?? '')));
 $countRaw = isset($_GET['count']) ? (int) $_GET['count'] : null;
@@ -1056,6 +1056,16 @@ $dynamicCheckTitles = [
     '108' => '#108 DevOps Deployment Automation Signals',
     '109' => '#109 DevOps Operational Observability Hooks',
     '110' => '#110 DevOps Runbook and Recovery Documentation',
+    '111' => '#111 AI Readiness Rich README for AI Onboarding',
+    '112' => '#112 AI Readiness Usage Examples and Snippets',
+    '113' => '#113 AI Readiness Clear API Reference Documentation',
+    '114' => '#114 AI Readiness Assistant Context Files',
+    '115' => '#115 AI Readiness Explicit Dependency Manifest',
+    '116' => '#116 AI Readiness Descriptive Naming for AI Context',
+    '117' => '#117 AI Readiness Small, Single-Purpose Functions',
+    '118' => '#118 AI Readiness Modular Design and Boundaries',
+    '119' => '#119 AI Readiness Consistent Coding Style',
+    '120' => '#120 AI Readiness Inline Documentation and Docstrings',
 ];
 
 $dependencyContent = [

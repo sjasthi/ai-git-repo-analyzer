@@ -30,6 +30,7 @@ require_once __DIR__ . '/checks/reliability/check_reliability.php';
 require_once __DIR__ . '/checks/testing_plus/check_testing_plus.php';
 require_once __DIR__ . '/checks/dependency/check_dependency_analysis.php';
 require_once __DIR__ . '/checks/devops/check_devops_readiness.php';
+require_once __DIR__ . '/checks/ai/check_ai_readiness.php';
 
 header('Content-Type: application/json');
 
@@ -223,6 +224,16 @@ function getCheckLabel(string $checkId): string
         'devops_deployment_automation' => '#108 DevOps Deployment Automation Signals',
         'devops_observability_ops' => '#109 DevOps Operational Observability Hooks',
         'devops_incident_recovery_docs' => '#110 DevOps Runbook and Recovery Documentation',
+        'ai_readme_richness' => '#111 AI Readiness Rich README for AI Onboarding',
+        'ai_usage_examples' => '#112 AI Readiness Usage Examples and Snippets',
+        'ai_api_clarity' => '#113 AI Readiness Clear API Reference Documentation',
+        'ai_context_files' => '#114 AI Readiness Assistant Context Files',
+        'ai_dependency_manifest' => '#115 AI Readiness Explicit Dependency Manifest',
+        'ai_naming_clarity' => '#116 AI Readiness Descriptive Naming for AI Context',
+        'ai_function_granularity' => '#117 AI Readiness Small, Single-Purpose Functions',
+        'ai_modular_structure' => '#118 AI Readiness Modular Design and Boundaries',
+        'ai_consistent_style' => '#119 AI Readiness Consistent Coding Style',
+        'ai_docstring_coverage' => '#120 AI Readiness Inline Documentation and Docstrings',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -526,6 +537,9 @@ if (!$checksWereProvided) {
         'devops_ci_cd_pipeline', 'devops_docker_readiness', 'devops_secrets_hygiene', 'devops_env_configuration',
         'devops_release_workflow', 'devops_actions_security', 'devops_branch_pr_signals', 'devops_deployment_automation',
         'devops_observability_ops', 'devops_incident_recovery_docs',
+        'ai_readme_richness', 'ai_usage_examples', 'ai_api_clarity', 'ai_context_files',
+        'ai_dependency_manifest', 'ai_naming_clarity', 'ai_function_granularity', 'ai_modular_structure',
+        'ai_consistent_style', 'ai_docstring_coverage',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -692,6 +706,16 @@ $newCheckMap = [
     'devops_deployment_automation' => ['#108 DevOps Deployment Automation Signals', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_deployment_automation')],
     'devops_observability_ops' => ['#109 DevOps Operational Observability Hooks', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_observability_ops')],
     'devops_incident_recovery_docs' => ['#110 DevOps Runbook and Recovery Documentation', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_incident_recovery_docs')],
+    'ai_readme_richness' => ['#111 AI Readiness Rich README for AI Onboarding', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_readme_richness')],
+    'ai_usage_examples' => ['#112 AI Readiness Usage Examples and Snippets', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_usage_examples')],
+    'ai_api_clarity' => ['#113 AI Readiness Clear API Reference Documentation', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_api_clarity')],
+    'ai_context_files' => ['#114 AI Readiness Assistant Context Files', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_context_files')],
+    'ai_dependency_manifest' => ['#115 AI Readiness Explicit Dependency Manifest', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_dependency_manifest')],
+    'ai_naming_clarity' => ['#116 AI Readiness Descriptive Naming for AI Context', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_naming_clarity')],
+    'ai_function_granularity' => ['#117 AI Readiness Small, Single-Purpose Functions', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_function_granularity')],
+    'ai_modular_structure' => ['#118 AI Readiness Modular Design and Boundaries', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_modular_structure')],
+    'ai_consistent_style' => ['#119 AI Readiness Consistent Coding Style', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_consistent_style')],
+    'ai_docstring_coverage' => ['#120 AI Readiness Inline Documentation and Docstrings', fn() => check_ai_readiness($owner, $repo, $pat, $tree, 'ai_docstring_coverage')],
 ];
 
 foreach ($selectedChecks as $checkId) {
