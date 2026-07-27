@@ -665,7 +665,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1 text-start">Complexity Checks (Weight: 10%)</div>
-                                    <div class="small text-muted mb-1">Source: McCabe Cyclomatic + Cognitive Complexity metrics</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity" target="_blank" rel="noopener">McCabe Cyclomatic</a> + <a href="https://www.sonarsource.com/resources/cognitive-complexity/" target="_blank" rel="noopener">Cognitive Complexity</a> metrics</div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -1137,7 +1137,7 @@ try {
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
                                         <div class="h6 fw-bold mb-0 text-start">Performance Checks (Weight: 10%)</div>
                                     </div>
-                                    <div class="small text-muted mb-1">Source: Performance analysis checklist from repository standards</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://web.dev/explore/fast" target="_blank" rel="noopener">Performance analysis checklist from repository standards</a></div>
                                 </div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_nested_loops" id="performance_1" checked><label class="form-check-label" for="performance_1"><strong>#61</strong> Nested Loops and Deep Iterations</label></div><a href="check_insecure_design.php?check_id=61" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="performance_expensive_operations" id="performance_2" checked><label class="form-check-label" for="performance_2"><strong>#62</strong> Expensive Operation Hotspots</label></div><a href="check_insecure_design.php?check_id=62" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
@@ -1154,7 +1154,7 @@ try {
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
                                         <div class="h6 fw-bold mb-0 text-start">Reliability Checks (Weight: 10%)</div>
                                     </div>
-                                    <div class="small text-muted mb-1">Source: Google Site Reliability Engineering (SRE) concepts</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://sre.google/sre-book/table-of-contents/" target="_blank" rel="noopener">Google Site Reliability Engineering (SRE) concepts</a></div>
                                 </div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_logging_coverage" id="reliability_1" checked><label class="form-check-label" for="reliability_1"><strong>#71</strong> Logging Coverage and Signal Quality</label></div><a href="check_insecure_design.php?check_id=71" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="reliability_retry_strategy" id="reliability_2" checked><label class="form-check-label" for="reliability_2"><strong>#72</strong> Retry Strategy and Backoff Safety</label></div><a href="check_insecure_design.php?check_id=72" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
@@ -1171,7 +1171,7 @@ try {
                                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
                                         <div class="h6 fw-bold mb-0 text-start">Documentation Checks (Weight: 5%)</div>
                                     </div>
-                                    <div class="small text-muted mb-1">Source: README best practices, API docs, ADR, and documentation quality standards</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://www.makeareadme.com/" target="_blank" rel="noopener">README best practices</a>, <a href="https://swagger.io/resources/articles/best-practices-in-api-documentation/" target="_blank" rel="noopener">API docs</a>, <a href="https://adr.github.io/" target="_blank" rel="noopener">ADR</a>, and documentation quality standards</div>
                                 </div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_first_principles" id="testing_plus_1" checked><label class="form-check-label" for="testing_plus_1"><strong>#81</strong> README Completeness and Clarity</label></div><a href="check_insecure_design.php?check_id=81" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_aaa_pattern" id="testing_plus_2" checked><label class="form-check-label" for="testing_plus_2"><strong>#82</strong> Installation and Usage Guide Quality</label></div><a href="check_insecure_design.php?check_id=82" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
@@ -2144,21 +2144,7 @@ try {
                 cell.attr('data-folder-group', currentGroupId).addClass('checks-folder-header');
 
                 if (!title.find('.folder-caret').length) {
-                    const countSpanId = currentGroupId + '-count';
                     title.prepend('<i class="fas fa-chevron-right folder-caret me-2" aria-hidden="true"></i>');
-                    title.append(' <span class="text-muted small" id="' + countSpanId + '"></span>');
-
-                    let groupCount = 0;
-                    let next = cell.next();
-                    while (next.length) {
-                        const nextIsHeader = next.find('.h6.fw-bold').length > 0;
-                        if (nextIsHeader) {
-                            break;
-                        }
-                        groupCount += next.find('input[name="checks[]"]').length;
-                        next = next.next();
-                    }
-                    $('#' + countSpanId).text(groupCount > 0 ? '(' + groupCount + ' skills)' : '');
                 }
 
                 return;
