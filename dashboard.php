@@ -544,5 +544,6 @@ try {
             <p class="footer-line">ContactUs@aigitrepoanalyzer.com</p>
         </div>
     </footer>
+    <?php require_once __DIR__ . '/includes/site_chat_widget.php'; ?>
 </body>
 </html>

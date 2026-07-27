@@ -307,5 +307,6 @@ function h(string $value): string
             <p class="footer-line"><?= h($contactEmail) ?></p>
         </div>
     </footer>
+    <?php require_once __DIR__ . '/includes/site_chat_widget.php'; ?>
 </body>
 </html>

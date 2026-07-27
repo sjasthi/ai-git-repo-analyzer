@@ -1425,6 +1425,8 @@ try {
         $('#status-msg').html(msg).css('color', isError ? '#DC2626' : '#6B7280');
     }
 
+    let latestScanData = null;
+
     function scoreBadgeClass(score) {
         if (score >= 80) return 'score-good';
         if (score >= 60) return 'score-medium';
@@ -1616,6 +1618,8 @@ try {
     }
 
     function renderResults(data) {
+        latestScanData = data || null;
+        window.latestScanData = latestScanData;
         const repo  = data.repository || {};
         const scan  = data.scan       || {};
         const score = scan.summary_score ?? 0;
@@ -2295,5 +2299,6 @@ try {
         <p class="footer-line">ContactUs@aigitrepoanalyzer.com</p>
     </div>
 </footer>
+<?php require_once __DIR__ . '/includes/site_chat_widget.php'; ?>
 </body>
 </html>
