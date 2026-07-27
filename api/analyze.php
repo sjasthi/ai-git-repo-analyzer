@@ -28,6 +28,8 @@ require_once __DIR__ . '/checks/testing/check_testing.php';
 require_once __DIR__ . '/checks/performance/check_performance.php';
 require_once __DIR__ . '/checks/reliability/check_reliability.php';
 require_once __DIR__ . '/checks/testing_plus/check_testing_plus.php';
+require_once __DIR__ . '/checks/dependency/check_dependency_analysis.php';
+require_once __DIR__ . '/checks/devops/check_devops_readiness.php';
 
 header('Content-Type: application/json');
 
@@ -201,6 +203,26 @@ function getCheckLabel(string $checkId): string
         'testing_performance_paths' => '#88 Documentation Troubleshooting and FAQ Coverage',
         'testing_ci_gate_readiness' => '#89 Documentation Contribution and Workflow Guidelines',
         'testing_suite_maintainability' => '#90 Documentation Freshness and Maintainability',
+        'dependency_inventory_accuracy' => '#91 Dependency Inventory',
+        'dependency_identity_normalization' => '#92 Vulnerability Detection',
+        'dependency_graph_mapping' => '#93 License Compliance',
+        'dependency_vulnerability_correlation' => '#94 Supply Chain Security',
+        'dependency_license_risk' => '#95 Version Tracking',
+        'dependency_provenance_traceability' => '#96 Risk Assessment',
+        'dependency_integrity_verification' => '#97 Dependency Mapping',
+        'dependency_sbom_format_quality' => '#98 Compliance and Auditing',
+        'dependency_sbom_automation' => '#99 Patch and Update Management',
+        'dependency_drift_unused' => '#100 Software Transparency',
+        'devops_ci_cd_pipeline' => '#101 DevOps CI/CD Pipeline Coverage',
+        'devops_docker_readiness' => '#102 DevOps Docker Build Readiness',
+        'devops_secrets_hygiene' => '#103 DevOps Secrets Handling in Pipelines',
+        'devops_env_configuration' => '#104 DevOps Environment Configuration Management',
+        'devops_release_workflow' => '#105 DevOps Release Workflow Automation',
+        'devops_actions_security' => '#106 DevOps GitHub Actions Security Hardening',
+        'devops_branch_pr_signals' => '#107 DevOps Pull Request and Branch Quality Gates',
+        'devops_deployment_automation' => '#108 DevOps Deployment Automation Signals',
+        'devops_observability_ops' => '#109 DevOps Operational Observability Hooks',
+        'devops_incident_recovery_docs' => '#110 DevOps Runbook and Recovery Documentation',
     ];
     return $map[$checkId] ?? $checkId;
 }
@@ -497,6 +519,13 @@ if (!$checksWereProvided) {
         'testing_first_principles', 'testing_aaa_pattern', 'testing_test_data_management', 'testing_flaky_test_risk',
         'testing_boundary_case_coverage', 'testing_contract_validation', 'testing_security_paths', 'testing_performance_paths',
         'testing_ci_gate_readiness', 'testing_suite_maintainability',
+        'dependency_inventory_accuracy', 'dependency_identity_normalization', 'dependency_graph_mapping',
+        'dependency_vulnerability_correlation', 'dependency_license_risk', 'dependency_provenance_traceability',
+        'dependency_integrity_verification', 'dependency_sbom_format_quality', 'dependency_sbom_automation',
+        'dependency_drift_unused',
+        'devops_ci_cd_pipeline', 'devops_docker_readiness', 'devops_secrets_hygiene', 'devops_env_configuration',
+        'devops_release_workflow', 'devops_actions_security', 'devops_branch_pr_signals', 'devops_deployment_automation',
+        'devops_observability_ops', 'devops_incident_recovery_docs',
     ];
 }
 $selectedChecks = array_values(array_unique(array_filter(array_map('trim', $rawChecks))));
@@ -643,6 +672,26 @@ $newCheckMap = [
     'testing_performance_paths' => ['#88 Documentation Troubleshooting and FAQ Coverage', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_performance_paths')],
     'testing_ci_gate_readiness' => ['#89 Documentation Contribution and Workflow Guidelines', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_ci_gate_readiness')],
     'testing_suite_maintainability' => ['#90 Documentation Freshness and Maintainability', fn() => check_testing_plus($owner, $repo, $pat, $tree, $languages, $sourceFiles, 'testing_suite_maintainability')],
+    'dependency_inventory_accuracy' => ['#91 Dependency Inventory', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_inventory_accuracy')],
+    'dependency_identity_normalization' => ['#92 Vulnerability Detection', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_identity_normalization')],
+    'dependency_graph_mapping' => ['#93 License Compliance', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_graph_mapping')],
+    'dependency_vulnerability_correlation' => ['#94 Supply Chain Security', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_vulnerability_correlation')],
+    'dependency_license_risk' => ['#95 Version Tracking', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_license_risk')],
+    'dependency_provenance_traceability' => ['#96 Risk Assessment', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_provenance_traceability')],
+    'dependency_integrity_verification' => ['#97 Dependency Mapping', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_integrity_verification')],
+    'dependency_sbom_format_quality' => ['#98 Compliance and Auditing', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_sbom_format_quality')],
+    'dependency_sbom_automation' => ['#99 Patch and Update Management', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_sbom_automation')],
+    'dependency_drift_unused' => ['#100 Software Transparency', fn() => check_dependency_sbom($owner, $repo, $pat, $tree, $repoLicense, 'dependency_drift_unused')],
+    'devops_ci_cd_pipeline' => ['#101 DevOps CI/CD Pipeline Coverage', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_ci_cd_pipeline')],
+    'devops_docker_readiness' => ['#102 DevOps Docker Build Readiness', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_docker_readiness')],
+    'devops_secrets_hygiene' => ['#103 DevOps Secrets Handling in Pipelines', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_secrets_hygiene')],
+    'devops_env_configuration' => ['#104 DevOps Environment Configuration Management', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_env_configuration')],
+    'devops_release_workflow' => ['#105 DevOps Release Workflow Automation', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_release_workflow')],
+    'devops_actions_security' => ['#106 DevOps GitHub Actions Security Hardening', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_actions_security')],
+    'devops_branch_pr_signals' => ['#107 DevOps Pull Request and Branch Quality Gates', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_branch_pr_signals')],
+    'devops_deployment_automation' => ['#108 DevOps Deployment Automation Signals', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_deployment_automation')],
+    'devops_observability_ops' => ['#109 DevOps Operational Observability Hooks', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_observability_ops')],
+    'devops_incident_recovery_docs' => ['#110 DevOps Runbook and Recovery Documentation', fn() => check_devops_readiness($owner, $repo, $pat, $tree, 'devops_incident_recovery_docs')],
 ];
 
 foreach ($selectedChecks as $checkId) {

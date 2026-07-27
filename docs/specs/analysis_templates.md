@@ -439,8 +439,6 @@ Weight: 5%
 ### Suggested Frameworks
 
 - Software Bill of Materials (SBOM)
-- Supply Chain Security
-- Semantic Versioning
 
 Evaluate
 
@@ -461,8 +459,6 @@ Weight: 5%
 
 ### Suggested Standards
 
-- DevOps Maturity Model
-- Twelve-Factor App
 - GitHub Actions Best Practices
 
 Evaluate

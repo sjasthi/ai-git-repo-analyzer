@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/config/database.php';
 
 $checkIdRaw = trim((string) ($_GET['check_id'] ?? '1'));
-$checkId = preg_match('/^(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
+$checkId = preg_match('/^(110|10[0-9]|100|9[0-9]|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|10|[1-9])$/', $checkIdRaw) === 1 ? $checkIdRaw : '1';
 $checkNameFromQuery = trim((string) ($_GET['name'] ?? ''));
 $statusRaw = strtolower(trim((string) ($_GET['status'] ?? '')));
 $countRaw = isset($_GET['count']) ? (int) $_GET['count'] : null;
@@ -1036,7 +1036,281 @@ $dynamicCheckTitles = [
     '88' => '#88 Testing Performance-Critical Path Coverage',
     '89' => '#89 Testing CI Gate and Execution Reliability',
     '90' => '#90 Testing Suite Maintainability and Structure',
+    '91' => '#91 Dependency Inventory',
+    '92' => '#92 Vulnerability Detection',
+    '93' => '#93 License Compliance',
+    '94' => '#94 Supply Chain Security',
+    '95' => '#95 Version Tracking',
+    '96' => '#96 Risk Assessment',
+    '97' => '#97 Dependency Mapping',
+    '98' => '#98 Compliance and Auditing',
+    '99' => '#99 Continuous SBOM Automation',
+    '100' => '#100 Software Transparency',
+    '101' => '#101 DevOps CI/CD Pipeline Coverage',
+    '102' => '#102 DevOps Docker Build Readiness',
+    '103' => '#103 DevOps Secrets Handling in Pipelines',
+    '104' => '#104 DevOps Environment Configuration Management',
+    '105' => '#105 DevOps Release Workflow Automation',
+    '106' => '#106 DevOps GitHub Actions Security Hardening',
+    '107' => '#107 DevOps Pull Request and Branch Quality Gates',
+    '108' => '#108 DevOps Deployment Automation Signals',
+    '109' => '#109 DevOps Operational Observability Hooks',
+    '110' => '#110 DevOps Runbook and Recovery Documentation',
 ];
+
+$dependencyContent = [
+    '91' => [
+        'title' => '#91 Dependency Inventory',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Evaluates whether the repository dependency inventory is complete and ready for SBOM reporting.',
+        'looks_for' => [
+            'Presence of supported dependency manifests.',
+            'Coverage of direct dependencies across ecosystems.',
+            'Signals that inventory is missing critical components.',
+        ],
+        'recommendations' => [
+            'Track all direct dependencies in committed manifests and lockfiles.',
+            'Use SBOM generation in each release pipeline to verify inventory completeness.',
+            'Document inventory scope with template: | Dependency | Version | Status |.',
+        ],
+        'why' => 'Inventory gaps make downstream vulnerability and license analysis unreliable.',
+    ],
+    '92' => [
+        'title' => '#92 Vulnerability Detection',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Assesses whether dependency names and versions are normalized and stable for reliable tracking.',
+        'looks_for' => [
+            'Missing versions in dependency declarations.',
+            'Floating ranges that prevent precise identity mapping.',
+            'Inconsistent package notation across ecosystems.',
+        ],
+        'recommendations' => [
+            'Prefer pinned or bounded versions for production-critical packages.',
+            'Normalize identifiers and versions in your SBOM export process.',
+            'Track package identity in a consistent table format.',
+        ],
+        'why' => 'Identity normalization improves matching accuracy for security and compliance tooling.',
+    ],
+    '93' => [
+        'title' => '#93 License Compliance',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Checks whether dependency relationships are traceable through lockfiles and graph evidence.',
+        'looks_for' => [
+            'Expected lockfiles for each manifest type.',
+            'Signals that transitive dependency graphs are reproducible.',
+            'Graph visibility gaps caused by missing lock data.',
+        ],
+        'recommendations' => [
+            'Commit required lockfiles and keep them updated.',
+            'Use tooling that exports transitive graph data into SBOM artifacts.',
+            'Review graph drift regularly for unexpected dependency expansion.',
+        ],
+        'why' => 'Graph traceability is required to understand transitive risk exposure.',
+    ],
+    '94' => [
+        'title' => '#94 Supply Chain Security',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Correlates dependency inventory against known vulnerabilities to prioritize remediation.',
+        'looks_for' => [
+            'Dependencies with known advisories (OSV/CVE).',
+            'Severity concentration in dependency sets.',
+            'Packages requiring urgent patching.',
+        ],
+        'recommendations' => [
+            'Patch high-severity vulnerabilities first and verify mitigation.',
+            'Automate advisory checks in CI for each pull request.',
+            'Maintain remediation status per dependency entry.',
+        ],
+        'why' => 'Fast vulnerability correlation reduces exploit window for known issues.',
+    ],
+    '95' => [
+        'title' => '#95 Version Tracking',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Reviews dependency and repository licensing signals for compatibility and policy risk.',
+        'looks_for' => [
+            'Copyleft or restricted license obligations.',
+            'Missing or unclear license declarations.',
+            'Potential incompatibility with distribution model.',
+        ],
+        'recommendations' => [
+            'Create a license policy and validate dependency licenses against it.',
+            'Replace or isolate incompatible dependencies when required.',
+            'Include license status in SBOM review outputs.',
+        ],
+        'why' => 'License issues can block release and create legal exposure.',
+    ],
+    '96' => [
+        'title' => '#96 Risk Assessment',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Assesses whether package source and ownership metadata supports provenance tracking.',
+        'looks_for' => [
+            'Repository/homepage metadata in manifests.',
+            'Traceable package source context.',
+            'Evidence needed for supply-chain investigations.',
+        ],
+        'recommendations' => [
+            'Capture source metadata for dependency ecosystems used by the project.',
+            'Store provenance context alongside SBOM artifacts.',
+            'Review provenance completeness in release readiness checks.',
+        ],
+        'why' => 'Traceability shortens incident response and improves supply-chain confidence.',
+    ],
+    '97' => [
+        'title' => '#97 Dependency Mapping',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Checks whether dependency integrity signals support authenticity verification.',
+        'looks_for' => [
+            'Lockfile and checksum/integrity markers.',
+            'Reproducibility signals for dependency resolution.',
+            'Gaps that allow dependency tampering risks.',
+        ],
+        'recommendations' => [
+            'Enforce lockfile usage and checksum verification where supported.',
+            'Reject builds with missing integrity evidence for critical ecosystems.',
+            'Audit dependency resolution pathways for tamper resistance.',
+        ],
+        'why' => 'Integrity controls reduce risk of compromised or substituted artifacts.',
+    ],
+    '98' => [
+        'title' => '#98 Compliance and Auditing',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Validates that SBOM files exist and follow recognizable CycloneDX/SPDX structures.',
+        'looks_for' => [
+            'Presence of SBOM files in supported formats.',
+            'Basic structural fields such as components/packages.',
+            'Format quality signals for downstream tool compatibility.',
+        ],
+        'recommendations' => [
+            'Generate CycloneDX or SPDX files as part of release artifacts.',
+            'Validate SBOM schema before publication.',
+            'Version SBOM artifacts per release.',
+        ],
+        'why' => 'Format quality determines whether SBOM data can be consumed reliably.',
+    ],
+    '99' => [
+        'title' => '#99 Continuous SBOM Automation',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Examines CI workflows for automated SBOM generation and validation.',
+        'looks_for' => [
+            'Workflow steps that generate or verify SBOM output.',
+            'Pipeline coverage for dependency governance automation.',
+            'Gaps requiring manual SBOM effort.',
+        ],
+        'recommendations' => [
+            'Automate SBOM generation in CI on build and release events.',
+            'Fail pipeline gates when SBOM generation or validation fails.',
+            'Store SBOM artifacts with build metadata for auditability.',
+        ],
+        'why' => 'Automation keeps dependency governance consistent and repeatable.',
+    ],
+    '100' => [
+        'title' => '#100 Software Transparency',
+        'tag' => 'Dependency Governance Focus',
+        'about' => 'Detects dependency drift and likely unused packages that increase maintenance and risk.',
+        'looks_for' => [
+            'Floating or outdated dependency constraints.',
+            'Packages with low evidence of usage in source scans.',
+            'Dependency growth without corresponding runtime need.',
+        ],
+        'recommendations' => [
+            'Review and remove truly unused dependencies after verification.',
+            'Reduce floating constraints to limit drift.',
+            'Track lifecycle status using: | Dependency | Version | Status |.',
+        ],
+        'why' => 'Reducing drift and dead dependencies lowers attack surface and maintenance cost.',
+    ],
+];
+
+foreach ($dependencyContent as $id => $meta) {
+    $checkContent[$id] = $meta;
+}
+
+$devopsContent = [
+    '101' => [
+        'title' => '#101 DevOps CI/CD Pipeline Coverage',
+        'tag' => 'DevOps Focus',
+        'about' => 'Validates whether repository workflows provide reliable CI/CD coverage for build, test, and verification.',
+        'looks_for' => ['Workflow files under .github/workflows.', 'Build/test automation triggers.', 'Pipeline execution signals in repository automation.'],
+        'recommendations' => ['Add CI workflow coverage for every pull request and default branch commit.', 'Gate merges on successful build and test jobs.', 'Track failed workflow trends and remediation ownership.'],
+        'why' => 'Consistent CI/CD coverage reduces integration risk and catches regressions early.',
+    ],
+    '102' => [
+        'title' => '#102 DevOps Docker Build Readiness',
+        'tag' => 'DevOps Focus',
+        'about' => 'Checks whether container build definitions support repeatable deployment packaging.',
+        'looks_for' => ['Dockerfile or container build descriptors.', 'Build reproducibility signals.', 'Container workflow readiness for CI usage.'],
+        'recommendations' => ['Add and maintain a production-ready Dockerfile.', 'Use deterministic dependency installation and image tagging.', 'Validate image builds in CI before release.'],
+        'why' => 'Containerized build consistency improves deployment predictability across environments.',
+    ],
+    '103' => [
+        'title' => '#103 DevOps Secrets Handling in Pipelines',
+        'tag' => 'DevOps Focus',
+        'about' => 'Assesses whether automation files avoid plaintext credentials and use secure secret injection.',
+        'looks_for' => ['Token/password-like patterns in workflow files.', 'Secret manager usage patterns.', 'Pipeline secret hygiene practices.'],
+        'recommendations' => ['Move credentials to encrypted CI secrets.', 'Rotate exposed credentials and invalidate leaked tokens.', 'Add secret scanning on pull requests and default branch.'],
+        'why' => 'Secrets exposure in CI pipelines can lead to full repository and deployment compromise.',
+    ],
+    '104' => [
+        'title' => '#104 DevOps Environment Configuration Management',
+        'tag' => 'DevOps Focus',
+        'about' => 'Checks whether environment variable guidance and configuration templates are available for deployments.',
+        'looks_for' => ['.env.example or .env.sample templates.', 'Environment-specific configuration patterns.', 'Configuration portability across stages.'],
+        'recommendations' => ['Provide environment templates without sensitive values.', 'Document required environment variables and defaults.', 'Validate environment configuration in CI checks.'],
+        'why' => 'Configuration clarity reduces deployment failures and environment drift.',
+    ],
+    '105' => [
+        'title' => '#105 DevOps Release Workflow Automation',
+        'tag' => 'DevOps Focus',
+        'about' => 'Evaluates whether release operations are automated using tag or release-based workflows.',
+        'looks_for' => ['Tag/release workflow triggers.', 'Automated release artifact steps.', 'Release process standardization signals.'],
+        'recommendations' => ['Automate release workflows for tagged versions.', 'Attach build artifacts and changelog outputs to releases.', 'Add release validation gates before publication.'],
+        'why' => 'Release automation lowers manual error risk and improves delivery cadence.',
+    ],
+    '106' => [
+        'title' => '#106 DevOps GitHub Actions Security Hardening',
+        'tag' => 'DevOps Focus',
+        'about' => 'Reviews action references and permissions for secure workflow execution.',
+        'looks_for' => ['Pinned action references.', 'Least-privilege workflow usage.', 'Security hardening of automation components.'],
+        'recommendations' => ['Pin GitHub Actions to commit SHA where possible.', 'Set minimal permissions for workflow jobs.', 'Review third-party actions before adoption.'],
+        'why' => 'Hardened workflows reduce supply-chain and workflow tampering risks.',
+    ],
+    '107' => [
+        'title' => '#107 DevOps Pull Request and Branch Quality Gates',
+        'tag' => 'DevOps Focus',
+        'about' => 'Assesses PR validation signals such as pull request workflows and ownership controls.',
+        'looks_for' => ['pull_request triggers in workflows.', 'CODEOWNERS or review ownership signals.', 'Branch gate evidence tied to CI.'],
+        'recommendations' => ['Require PR checks before merge.', 'Use CODEOWNERS for sensitive paths.', 'Block merges when required checks fail.'],
+        'why' => 'PR quality gates prevent risky changes from bypassing review and automation.',
+    ],
+    '108' => [
+        'title' => '#108 DevOps Deployment Automation Signals',
+        'tag' => 'DevOps Focus',
+        'about' => 'Checks whether deployment-related automation signals are present in workflows.',
+        'looks_for' => ['Deploy/publish/helm/kubernetes workflow steps.', 'Automated deployment orchestration signals.', 'Deployment control points in CI/CD.'],
+        'recommendations' => ['Automate repeatable deployment steps in workflow pipelines.', 'Define deployment approvals and rollout strategy.', 'Track deployment outcomes and rollback readiness.'],
+        'why' => 'Deployment automation reduces release variability and operational mistakes.',
+    ],
+    '109' => [
+        'title' => '#109 DevOps Operational Observability Hooks',
+        'tag' => 'DevOps Focus',
+        'about' => 'Evaluates whether repository signals indicate monitoring, logging, and alerting readiness.',
+        'looks_for' => ['Observability references in workflows/docs.', 'Monitoring and alert integration hints.', 'Operational telemetry readiness.'],
+        'recommendations' => ['Define baseline monitoring and alert requirements per service.', 'Document log and metric expectations for production.', 'Integrate observability checks into release readiness reviews.'],
+        'why' => 'Observability reduces incident detection time and improves operational confidence.',
+    ],
+    '110' => [
+        'title' => '#110 DevOps Runbook and Recovery Documentation',
+        'tag' => 'DevOps Focus',
+        'about' => 'Checks whether incident runbooks or recovery guidance exist for operational continuity.',
+        'looks_for' => ['Runbook/incident/recovery documentation files.', 'Operational response instructions.', 'Disaster recovery guidance signals.'],
+        'recommendations' => ['Create runbooks for major failure scenarios.', 'Document incident escalation and recovery steps.', 'Review and test recovery playbooks regularly.'],
+        'why' => 'Runbooks improve incident response speed and reduce recovery uncertainty.',
+    ],
+];
+
+foreach ($devopsContent as $id => $meta) {
+    $checkContent[$id] = $meta;
+}
 
 $content = $checkContent[$checkId] ?? null;
 if ($content === null) {
@@ -1048,6 +1322,10 @@ if ($content === null) {
         $dynamicTag = 'Reliability Focus';
     } elseif ((int) $checkId >= 81 && (int) $checkId <= 90) {
         $dynamicTag = 'Testing Focus';
+    } elseif ((int) $checkId >= 91 && (int) $checkId <= 100) {
+        $dynamicTag = 'Dependency Governance Focus';
+    } elseif ((int) $checkId >= 101 && (int) $checkId <= 110) {
+        $dynamicTag = 'DevOps Focus';
     }
 
     $content = [
@@ -1176,6 +1454,26 @@ $findingsByCheckCategory = [
     '88' => ['Testing'],
     '89' => ['Testing'],
     '90' => ['Testing'],
+    '91' => ['Dependency Analysis'],
+    '92' => ['Dependency Analysis'],
+    '93' => ['Dependency Analysis'],
+    '94' => ['Dependency Analysis'],
+    '95' => ['Dependency Analysis'],
+    '96' => ['Dependency Analysis'],
+    '97' => ['Dependency Analysis'],
+    '98' => ['Dependency Analysis'],
+    '99' => ['Dependency Analysis'],
+    '100' => ['Dependency Analysis'],
+    '101' => ['DevOps'],
+    '102' => ['DevOps'],
+    '103' => ['DevOps'],
+    '104' => ['DevOps'],
+    '105' => ['DevOps'],
+    '106' => ['DevOps'],
+    '107' => ['DevOps'],
+    '108' => ['DevOps'],
+    '109' => ['DevOps'],
+    '110' => ['DevOps'],
 ];
 
 $findingsForCheck = [];
@@ -1281,6 +1579,26 @@ $recommendationKeywordsByCheck = [
     '88' => ['testing', 'performance', 'latency', 'throughput', 'hot path'],
     '89' => ['testing', 'ci', 'gate', 'pipeline', 'merge'],
     '90' => ['testing', 'suite', 'maintainability', 'structure', 'organization'],
+    '91' => ['dependency', 'inventory', 'manifest', 'sbom', 'components'],
+    '92' => ['dependency', 'identity', 'normalize', 'version', 'package'],
+    '93' => ['dependency', 'graph', 'transitive', 'lockfile', 'mapping'],
+    '94' => ['dependency', 'vulnerability', 'cve', 'osv', 'advisory'],
+    '95' => ['dependency', 'license', 'compatibility', 'compliance', 'copyleft'],
+    '96' => ['dependency', 'provenance', 'source', 'traceability', 'origin'],
+    '97' => ['dependency', 'integrity', 'authenticity', 'checksum', 'signature'],
+    '98' => ['sbom', 'cyclonedx', 'spdx', 'format', 'components'],
+    '99' => ['sbom', 'automation', 'ci', 'pipeline', 'workflow'],
+    '100' => ['dependency', 'drift', 'unused', 'outdated', 'cleanup'],
+    '101' => ['devops', 'ci', 'cd', 'pipeline', 'workflow'],
+    '102' => ['devops', 'docker', 'container', 'image', 'build'],
+    '103' => ['devops', 'secret', 'token', 'credential', 'pipeline'],
+    '104' => ['devops', 'environment', 'configuration', '.env', 'template'],
+    '105' => ['devops', 'release', 'tag', 'workflow', 'automation'],
+    '106' => ['devops', 'actions', 'security', 'permissions', 'pinning'],
+    '107' => ['devops', 'pull request', 'branch', 'gate', 'codeowners'],
+    '108' => ['devops', 'deploy', 'helm', 'kubernetes', 'publish'],
+    '109' => ['devops', 'observability', 'monitoring', 'alert', 'logging'],
+    '110' => ['devops', 'runbook', 'incident', 'recovery', 'disaster'],
 ];
 
 if ($scanId <= 0) {

@@ -571,7 +571,7 @@ try {
                             <div class="row row-cols-1 row-cols-md-2 g-2">
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1">OWASP Checks</div>
-                                    <div class="small text-muted mb-1">Source: OWASP Top 10 (2021)</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener noreferrer">OWASP Top 10 (2021)</a></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -759,7 +759,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1">SonarQube Rules (Code Quality)</div>
-                                    <div class="small text-muted mb-1">Source: SonarQube quality rules and maintainability model</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://docs.sonarsource.com/sonarqube-server/quality-standards-administration/managing-rules/rules" target="_blank" rel="noopener noreferrer">SonarQube Rules Management</a></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -853,7 +853,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1 text-start">Clean Code Checks (Weight: 10%)</div>
-                                    <div class="small text-muted mb-1">Robert C. Martin's Clean Code principles</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://www.oreilly.com/library/view/clean-code-a/9780136083238/" target="_blank" rel="noopener noreferrer">Clean Code (O'Reilly)</a></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -947,7 +947,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1 text-start">Architecture Checks (Weight: 10%)</div>
-                                    <div class="small text-muted mb-1">Robert C. Martin's Clean Architecture</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://www.pearson.com/en-us/subject-catalog/p/clean-architecture-a-craftsmans-guide-to-software-structure-and-design/P200000009528/9780134494326" target="_blank" rel="noopener noreferrer">Clean Architecture (Pearson)</a></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -1041,7 +1041,7 @@ try {
                                 </div>
                                 <div class="col-12 w-100 mt-2">
                                     <div class="h6 fw-bold mb-1 text-start">Testing Checks (Weight: 10%)</div>
-                                    <div class="small text-muted mb-1">Test Pyramid</div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://martinfowler.com/bliki/TestPyramid.html" target="_blank" rel="noopener noreferrer">Test Pyramid (Martin Fowler)</a>, <a href="https://circleci.com/blog/testing-pyramid/" target="_blank" rel="noopener noreferrer">Testing Pyramid (CircleCI)</a></div>
                                 </div>
                                 <div class="col">
                                     <div class="form-check d-flex align-items-center justify-content-between gap-2">
@@ -1183,6 +1183,47 @@ try {
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_performance_paths" id="testing_plus_8" checked><label class="form-check-label" for="testing_plus_8"><strong>#88</strong> Troubleshooting and FAQ Coverage</label></div><a href="check_insecure_design.php?check_id=88" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_ci_gate_readiness" id="testing_plus_9" checked><label class="form-check-label" for="testing_plus_9"><strong>#89</strong> Contribution and Workflow Guidelines</label></div><a href="check_insecure_design.php?check_id=89" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                                 <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="testing_suite_maintainability" id="testing_plus_10" checked><label class="form-check-label" for="testing_plus_10"><strong>#90</strong> Documentation Freshness and Maintainability</label></div><a href="check_insecure_design.php?check_id=90" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">Dependency SBOM Checks (Weight: 5%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">
+                                        Source:
+                                        <a href="https://spdx.github.io/spdx-spec/" target="_blank" rel="noopener noreferrer">SPDX Specification</a>,
+                                        <a href="https://cyclonedx.org/capabilities/sbom/" target="_blank" rel="noopener noreferrer">CycloneDX SBOM</a>,
+                                        and
+                                        <a href="https://www.cisa.gov/topics/information-communications-technology-supply-chain-security/sbom" target="_blank" rel="noopener noreferrer">CISA SBOM Resources</a>
+                                        (including NTIA Minimum Elements)
+                                    </div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_inventory_accuracy" id="dependency_sbom_1" checked><label class="form-check-label" for="dependency_sbom_1"><strong>#91</strong> Dependency Inventory</label></div><a href="check_insecure_design.php?check_id=91" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_identity_normalization" id="dependency_sbom_2" checked><label class="form-check-label" for="dependency_sbom_2"><strong>#92</strong> Vulnerability Detection</label></div><a href="check_insecure_design.php?check_id=92" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_graph_mapping" id="dependency_sbom_3" checked><label class="form-check-label" for="dependency_sbom_3"><strong>#93</strong> License Compliance</label></div><a href="check_insecure_design.php?check_id=93" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_vulnerability_correlation" id="dependency_sbom_4" checked><label class="form-check-label" for="dependency_sbom_4"><strong>#94</strong> Supply Chain Security</label></div><a href="check_insecure_design.php?check_id=94" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_license_risk" id="dependency_sbom_5" checked><label class="form-check-label" for="dependency_sbom_5"><strong>#95</strong> Version Tracking</label></div><a href="check_insecure_design.php?check_id=95" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_provenance_traceability" id="dependency_sbom_6" checked><label class="form-check-label" for="dependency_sbom_6"><strong>#96</strong> Risk Assessment</label></div><a href="check_insecure_design.php?check_id=96" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_integrity_verification" id="dependency_sbom_7" checked><label class="form-check-label" for="dependency_sbom_7"><strong>#97</strong> Dependency Mapping</label></div><a href="check_insecure_design.php?check_id=97" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_sbom_format_quality" id="dependency_sbom_8" checked><label class="form-check-label" for="dependency_sbom_8"><strong>#98</strong> Compliance and Auditing</label></div><a href="check_insecure_design.php?check_id=98" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_sbom_automation" id="dependency_sbom_9" checked><label class="form-check-label" for="dependency_sbom_9"><strong>#99</strong> Continuous SBOM Automation</label></div><a href="check_insecure_design.php?check_id=99" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="dependency_drift_unused" id="dependency_sbom_10" checked><label class="form-check-label" for="dependency_sbom_10"><strong>#100</strong> Software Transparency</label></div><a href="check_insecure_design.php?check_id=100" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+
+                                <div class="col-12 w-100 mt-2">
+                                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="h6 fw-bold mb-0 text-start">DevOps Readiness Checks (Weight: 5%)</div>
+                                    </div>
+                                    <div class="small text-muted mb-1">Source: <a href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions" target="_blank" rel="noopener noreferrer">GitHub Actions Best Practices</a></div>
+                                </div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_ci_cd_pipeline" id="devops_1" checked><label class="form-check-label" for="devops_1"><strong>#101</strong> CI/CD Pipeline Coverage</label></div><a href="check_insecure_design.php?check_id=101" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_docker_readiness" id="devops_2" checked><label class="form-check-label" for="devops_2"><strong>#102</strong> Docker Build Readiness</label></div><a href="check_insecure_design.php?check_id=102" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_secrets_hygiene" id="devops_3" checked><label class="form-check-label" for="devops_3"><strong>#103</strong> Secrets Handling in Pipelines</label></div><a href="check_insecure_design.php?check_id=103" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_env_configuration" id="devops_4" checked><label class="form-check-label" for="devops_4"><strong>#104</strong> Environment Configuration Management</label></div><a href="check_insecure_design.php?check_id=104" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_release_workflow" id="devops_5" checked><label class="form-check-label" for="devops_5"><strong>#105</strong> Release Workflow Automation</label></div><a href="check_insecure_design.php?check_id=105" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_actions_security" id="devops_6" checked><label class="form-check-label" for="devops_6"><strong>#106</strong> GitHub Actions Security Hardening</label></div><a href="check_insecure_design.php?check_id=106" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_branch_pr_signals" id="devops_7" checked><label class="form-check-label" for="devops_7"><strong>#107</strong> Pull Request and Branch Quality Gates</label></div><a href="check_insecure_design.php?check_id=107" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_deployment_automation" id="devops_8" checked><label class="form-check-label" for="devops_8"><strong>#108</strong> Deployment Automation Signals</label></div><a href="check_insecure_design.php?check_id=108" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_observability_ops" id="devops_9" checked><label class="form-check-label" for="devops_9"><strong>#109</strong> Operational Observability Hooks</label></div><a href="check_insecure_design.php?check_id=109" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
+                                <div class="col"><div class="form-check d-flex align-items-center justify-content-between gap-2"><div><input class="form-check-input" type="checkbox" name="checks[]" value="devops_incident_recovery_docs" id="devops_10" checked><label class="form-check-label" for="devops_10"><strong>#110</strong> Runbook and Recovery Documentation</label></div><a href="check_insecure_design.php?check_id=110" class="btn btn-sm btn-outline-primary check-details-trigger">Details</a></div></div>
                             </div>
                         </div>
                     </div>
@@ -1420,7 +1461,7 @@ try {
     function checkDetailIdFromName(name) {
         const text = String(name || '').toLowerCase();
 
-        const numMatch = text.match(/#\s*(\d{1,2})/);
+        const numMatch = text.match(/#\s*(\d{1,3})/);
         if (numMatch && numMatch[1]) {
             return numMatch[1];
         }
@@ -1505,7 +1546,7 @@ try {
             params.set('scan_id', String(scanId));
         }
 
-        if (Number(checkId) > 90) {
+        if (Number(checkId) > 110) {
             return '';
         }
 
@@ -1630,7 +1671,9 @@ try {
                 'Testing Checks (Weight: 10%)': [],
                 'Performance Checks (Weight: 10%)': [],
                 'Reliability Checks (Weight: 10%)': [],
-                'Documentation Checks (Weight: 5%)': []
+                'Documentation Checks (Weight: 5%)': [],
+                'Dependency SBOM Checks (Weight: 5%)': [],
+                'DevOps Readiness Checks (Weight: 5%)': []
             };
 
             checksToRender.forEach(function(c) {
@@ -1657,6 +1700,10 @@ try {
                     groupedChecks['Reliability Checks (Weight: 10%)'].push(c);
                 } else if (checkNumber >= 81 && checkNumber <= 90) {
                     groupedChecks['Documentation Checks (Weight: 5%)'].push(c);
+                } else if (checkNumber >= 91 && checkNumber <= 100) {
+                    groupedChecks['Dependency SBOM Checks (Weight: 5%)'].push(c);
+                } else if (checkNumber >= 101 && checkNumber <= 110) {
+                    groupedChecks['DevOps Readiness Checks (Weight: 5%)'].push(c);
                 } else {
                     groupedChecks['SonarQube Rules (Code Quality)'].push(c);
                 }
@@ -1700,7 +1747,7 @@ try {
                             scan_id: String(data.scan_id || '')
                         }).toString()
                         : '';
-                    const canOpenDetails = Number(checkId) <= 90;
+                    const canOpenDetails = Number(checkId) <= 110;
 
                     const tileHtml =
                         `<div class="check-tile ${tileClass}">
@@ -1815,7 +1862,27 @@ try {
             'testing_security_paths': '#87 Documentation Security and Compliance Notes',
             'testing_performance_paths': '#88 Documentation Troubleshooting and FAQ Coverage',
             'testing_ci_gate_readiness': '#89 Documentation Contribution and Workflow Guidelines',
-            'testing_suite_maintainability': '#90 Documentation Freshness and Maintainability'
+            'testing_suite_maintainability': '#90 Documentation Freshness and Maintainability',
+            'dependency_inventory_accuracy': '#91 Dependency Inventory',
+            'dependency_identity_normalization': '#92 Vulnerability Detection',
+            'dependency_graph_mapping': '#93 License Compliance',
+            'dependency_vulnerability_correlation': '#94 Supply Chain Security',
+            'dependency_license_risk': '#95 Version Tracking',
+            'dependency_provenance_traceability': '#96 Risk Assessment',
+            'dependency_integrity_verification': '#97 Dependency Mapping',
+            'dependency_sbom_format_quality': '#98 Compliance and Auditing',
+            'dependency_sbom_automation': '#99 Continuous SBOM Automation',
+            'dependency_drift_unused': '#100 Software Transparency',
+            'devops_ci_cd_pipeline': '#101 DevOps CI/CD Pipeline Coverage',
+            'devops_docker_readiness': '#102 DevOps Docker Build Readiness',
+            'devops_secrets_hygiene': '#103 DevOps Secrets Handling in Pipelines',
+            'devops_env_configuration': '#104 DevOps Environment Configuration Management',
+            'devops_release_workflow': '#105 DevOps Release Workflow Automation',
+            'devops_actions_security': '#106 DevOps GitHub Actions Security Hardening',
+            'devops_branch_pr_signals': '#107 DevOps Pull Request and Branch Quality Gates',
+            'devops_deployment_automation': '#108 DevOps Deployment Automation Signals',
+            'devops_observability_ops': '#109 DevOps Operational Observability Hooks',
+            'devops_incident_recovery_docs': '#110 DevOps Runbook and Recovery Documentation'
         };
 
         const selectedChecksList = $('#selected-checks-list').empty();
@@ -1829,7 +1896,9 @@ try {
                 'Testing Checks (Weight: 10%)': [],
                 'Performance Checks (Weight: 10%)': [],
                 'Reliability Checks (Weight: 10%)': [],
-                'Documentation Checks (Weight: 5%)': []
+                'Documentation Checks (Weight: 5%)': [],
+                'Dependency SBOM Checks (Weight: 5%)': [],
+                'DevOps Readiness Checks (Weight: 5%)': []
             };
 
             data.selected_checks.forEach(function(checkId) {
@@ -1853,6 +1922,10 @@ try {
                     groups['Reliability Checks (Weight: 10%)'].push(friendlyName);
                 } else if (checkNumber >= 81 && checkNumber <= 90) {
                     groups['Documentation Checks (Weight: 5%)'].push(friendlyName);
+                } else if (checkNumber >= 91 && checkNumber <= 100) {
+                    groups['Dependency SBOM Checks (Weight: 5%)'].push(friendlyName);
+                } else if (checkNumber >= 101 && checkNumber <= 110) {
+                    groups['DevOps Readiness Checks (Weight: 5%)'].push(friendlyName);
                 } else {
                     groups['SonarQube Rules (Code Quality)'].push(friendlyName);
                 }

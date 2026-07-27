@@ -68,7 +68,7 @@ function checkDetailIdFromName(string $checkName): ?string
 {
     $normalized = strtolower(trim($checkName));
 
-    if (preg_match('/#\s*(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $normalized, $numberMatch) === 1) {
+    if (preg_match('/#\s*(\d{1,3})/', $normalized, $numberMatch) === 1) {
         return (string) $numberMatch[1];
     }
 
@@ -103,6 +103,26 @@ function checkDetailIdFromName(string $checkName): ?string
         '28' => '/#?28\s*sonarqube error handling and defensive coding patterns|error handling and defensive coding patterns/i',
         '29' => '/#?29\s*sonarqube technical debt and remediation tracking|technical debt and remediation tracking/i',
         '30' => '/#?30\s*sonarqube quality gate compliance summary|quality gate compliance summary/i',
+        '91' => '/#?91\s*dependency inventory accuracy|inventory accuracy/i',
+        '92' => '/#?92\s*package identity normalization|identity normalization/i',
+        '93' => '/#?93\s*dependency graph mapping|graph mapping/i',
+        '94' => '/#?94\s*vulnerability correlation|vulnerability correlation/i',
+        '95' => '/#?95\s*license risk analysis|license risk analysis/i',
+        '96' => '/#?96\s*provenance and source traceability|source traceability/i',
+        '97' => '/#?97\s*integrity and authenticity verification|authenticity verification/i',
+        '98' => '/#?98\s*sbom format proficiency|sbom format proficiency/i',
+        '99' => '/#?99\s*continuous sbom automation|sbom automation/i',
+        '100' => '/#?100\s*drift and unused dependency detection|unused dependency detection|dependency drift/i',
+        '101' => '/#?101\s*devops ci\/cd pipeline coverage|ci\/cd pipeline coverage/i',
+        '102' => '/#?102\s*devops docker build readiness|docker build readiness/i',
+        '103' => '/#?103\s*devops secrets handling in pipelines|secrets handling in pipelines/i',
+        '104' => '/#?104\s*devops environment configuration management|environment configuration management/i',
+        '105' => '/#?105\s*devops release workflow automation|release workflow automation/i',
+        '106' => '/#?106\s*devops github actions security hardening|actions security hardening/i',
+        '107' => '/#?107\s*devops pull request and branch quality gates|branch quality gates/i',
+        '108' => '/#?108\s*devops deployment automation signals|deployment automation signals/i',
+        '109' => '/#?109\s*devops operational observability hooks|operational observability hooks/i',
+        '110' => '/#?110\s*devops runbook and recovery documentation|runbook and recovery documentation/i',
     ];
 
     foreach ($patterns as $checkId => $pattern) {
@@ -683,6 +703,16 @@ function findingsByCheckCategoryMap(): array
         '88' => ['Testing'],
         '89' => ['Testing'],
         '90' => ['Testing'],
+        '91' => ['Dependency Analysis'],
+        '92' => ['Dependency Analysis'],
+        '93' => ['Dependency Analysis'],
+        '94' => ['Dependency Analysis'],
+        '95' => ['Dependency Analysis'],
+        '96' => ['Dependency Analysis'],
+        '97' => ['Dependency Analysis'],
+        '98' => ['Dependency Analysis'],
+        '99' => ['Dependency Analysis'],
+        '100' => ['Dependency Analysis'],
     ];
 }
 
@@ -749,6 +779,16 @@ function recommendationKeywordsByCheckMap(): array
         '88' => ['testing', 'performance', 'latency', 'throughput', 'hot path'],
         '89' => ['testing', 'ci', 'gate', 'pipeline', 'merge'],
         '90' => ['testing', 'suite', 'maintainability', 'structure', 'organization'],
+        '91' => ['dependency', 'inventory', 'manifest', 'sbom', 'components'],
+        '92' => ['dependency', 'identity', 'version', 'normalize', 'purl'],
+        '93' => ['dependency', 'graph', 'transitive', 'lockfile', 'mapping'],
+        '94' => ['dependency', 'vulnerability', 'osv', 'cve', 'advisory'],
+        '95' => ['dependency', 'license', 'compliance', 'compatibility', 'copyleft'],
+        '96' => ['dependency', 'provenance', 'source', 'traceability', 'origin'],
+        '97' => ['dependency', 'integrity', 'checksum', 'signature', 'authenticity'],
+        '98' => ['sbom', 'cyclonedx', 'spdx', 'format', 'components'],
+        '99' => ['sbom', 'ci', 'automation', 'pipeline', 'workflow'],
+        '100' => ['dependency', 'drift', 'unused', 'outdated', 'cleanup'],
     ];
 }
 
@@ -920,6 +960,26 @@ try {
         'testing_performance_paths' => '#88 Testing Performance-Critical Path Coverage',
         'testing_ci_gate_readiness' => '#89 Testing CI Gate and Execution Reliability',
         'testing_suite_maintainability' => '#90 Testing Suite Maintainability and Structure',
+        'dependency_inventory_accuracy' => '#91 Dependency Inventory',
+        'dependency_identity_normalization' => '#92 Vulnerability Detection',
+        'dependency_graph_mapping' => '#93 License Compliance',
+        'dependency_vulnerability_correlation' => '#94 Supply Chain Security',
+        'dependency_license_risk' => '#95 Version Tracking',
+        'dependency_provenance_traceability' => '#96 Risk Assessment',
+        'dependency_integrity_verification' => '#97 Dependency Mapping',
+        'dependency_sbom_format_quality' => '#98 Compliance and Auditing',
+        'dependency_sbom_automation' => '#99 Continuous SBOM Automation',
+        'dependency_drift_unused' => '#100 Software Transparency',
+        'devops_ci_cd_pipeline' => '#101 DevOps CI/CD Pipeline Coverage',
+        'devops_docker_readiness' => '#102 DevOps Docker Build Readiness',
+        'devops_secrets_hygiene' => '#103 DevOps Secrets Handling in Pipelines',
+        'devops_env_configuration' => '#104 DevOps Environment Configuration Management',
+        'devops_release_workflow' => '#105 DevOps Release Workflow Automation',
+        'devops_actions_security' => '#106 DevOps GitHub Actions Security Hardening',
+        'devops_branch_pr_signals' => '#107 DevOps Pull Request and Branch Quality Gates',
+        'devops_deployment_automation' => '#108 DevOps Deployment Automation Signals',
+        'devops_observability_ops' => '#109 DevOps Operational Observability Hooks',
+        'devops_incident_recovery_docs' => '#110 DevOps Runbook and Recovery Documentation',
     ];
 
     $selectedCheckLabels = [];
@@ -940,7 +1000,7 @@ try {
     foreach ($checkLabels as $id => $label) {
         $labelRaw = preg_replace('/\s*\([^)]*\)\s*$/', '', $label);
         $labelCheckId = null;
-        if (preg_match('/#\s*(90|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
+        if (preg_match('/#\s*(100|9[0-9]|8[0-9]|7[0-9]|6[0-9]|5[0-9]|4[0-9]|3[0-9]|2[0-9]|1[0-9]|[1-9])/', $label, $numberMatch) === 1) {
             $labelCheckId = (string) $numberMatch[1];
         }
 
@@ -1105,6 +1165,8 @@ try {
             'Performance Checks (Weight: 10%)' => [],
             'Reliability Checks (Weight: 10%)' => [],
             'Testing Plus Checks (Weight: 10%)' => [],
+            'Dependency SBOM Checks (Weight: 5%)' => [],
+            'DevOps Readiness Checks (Weight: 5%)' => [],
         ];
         foreach ($selectedCheckLabels as $check) {
             $number = 0;
@@ -1127,6 +1189,10 @@ try {
                 $selectedGroups['Reliability Checks (Weight: 10%)'][] = (string) $check;
             } elseif ($number >= 81 && $number <= 90) {
                 $selectedGroups['Testing Plus Checks (Weight: 10%)'][] = (string) $check;
+            } elseif ($number >= 91 && $number <= 100) {
+                $selectedGroups['Dependency SBOM Checks (Weight: 5%)'][] = (string) $check;
+            } elseif ($number >= 101 && $number <= 110) {
+                $selectedGroups['DevOps Readiness Checks (Weight: 5%)'][] = (string) $check;
             } else {
                 $selectedGroups['SonarQube Rules (Code Quality)'][] = (string) $check;
             }
@@ -1160,6 +1226,8 @@ try {
             'Performance Checks (Weight: 10%)' => [],
             'Reliability Checks (Weight: 10%)' => [],
             'Testing Plus Checks (Weight: 10%)' => [],
+            'Dependency SBOM Checks (Weight: 5%)' => [],
+            'DevOps Readiness Checks (Weight: 5%)' => [],
         ];
 
         foreach ($checkRuns as $cr) {
@@ -1184,6 +1252,10 @@ try {
                 $analysisGroups['Reliability Checks (Weight: 10%)'][] = $cr;
             } elseif ($num >= 81 && $num <= 90) {
                 $analysisGroups['Testing Plus Checks (Weight: 10%)'][] = $cr;
+            } elseif ($num >= 91 && $num <= 100) {
+                $analysisGroups['Dependency SBOM Checks (Weight: 5%)'][] = $cr;
+            } elseif ($num >= 101 && $num <= 110) {
+                $analysisGroups['DevOps Readiness Checks (Weight: 5%)'][] = $cr;
             } else {
                 $analysisGroups['SonarQube Rules (Code Quality)'][] = $cr;
             }
@@ -1204,7 +1276,7 @@ try {
             $tileClass = $statusNorm === 'clean' ? 'clean' : ($statusNorm === 'not_run' ? '' : 'issues');
             $detailsUrl = '';
             $checkId = checkDetailIdFromName($checkNameRaw);
-            if ($checkId !== null && (int) $checkId <= 90) {
+            if ($checkId !== null && (int) $checkId <= 110) {
                 $detailsUrl = absoluteCheckDetailsUrl([
                     'check_id' => $checkId,
                     'name' => $checkNameRaw,
