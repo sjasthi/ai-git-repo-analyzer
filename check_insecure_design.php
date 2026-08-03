@@ -1318,7 +1318,94 @@ $devopsContent = [
     ],
 ];
 
+$aiReadinessContent = [
+    '111' => [
+        'title' => '#111 AI Readiness Rich README for AI Onboarding',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Checks whether the README is substantial enough to let a human or AI assistant quickly build an accurate mental model of the project.',
+        'looks_for' => ['README.md presence and length.', 'Purpose, setup, and usage coverage.', 'Enough context to onboard without reading all source files.'],
+        'recommendations' => ['Write a README covering purpose, setup, and usage.', 'Keep the README updated as the project evolves.', 'Summarize architecture and key modules near the top.'],
+        'why' => 'A rich README is the fastest path for any reader, human or AI, to understand what a repository does.',
+    ],
+    '112' => [
+        'title' => '#112 AI Readiness Usage Examples and Snippets',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Evaluates whether the README includes concrete usage examples or code snippets.',
+        'looks_for' => ['Fenced code blocks in the README.', 'Usage/Example/Quickstart sections.', 'Runnable, copy-pasteable snippets.'],
+        'recommendations' => ['Add a "Usage" or "Quick Start" section with real commands.', 'Include at least one end-to-end code example.', 'Keep examples in sync with the current API.'],
+        'why' => 'Concrete examples let readers and AI tools infer correct usage patterns without guessing.',
+    ],
+    '113' => [
+        'title' => '#113 AI Readiness Clear API Reference Documentation',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Checks for a clear API/endpoint reference, whether as an OpenAPI/Swagger file, a docs/api file, or a README section.',
+        'looks_for' => ['OpenAPI/Swagger definition files.', 'docs/api* reference files.', 'API/endpoint sections in the README.'],
+        'recommendations' => ['Publish an OpenAPI/Swagger spec if the project exposes an API.', 'Add a docs/api.md summarizing endpoints and payloads.', 'Keep API docs versioned alongside the code.'],
+        'why' => 'Explicit API references prevent misuse and let tooling generate accurate integrations.',
+    ],
+    '114' => [
+        'title' => '#114 AI Readiness Assistant Context Files',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Checks for AI assistant context files such as CLAUDE.md, AGENTS.md, .cursorrules, or .github/copilot-instructions.md.',
+        'looks_for' => ['CLAUDE.md / AGENTS.md / .cursorrules presence.', '.github/copilot-instructions.md presence.', 'Project-specific conventions documented for AI tools.'],
+        'recommendations' => ['Add an AGENTS.md or CLAUDE.md describing conventions and constraints.', 'Document commands for build/test/lint that agents should use.', 'Call out any patterns agents should avoid.'],
+        'why' => 'Context files let AI coding assistants follow project conventions instead of guessing.',
+    ],
+    '115' => [
+        'title' => '#115 AI Readiness Explicit Dependency Manifest',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Checks for a recognized dependency manifest (package.json, composer.json, requirements.txt, etc).',
+        'looks_for' => ['Presence of a standard manifest file.', 'Declared dependencies and versions.', 'A single source of truth for what the project depends on.'],
+        'recommendations' => ['Commit a manifest file appropriate for the project language.', 'Pin dependency versions where reproducibility matters.', 'Avoid undeclared, implicit dependencies.'],
+        'why' => 'An explicit manifest lets readers and tooling reason about dependencies without scanning source code.',
+    ],
+    '116' => [
+        'title' => '#116 AI Readiness Descriptive Naming for AI Context',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Samples source files for a high ratio of very short, non-descriptive identifiers.',
+        'looks_for' => ['One/two-character variable names outside common loop counters.', 'Naming that requires deep context to understand.', 'Ratio of short names across sampled files.'],
+        'recommendations' => ['Prefer descriptive names over single letters, except idiomatic loop counters.', 'Name variables after their role, not their type.', 'Run a linter rule for minimum identifier length where practical.'],
+        'why' => 'Descriptive names reduce the context both humans and AI assistants need to reason correctly about code.',
+    ],
+    '117' => [
+        'title' => '#117 AI Readiness Small, Single-Purpose Functions',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Samples source files for large files with very few function/class declarations, suggesting oversized functions.',
+        'looks_for' => ['Files over ~400 lines with fewer than 3 function/class declarations.', 'Sprawling logic that is hard to isolate.', 'Lack of clear function boundaries.'],
+        'recommendations' => ['Break large functions into smaller, single-purpose ones.', 'Extract reusable logic into named helpers.', 'Keep each function focused on one responsibility.'],
+        'why' => 'Small, focused functions are easier to test, review, and safely modify with AI assistance.',
+    ],
+    '118' => [
+        'title' => '#118 AI Readiness Modular Design and Boundaries',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Checks whether source files are organized into distinct directories/modules rather than a flat, monolithic layout.',
+        'looks_for' => ['Number of distinct top-level source directories.', 'Source file count relative to directory structure.', 'Feature or responsibility-based grouping.'],
+        'recommendations' => ['Group related files into feature or layer-based directories.', 'Avoid dumping all source files into a single flat folder.', 'Define clear module boundaries and responsibilities.'],
+        'why' => 'Clear module boundaries make it easier to reason about and modify one part of a system in isolation.',
+    ],
+    '119' => [
+        'title' => '#119 AI Readiness Consistent Coding Style',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Samples source files for mixed indentation (tabs and spaces used inconsistently).',
+        'looks_for' => ['Mixed tabs and spaces within or across sampled files.', 'Inconsistent formatting conventions.', 'Lack of enforced style rules.'],
+        'recommendations' => ['Adopt and enforce a single indentation style via an .editorconfig.', 'Run an auto-formatter in CI.', 'Document style conventions in the contribution guide.'],
+        'why' => 'Consistent style keeps diffs meaningful and reduces noise for both reviewers and automated tooling.',
+    ],
+    '120' => [
+        'title' => '#120 AI Readiness Inline Documentation and Docstrings',
+        'tag' => 'AI Readiness Focus',
+        'about' => 'Samples functions in source files to check how many are preceded by an explanatory comment or docstring.',
+        'looks_for' => ['Ratio of functions with a preceding comment/docblock.', 'Docstrings explaining parameters, return values, and intent.', 'Comment coverage on non-trivial functions.'],
+        'recommendations' => ['Add a short docblock/docstring above non-trivial functions.', 'Explain the "why" for any non-obvious logic.', 'Keep documentation close to the code it describes.'],
+        'why' => 'Inline documentation lets readers and AI assistants understand intent without reverse-engineering behavior.',
+    ],
+];
+
 foreach ($devopsContent as $id => $meta) {
+    $checkContent[$id] = $meta;
+}
+
+foreach ($aiReadinessContent as $id => $meta) {
     $checkContent[$id] = $meta;
 }
 
@@ -1336,6 +1423,8 @@ if ($content === null) {
         $dynamicTag = 'Dependency Governance Focus';
     } elseif ((int) $checkId >= 101 && (int) $checkId <= 110) {
         $dynamicTag = 'DevOps Focus';
+    } elseif ((int) $checkId >= 111 && (int) $checkId <= 120) {
+        $dynamicTag = 'AI Readiness Focus';
     }
 
     $content = [
@@ -1484,6 +1573,16 @@ $findingsByCheckCategory = [
     '108' => ['DevOps'],
     '109' => ['DevOps'],
     '110' => ['DevOps'],
+    '111' => ['AI'],
+    '112' => ['AI'],
+    '113' => ['AI'],
+    '114' => ['AI'],
+    '115' => ['AI'],
+    '116' => ['AI'],
+    '117' => ['AI'],
+    '118' => ['AI'],
+    '119' => ['AI'],
+    '120' => ['AI'],
 ];
 
 $findingsForCheck = [];
@@ -1609,6 +1708,16 @@ $recommendationKeywordsByCheck = [
     '108' => ['devops', 'deploy', 'helm', 'kubernetes', 'publish'],
     '109' => ['devops', 'observability', 'monitoring', 'alert', 'logging'],
     '110' => ['devops', 'runbook', 'incident', 'recovery', 'disaster'],
+    '111' => ['readme', 'onboarding', 'documentation'],
+    '112' => ['usage', 'example', 'snippet', 'quickstart'],
+    '113' => ['api', 'reference', 'endpoint', 'openapi', 'swagger'],
+    '114' => ['ai', 'assistant', 'context', 'agents.md', 'claude.md'],
+    '115' => ['dependency', 'manifest', 'package.json', 'requirements.txt'],
+    '116' => ['naming', 'variable', 'identifier', 'descriptive'],
+    '117' => ['function', 'granularity', 'single-purpose', 'refactor'],
+    '118' => ['modular', 'module', 'boundaries', 'structure'],
+    '119' => ['style', 'formatting', 'indentation', 'consistent'],
+    '120' => ['docstring', 'comment', 'documentation', 'inline'],
 ];
 
 if ($scanId <= 0) {

@@ -380,7 +380,7 @@ function testing_mocking_external_apis(string $owner, string $repo, string $pat,
     $signals = [];
 
     foreach ($tests as $path => $content) {
-        if (preg_match('/mock|stub|fake|prophecy|phpunit\\framework\\mockobject|createMock|expects\(/i', $content)) {
+        if (preg_match('/mock|stub|fake|prophecy|mockobject|createMock|expects\(/i', $content)) {
             $signals[] = $path;
         }
     }

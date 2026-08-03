@@ -501,8 +501,12 @@ function dependency_sbom_is_floating_or_unbounded(string $spec): bool
 function dependency_sbom_code_corpus(string $owner, string $repo, string $pat, array $sourceFiles): string
 {
     $parts = [];
-    foreach ($sourceFiles as $path) {
-        $content = github_get_file_content($owner, $repo, (string) $path, $pat);
+    foreach ($sourceFiles as $node) {
+        $path = (string) ($node['path'] ?? '');
+        if ($path === '') {
+            continue;
+        }
+        $content = github_get_file_content($owner, $repo, $path, $pat);
         if ($content === null || $content === '') {
             continue;
         }

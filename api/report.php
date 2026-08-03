@@ -844,10 +844,10 @@ try {
     $findings = $findingsStmt->fetchAll();
 
     $recommendationsStmt = $pdo->prepare(
-        'SELECT recommendation_text, priority
+        'SELECT recommendation_text, priority, impact, effort, priority_stars
          FROM recommendations
          WHERE scan_id = :scan_id
-         ORDER BY FIELD(priority, "High", "Medium", "Low"), id ASC'
+         ORDER BY priority_stars DESC, FIELD(priority, "High", "Medium", "Low"), id ASC'
     );
     $recommendationsStmt->execute([':scan_id' => $scanId]);
     $recommendations = $recommendationsStmt->fetchAll();
@@ -869,6 +869,26 @@ try {
     );
     $checkRunsStmt->execute([':scan_id' => $scanId]);
     $checkRuns = $checkRunsStmt->fetchAll();
+
+    $moduleSummariesStmt = $pdo->prepare(
+        'SELECT module, score, summary, evidence_json, passed_rules_json, failed_rules_json, recommendations_json, confidence
+         FROM module_summaries
+         WHERE scan_id = :scan_id
+         ORDER BY id ASC'
+    );
+    $moduleSummariesStmt->execute([':scan_id' => $scanId]);
+    $moduleSummaries = array_map(static function (array $row): array {
+        return [
+            'module'          => (string) $row['module'],
+            'score'           => (int) $row['score'],
+            'summary'         => (string) $row['summary'],
+            'evidence'        => json_decode((string) $row['evidence_json'], true) ?: [],
+            'passed_rules'    => json_decode((string) $row['passed_rules_json'], true) ?: [],
+            'failed_rules'    => json_decode((string) $row['failed_rules_json'], true) ?: [],
+            'recommendations' => json_decode((string) $row['recommendations_json'], true) ?: [],
+            'confidence'      => (int) $row['confidence'],
+        ];
+    }, $moduleSummariesStmt->fetchAll());
 
     $selectedChecks = [];
     if (!empty($scan['selected_checks_json'])) {
@@ -1059,6 +1079,7 @@ try {
         'findings' => $findings,
         'recommendations' => $recommendations,
         'skills' => $skills,
+        'modules' => $moduleSummaries,
     ];
 
     if ($format === 'json' && !$download) {
@@ -1085,15 +1106,6 @@ try {
         $lines[] = 'Total Findings: ' . $scan['total_findings'];
         $lines[] = 'Total Skills: ' . $scan['total_skills'];
         $lines[] = '';
-        $lines[] = 'Selected Checks';
-        if (empty($selectedCheckLabels)) {
-            $lines[] = '- No stored check list for this scan';
-        } else {
-            foreach ($selectedCheckLabels as $check) {
-                $lines[] = '- ' . $check;
-            }
-        }
-        $lines[] = '';
         $lines[] = 'Analysis Checks';
         if (empty($checkRuns)) {
             $lines[] = '- No stored per-check results for this scan';
@@ -1110,6 +1122,35 @@ try {
                 $lines[] = '- [' . $finding['severity'] . '] ' . $finding['title'];
                 $lines[] = '  Category: ' . $finding['category'];
                 $lines[] = '  Description: ' . $finding['description'];
+            }
+        }
+        $lines[] = '';
+        $lines[] = 'Module Analysis';
+        if (empty($moduleSummaries)) {
+            $lines[] = '- No stored module summaries for this scan';
+        } else {
+            foreach ($moduleSummaries as $m) {
+                $lines[] = '- Module: ' . $m['module'];
+                $lines[] = '  Score: ' . $m['score'];
+                $lines[] = '  Summary: ' . $m['summary'];
+                $lines[] = '  Evidence: ' . (empty($m['evidence']) ? 'None' : implode('; ', $m['evidence']));
+                $lines[] = '  Passed Rules: ' . (empty($m['passed_rules']) ? 'None' : implode('; ', $m['passed_rules']));
+                $lines[] = '  Failed Rules: ' . (empty($m['failed_rules']) ? 'None' : implode('; ', $m['failed_rules']));
+                $lines[] = '  Recommendations: ' . (empty($m['recommendations']) ? 'None' : implode('; ', $m['recommendations']));
+                $lines[] = '  Confidence: ' . $m['confidence'] . '%';
+            }
+        }
+
+        $lines[] = '';
+        $lines[] = 'Priority Matrix';
+        if (empty($recommendations)) {
+            $lines[] = '- None';
+        } else {
+            $lines[] = '| Recommendation | Impact | Effort | Priority |';
+            foreach ($recommendations as $recommendation) {
+                $stars = str_repeat('*', max(0, min(5, (int) ($recommendation['priority_stars'] ?? 3))));
+                $lines[] = '| ' . $recommendation['recommendation_text'] . ' | ' . $recommendation['impact']
+                    . ' | ' . $recommendation['effort'] . ' | ' . $stars . ' |';
             }
         }
         $lines[] = '';
@@ -1154,8 +1195,8 @@ try {
     echo '<meta charset="UTF-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
     echo '<title>Scan Summary #' . h((string) $scanId) . '</title>';
-    echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-group-heading{grid-column:1 / -1;font-size:0.82rem;font-weight:700;color:#374151;margin-top:0.35rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}.list-item-muted{color:#6b7280}.list-head{font-weight:700;background:#f3f4f6}</style>';
-    echo '<style>body[data-theme="dark"]{background:#0f172a;color:#e5e7eb}body[data-theme="dark"] .card{background:#1f2937;border-color:#374151}body[data-theme="dark"] .meta{color:#9ca3af}body[data-theme="dark"] .btn{color:#e5e7eb;border-color:#6b7280}body[data-theme="dark"] .btn-primary{background:#1d4ed8;border-color:#1d4ed8;color:#fff}body[data-theme="dark"] .tag{background:#1e293b;color:#c7d2fe}body[data-theme="dark"] .check-tile{background:#111827;border-color:#374151}body[data-theme="dark"] .check-tile.clean{background:#0f1f17;border-color:#166534}body[data-theme="dark"] .check-tile.issues{background:#2a1313;border-color:#7f1d1d}body[data-theme="dark"] .check-name{color:#d1d5db}body[data-theme="dark"] .check-label{color:#9ca3af}.details-popup{position:fixed;inset:0;display:none;z-index:1200;background:rgba(17,24,39,.55);padding:24px}.details-popup.open{display:block}.details-popup-dialog{width:min(980px,100%);height:min(88vh,820px);margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border:1px solid #e5e7eb}.details-popup-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e5e7eb}.details-popup-title{margin:0;font-size:18px;font-weight:700;color:#111827}.details-popup-close{border:1px solid #d1d5db;background:#fff;color:#111827;border-radius:8px;padding:6px 10px;cursor:pointer}.details-popup-body{flex:1}.details-popup-iframe{width:100%;height:100%;border:0}body[data-theme="dark"] .details-popup-dialog{background:#111827;border-color:#374151}body[data-theme="dark"] .details-popup-header{border-bottom-color:#374151}body[data-theme="dark"] .details-popup-title{color:#e5e7eb}body[data-theme="dark"] .details-popup-close{background:#1f2937;border-color:#4b5563;color:#e5e7eb}</style>';
+    echo '<style>body{font-family:Arial,sans-serif;background:#f7f7fb;color:#1f2937;margin:0;padding:24px}.wrap{max-width:980px;margin:0 auto}.card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:16px;margin-bottom:16px}.btn{display:inline-block;padding:8px 12px;border-radius:8px;text-decoration:none;border:1px solid #d1d5db;color:#111827;margin-right:8px}.btn-primary{background:#2563eb;color:#fff;border-color:#2563eb}.meta{color:#6b7280;font-size:14px}.tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;background:#eef2ff;color:#3730a3}.sev-high{background:#fee2e2;color:#991b1b}.sev-medium{background:#fef3c7;color:#92400e}.sev-low{background:#dcfce7;color:#166534}.sev-info{background:#dbeafe;color:#1e40af}ul{margin:8px 0 0 18px}.checks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.75rem}.check-group-heading{grid-column:1 / -1;font-size:0.82rem;font-weight:700;color:#374151;margin-top:0.35rem}.check-tile{border-radius:0.75rem;padding:0.85rem 1rem;border:1.5px solid #e5e7eb;display:flex;flex-direction:column;gap:0.3rem;background:#fff}.check-tile.clean{border-color:#bbf7d0;background:#f0fdf4}.check-tile.issues{border-color:#fecaca;background:#fff5f5}.check-tile .check-name{font-size:0.78rem;font-weight:700;color:#374151}.check-tile .check-count{font-size:1.1rem;font-weight:700}.check-tile.clean .check-count{color:#16a34a}.check-tile.issues .check-count{color:#dc2626}.check-tile .check-label{font-size:0.7rem;color:#6b7280}.list-item-muted{color:#6b7280}.list-head{font-weight:700;background:#f3f4f6}.folder{border:1px solid #e5e7eb;border-radius:8px;margin-bottom:8px;overflow:hidden}.folder summary{cursor:pointer;padding:10px 12px;background:#f3f4f6;font-weight:700;list-style:none}.folder summary::-webkit-details-marker{display:none}.folder summary::before{content:"▶";display:inline-block;margin-right:8px;font-size:0.7em;transition:transform .15s}.folder[open] summary::before{transform:rotate(90deg)}.folder .folder-body{padding:4px 12px}</style>';
+    echo '<style>body[data-theme="dark"]{background:#0f172a;color:#e5e7eb}body[data-theme="dark"] .card{background:#1f2937;border-color:#374151}body[data-theme="dark"] .meta{color:#9ca3af}body[data-theme="dark"] .btn{color:#e5e7eb;border-color:#6b7280}body[data-theme="dark"] .btn-primary{background:#1d4ed8;border-color:#1d4ed8;color:#fff}body[data-theme="dark"] .tag{background:#1e293b;color:#c7d2fe}body[data-theme="dark"] .check-tile{background:#111827;border-color:#374151}body[data-theme="dark"] .check-tile.clean{background:#0f1f17;border-color:#166534}body[data-theme="dark"] .check-tile.issues{background:#2a1313;border-color:#7f1d1d}body[data-theme="dark"] .check-name{color:#d1d5db}body[data-theme="dark"] .check-label{color:#9ca3af}body[data-theme="dark"] .folder{border-color:#374151}body[data-theme="dark"] .folder summary{background:#111827}.details-popup{position:fixed;inset:0;display:none;z-index:1200;background:rgba(17,24,39,.55);padding:24px}.details-popup.open{display:block}.details-popup-dialog{width:min(980px,100%);height:min(88vh,820px);margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;border:1px solid #e5e7eb}.details-popup-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #e5e7eb}.details-popup-title{margin:0;font-size:18px;font-weight:700;color:#111827}.details-popup-close{border:1px solid #d1d5db;background:#fff;color:#111827;border-radius:8px;padding:6px 10px;cursor:pointer}.details-popup-body{flex:1}.details-popup-iframe{width:100%;height:100%;border:0}body[data-theme="dark"] .details-popup-dialog{background:#111827;border-color:#374151}body[data-theme="dark"] .details-popup-header{border-bottom-color:#374151}body[data-theme="dark"] .details-popup-title{color:#e5e7eb}body[data-theme="dark"] .details-popup-close{background:#1f2937;border-color:#4b5563;color:#e5e7eb}</style>';
     echo '</head>';
     echo '<body><div class="wrap">';
 
@@ -1171,67 +1212,46 @@ try {
     }
     echo '</div>';
 
-    echo '<div class="card"><h2 style="margin-top:0">Selected Checks</h2>';
-    if (empty($selectedCheckLabels)) {
-        echo '<p class="meta">No selected checks.</p>';
+    echo '<div class="card"><h2 style="margin-top:0">Module Analysis</h2>';
+    if (empty($moduleSummaries)) {
+        echo '<p class="meta">No stored module summaries for this scan.</p>';
     } else {
-        $selectedGroups = [
-            'OWASP Checks' => [],
-            'Complexity Checks' => [],
-            'SonarQube Rules (Code Quality)' => [],
-            'Clean Code Checks (Weight: 10%)' => [],
-            'Architecture Checks (Weight: 10%)' => [],
-            'Testing Checks (Weight: 10%)' => [],
-            'Performance Checks (Weight: 10%)' => [],
-            'Reliability Checks (Weight: 10%)' => [],
-            'Testing Plus Checks (Weight: 10%)' => [],
-            'Dependency SBOM Checks (Weight: 5%)' => [],
-            'DevOps Readiness Checks (Weight: 5%)' => [],
-            'AI Readiness Checks (Weight: 5%)' => [],
-        ];
-        foreach ($selectedCheckLabels as $check) {
-            $number = 0;
-            if (preg_match('/#\s*(\d+)/', (string) $check, $m) === 1) {
-                $number = (int) $m[1];
-            }
-            if ($number >= 1 && $number <= 10) {
-                $selectedGroups['OWASP Checks'][] = (string) $check;
-            } elseif ($number >= 11 && $number <= 20) {
-                $selectedGroups['Complexity Checks'][] = (string) $check;
-            } elseif ($number >= 31 && $number <= 40) {
-                $selectedGroups['Clean Code Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 41 && $number <= 50) {
-                $selectedGroups['Architecture Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 51 && $number <= 60) {
-                $selectedGroups['Testing Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 61 && $number <= 70) {
-                $selectedGroups['Performance Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 71 && $number <= 80) {
-                $selectedGroups['Reliability Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 81 && $number <= 90) {
-                $selectedGroups['Testing Plus Checks (Weight: 10%)'][] = (string) $check;
-            } elseif ($number >= 91 && $number <= 100) {
-                $selectedGroups['Dependency SBOM Checks (Weight: 5%)'][] = (string) $check;
-            } elseif ($number >= 101 && $number <= 110) {
-                $selectedGroups['DevOps Readiness Checks (Weight: 5%)'][] = (string) $check;
-            } elseif ($number >= 111 && $number <= 120) {
-                $selectedGroups['AI Readiness Checks (Weight: 5%)'][] = (string) $check;
-            } else {
-                $selectedGroups['SonarQube Rules (Code Quality)'][] = (string) $check;
-            }
-        }
+        foreach ($moduleSummaries as $m) {
+            echo '<div style="padding:12px 0;border-top:1px solid #e5e7eb">';
+            echo '<h3 style="margin:0 0 4px">' . h($m['module']) . '</h3>';
+            echo '<p class="meta" style="margin:0 0 8px">Score: <strong>' . h((string) $m['score']) . '</strong> | Confidence: <strong>' . h((string) $m['confidence']) . '%</strong></p>';
+            echo '<p>' . h($m['summary']) . '</p>';
 
-        echo '<ul style="list-style:none;margin:0;padding:0">';
-        foreach ($selectedGroups as $groupName => $items) {
-            if (empty($items)) {
-                continue;
+            if (!empty($m['evidence'])) {
+                echo '<p style="margin-bottom:4px"><strong>Evidence</strong></p><ul>';
+                foreach ($m['evidence'] as $item) {
+                    echo '<li>' . h((string) $item) . '</li>';
+                }
+                echo '</ul>';
             }
-            echo '<li class="list-head" style="padding:10px 12px;border:1px solid #e5e7eb">' . h($groupName) . '</li>';
-            foreach ($items as $item) {
-                echo '<li style="padding:10px 12px;border:1px solid #e5e7eb;border-top:none">' . h($item) . '</li>';
+            if (!empty($m['passed_rules'])) {
+                echo '<p style="margin-bottom:4px"><strong>Passed Rules</strong></p><ul>';
+                foreach ($m['passed_rules'] as $item) {
+                    echo '<li>&#10003; ' . h((string) $item) . '</li>';
+                }
+                echo '</ul>';
             }
+            if (!empty($m['failed_rules'])) {
+                echo '<p style="margin-bottom:4px"><strong>Failed Rules</strong></p><ul>';
+                foreach ($m['failed_rules'] as $item) {
+                    echo '<li>&#10007; ' . h((string) $item) . '</li>';
+                }
+                echo '</ul>';
+            }
+            if (!empty($m['recommendations'])) {
+                echo '<p style="margin-bottom:4px"><strong>Recommendations</strong></p><ul>';
+                foreach ($m['recommendations'] as $item) {
+                    echo '<li>' . h((string) $item) . '</li>';
+                }
+                echo '</ul>';
+            }
+            echo '</div>';
         }
-        echo '</ul>';
     }
     echo '</div>';
 
@@ -1650,21 +1670,52 @@ try {
     if (empty($findings)) {
         echo '<p class="meta">No findings recorded.</p>';
     } else {
+        $findingsByCategory = [];
         foreach ($findings as $finding) {
-            $sevClass = 'sev-info';
-            if ($finding['severity'] === 'High') {
-                $sevClass = 'sev-high';
-            } elseif ($finding['severity'] === 'Medium') {
-                $sevClass = 'sev-medium';
-            } elseif ($finding['severity'] === 'Low') {
-                $sevClass = 'sev-low';
-            }
-            echo '<div style="padding:10px 0;border-top:1px solid #f3f4f6">';
-            echo '<div><strong>' . h((string) $finding['title']) . '</strong> <span class="tag ' . h($sevClass) . '">' . h((string) $finding['severity']) . '</span></div>';
-            echo '<div class="meta">Category: ' . h((string) $finding['category']) . '</div>';
-            echo '<div>' . h((string) $finding['description']) . '</div>';
-            echo '</div>';
+            $findingsByCategory[(string) ($finding['category'] ?? 'Other')][] = $finding;
         }
+        foreach ($findingsByCategory as $category => $items) {
+            echo '<details class="folder"><summary>' . h($category) . ' (' . count($items) . ')</summary><div class="folder-body">';
+            foreach ($items as $finding) {
+                $sevClass = 'sev-info';
+                if ($finding['severity'] === 'High') {
+                    $sevClass = 'sev-high';
+                } elseif ($finding['severity'] === 'Medium') {
+                    $sevClass = 'sev-medium';
+                } elseif ($finding['severity'] === 'Low') {
+                    $sevClass = 'sev-low';
+                }
+                echo '<div style="padding:10px 0;border-top:1px solid #f3f4f6">';
+                echo '<div><strong>' . h((string) $finding['title']) . '</strong> <span class="tag ' . h($sevClass) . '">' . h((string) $finding['severity']) . '</span></div>';
+                echo '<div>' . h((string) $finding['description']) . '</div>';
+                echo '</div>';
+            }
+            echo '</div></details>';
+        }
+    }
+    echo '</div>';
+
+    echo '<div class="card"><h2 style="margin-top:0">Priority Matrix</h2>';
+    if (empty($recommendations)) {
+        echo '<p class="meta">No recommendations to prioritize for this scan.</p>';
+    } else {
+        echo '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">';
+        echo '<thead><tr>'
+            . '<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb">Recommendation</th>'
+            . '<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb">Impact</th>'
+            . '<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb">Effort</th>'
+            . '<th style="text-align:left;padding:8px;border-bottom:2px solid #e5e7eb">Priority</th>'
+            . '</tr></thead><tbody>';
+        foreach ($recommendations as $rec) {
+            $stars = str_repeat('★', max(0, min(5, (int) ($rec['priority_stars'] ?? 3))));
+            echo '<tr>'
+                . '<td style="padding:8px;border-bottom:1px solid #f3f4f6">' . h((string) $rec['recommendation_text']) . '</td>'
+                . '<td style="padding:8px;border-bottom:1px solid #f3f4f6">' . h((string) $rec['impact']) . '</td>'
+                . '<td style="padding:8px;border-bottom:1px solid #f3f4f6">' . h((string) $rec['effort']) . '</td>'
+                . '<td style="padding:8px;border-bottom:1px solid #f3f4f6;color:#f59e0b">' . h($stars) . '</td>'
+                . '</tr>';
+        }
+        echo '</tbody></table></div>';
     }
     echo '</div>';
 
@@ -1705,26 +1756,20 @@ try {
             }
         }
 
-        echo '<ul style="list-style:none;margin:0;padding:0">';
-        echo '<li class="list-head" style="padding:10px 12px;border:1px solid #e5e7eb">Fix Recommendations</li>';
-        $showSubgroupTitles = !empty($checkSpecific) && !empty($general);
         if (!empty($checkSpecific)) {
-            if ($showSubgroupTitles) {
-            echo '<li class="list-head" style="padding:10px 12px;border:1px solid #e5e7eb;border-top:none">Check-specific Recommendations</li>';
-            }
+            echo '<details class="folder"><summary>Check-specific Recommendations (' . count($checkSpecific) . ')</summary><div class="folder-body"><ul style="list-style:none;margin:0;padding:0">';
             foreach ($checkSpecific as $rec) {
                 echo '<li style="padding:10px 12px;border:1px solid #e5e7eb;border-top:none"><strong>[' . h((string) $rec['priority']) . ']</strong> ' . h((string) $rec['recommendation_text']) . '</li>';
             }
+            echo '</ul></div></details>';
         }
         if (!empty($general)) {
-            if ($showSubgroupTitles) {
-            echo '<li class="list-head" style="padding:10px 12px;border:1px solid #e5e7eb;border-top:none">General Recommendations</li>';
-            }
+            echo '<details class="folder"><summary>General Recommendations (' . count($general) . ')</summary><div class="folder-body"><ul style="list-style:none;margin:0;padding:0">';
             foreach ($general as $rec) {
                 echo '<li style="padding:10px 12px;border:1px solid #e5e7eb;border-top:none"><strong>[' . h((string) $rec['priority']) . ']</strong> ' . h((string) $rec['recommendation_text']) . '</li>';
             }
+            echo '</ul></div></details>';
         }
-        echo '</ul>';
     } elseif ($hasFindings) {
         echo '<p class="meta">Findings detected, but no remediation text was generated for this scan.</p>';
     } else {

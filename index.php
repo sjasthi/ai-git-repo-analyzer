@@ -243,6 +243,43 @@ try {
             border-bottom: 1px solid var(--border);
         }
 
+        /* Collapsible folders for Findings / Recommendations */
+        .report-folder {
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            margin-bottom: 0.6rem;
+            overflow: hidden;
+        }
+
+        .report-folder summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 0.6rem 1rem;
+            font-weight: 700;
+            background: var(--surface-soft);
+            color: var(--text-main);
+        }
+
+        .report-folder summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .report-folder summary::before {
+            content: "▶";
+            display: inline-block;
+            margin-right: 0.5rem;
+            font-size: 0.7em;
+            transition: transform 0.15s ease;
+        }
+
+        .report-folder[open] summary::before {
+            transform: rotate(90deg);
+        }
+
+        .report-folder .list-group {
+            border-radius: 0;
+        }
+
         .text-muted { color: var(--text-muted) !important; }
 
         .border,
@@ -1307,12 +1344,6 @@ try {
                     </div>
                 </div>
 
-                <!-- Selected Checks -->
-                <div class="card p-4" id="selected-checks-card" style="display:none;">
-                    <h3 class="h6 mb-3"><i class="fas fa-list text-info"></i> Selected Checks</h3>
-                    <ul class="list-group list-group-flush" id="selected-checks-list"></ul>
-                </div>
-
                 <!-- Check Results -->
                 <div class="card p-4" id="check-results-card" style="display:none;">
                     <h3 class="h6 mb-3"><i class="fas fa-tasks text-info"></i> Check Results</h3>
@@ -1333,7 +1364,7 @@ try {
 
                 <div class="card p-4" id="recommendations-card">
                     <h3 class="h6 mb-3"><i class="fas fa-lightbulb text-success"></i> Recommendations</h3>
-                    <ul class="list-group list-group-flush" id="recommendations-list"></ul>
+                    <div id="recommendations-list"></div>
                 </div>
 
                 <div class="card p-4" id="skills-card" style="display:none;">
@@ -1795,7 +1826,6 @@ try {
             $('#checks-card').show();
         }
 
-        // Selected Checks list
         const checkLabels = {
             'dependency_risk': '#1 Insecure Design and Logic Flaws (A04)',
             'hardening': '#2 Vulnerable and Outdated Dependencies (A06)',
@@ -1919,73 +1949,6 @@ try {
             'ai_docstring_coverage': '#120 AI Readiness Inline Documentation and Docstrings'
         };
 
-        const selectedChecksList = $('#selected-checks-list').empty();
-        if (data.selected_checks && data.selected_checks.length) {
-            const groups = {
-                'OWASP Checks': [],
-                'Complexity Checks': [],
-                'SonarQube Rules (Code Quality)': [],
-                'Clean Code Checks (Weight: 10%)': [],
-                'Architecture Checks (Weight: 10%)': [],
-                'Testing Checks (Weight: 10%)': [],
-                'Performance Checks (Weight: 10%)': [],
-                'Reliability Checks (Weight: 10%)': [],
-                'Documentation Checks (Weight: 5%)': [],
-                'Dependency SBOM Checks (Weight: 5%)': [],
-                'DevOps Readiness Checks (Weight: 5%)': [],
-                'AI Readiness Checks (Weight: 5%)': []
-            };
-
-            data.selected_checks.forEach(function(checkId) {
-                const friendlyName = checkLabels[checkId] || checkId;
-                const numberMatch = String(friendlyName).match(/#\s*(\d+)/);
-                const checkNumber = numberMatch ? Number(numberMatch[1]) : 0;
-
-                if (checkNumber >= 1 && checkNumber <= 10) {
-                    groups['OWASP Checks'].push(friendlyName);
-                } else if (checkNumber >= 11 && checkNumber <= 20) {
-                    groups['Complexity Checks'].push(friendlyName);
-                } else if (checkNumber >= 31 && checkNumber <= 40) {
-                    groups['Clean Code Checks (Weight: 10%)'].push(friendlyName);
-                } else if (checkNumber >= 41 && checkNumber <= 50) {
-                    groups['Architecture Checks (Weight: 10%)'].push(friendlyName);
-                } else if (checkNumber >= 51 && checkNumber <= 60) {
-                    groups['Testing Checks (Weight: 10%)'].push(friendlyName);
-                } else if (checkNumber >= 61 && checkNumber <= 70) {
-                    groups['Performance Checks (Weight: 10%)'].push(friendlyName);
-                } else if (checkNumber >= 71 && checkNumber <= 80) {
-                    groups['Reliability Checks (Weight: 10%)'].push(friendlyName);
-                } else if (checkNumber >= 81 && checkNumber <= 90) {
-                    groups['Documentation Checks (Weight: 5%)'].push(friendlyName);
-                } else if (checkNumber >= 91 && checkNumber <= 100) {
-                    groups['Dependency SBOM Checks (Weight: 5%)'].push(friendlyName);
-                } else if (checkNumber >= 101 && checkNumber <= 110) {
-                    groups['DevOps Readiness Checks (Weight: 5%)'].push(friendlyName);
-                } else if (checkNumber >= 111 && checkNumber <= 120) {
-                    groups['AI Readiness Checks (Weight: 5%)'].push(friendlyName);
-                } else {
-                    groups['SonarQube Rules (Code Quality)'].push(friendlyName);
-                }
-            });
-
-            Object.keys(groups).forEach(function(groupName) {
-                const items = groups[groupName];
-                if (!items.length) {
-                    return;
-                }
-
-                selectedChecksList.append(`<li class="list-group-item fw-bold bg-light">${esc(groupName)}</li>`);
-                items.forEach(function(item) {
-                    selectedChecksList.append(`<li class="list-group-item">${esc(item)}</li>`);
-                });
-            });
-
-            $('#selected-checks-card').show();
-        } else {
-            selectedChecksList.append('<li class="list-group-item text-muted">No selected checks.</li>');
-            $('#selected-checks-card').show();
-        }
-
         // Check Results list
         const checkResultsList = $('#check-results-list').empty();
         if (data.check_runs && data.check_runs.length) {
@@ -2017,9 +1980,7 @@ try {
 
             Object.keys(grouped).forEach(function(category) {
                 const count = grouped[category].length;
-                findingsContainer.append(
-                    `<div class="finding-category-header">${esc(category)} — ${count} finding${count !== 1 ? 's' : ''}</div>`
-                );
+                const details = $(`<details class="report-folder"><summary>${esc(category)} — ${count} finding${count !== 1 ? 's' : ''}</summary></details>`);
                 const ul = $('<ul class="list-group list-group-flush mb-0"></ul>');
                 grouped[category].forEach(function(f) {
                     ul.append(
@@ -2034,7 +1995,8 @@ try {
                         </li>`
                     );
                 });
-                findingsContainer.append(ul);
+                details.append(ul);
+                findingsContainer.append(details);
             });
             $('#findings-card').show();
         } else {
@@ -2104,38 +2066,39 @@ try {
                 }
             });
 
-            function renderRecommendationGroup(title, items, showTitle) {
+            function renderRecommendationGroup(title, items) {
                 if (!items.length) {
                     return;
                 }
 
-                if (showTitle) {
-                    recList.append(`<li class="list-group-item fw-bold bg-light">${esc(title)}</li>`);
-                }
+                const details = $(`<details class="report-folder"><summary>${esc(title)} (${items.length})</summary></details>`);
+                const ul = $('<ul class="list-group list-group-flush mb-0"></ul>');
                 items.forEach(function(r) {
-                    recList.append(
+                    ul.append(
                         `<li class="list-group-item d-flex justify-content-between align-items-start gap-2">
                             <span class="small">${esc(r.recommendation_text)}</span>
                             ${priorityPill(r.priority)}
                         </li>`
                     );
                 });
+                details.append(ul);
+                recList.append(details);
             }
 
-            recList.append('<li class="list-group-item fw-bold bg-light">Fix Recommendations</li>');
-            const showSubgroupTitles = checkSpecific.length > 0 && general.length > 0;
-            renderRecommendationGroup('Check-specific Recommendations', checkSpecific, showSubgroupTitles);
-            renderRecommendationGroup('General Recommendations', general, showSubgroupTitles);
+            renderRecommendationGroup('Check-specific Recommendations', checkSpecific);
+            renderRecommendationGroup('General Recommendations', general);
             $('#recommendations-card').show();
         } else if (hasFindings) {
-            recList.append('<li class="list-group-item text-muted">Findings detected, but no remediation text was generated for this scan.</li>');
+            recList.append('<p class="text-muted mb-0">Findings detected, but no remediation text was generated for this scan.</p>');
             $('#recommendations-card').show();
         } else {
-            recList.append('<li class="list-group-item fw-bold bg-light">Preventive Best Practices</li>');
-            recList.append('<li class="list-group-item text-success">No issues detected in this scan.</li>');
-            recList.append('<li class="list-group-item small">Keep dependency, secret-scanning, and lint checks in CI for every pull request.</li>');
-            recList.append('<li class="list-group-item small">Enforce branch protection and require at least one reviewer before merge.</li>');
-            recList.append('<li class="list-group-item small">Schedule periodic audits for licenses, headers, and complexity trends.</li>');
+            const ul = $('<ul class="list-group list-group-flush"></ul>');
+            ul.append('<li class="list-group-item fw-bold bg-light">Preventive Best Practices</li>');
+            ul.append('<li class="list-group-item text-success">No issues detected in this scan.</li>');
+            ul.append('<li class="list-group-item small">Keep dependency, secret-scanning, and lint checks in CI for every pull request.</li>');
+            ul.append('<li class="list-group-item small">Enforce branch protection and require at least one reviewer before merge.</li>');
+            ul.append('<li class="list-group-item small">Schedule periodic audits for licenses, headers, and complexity trends.</li>');
+            recList.append(ul);
             $('#recommendations-card').show();
         }
 

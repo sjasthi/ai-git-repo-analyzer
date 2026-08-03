@@ -43,6 +43,9 @@ function ensureScanReportColumns(PDO $pdo): void
     }
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS selected_checks_json LONGTEXT NULL");
     $pdo->exec("ALTER TABLE scans ADD COLUMN IF NOT EXISTS results_json LONGTEXT NULL");
+    $pdo->exec("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS impact VARCHAR(20) NOT NULL DEFAULT 'Medium'");
+    $pdo->exec("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS effort VARCHAR(20) NOT NULL DEFAULT 'Medium'");
+    $pdo->exec("ALTER TABLE recommendations ADD COLUMN IF NOT EXISTS priority_stars TINYINT NOT NULL DEFAULT 3");
     $pdo->exec(
         "CREATE TABLE IF NOT EXISTS check_runs (
             id            INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,6 +53,23 @@ function ensureScanReportColumns(PDO $pdo): void
             check_name    VARCHAR(50) NOT NULL,
             status        VARCHAR(20) NOT NULL DEFAULT 'clean',
             finding_count INT         NOT NULL DEFAULT 0,
+            FOREIGN KEY (scan_id) REFERENCES scans(id)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        )"
+    );
+    $pdo->exec(
+        "CREATE TABLE IF NOT EXISTS module_summaries (
+            id                   INT AUTO_INCREMENT PRIMARY KEY,
+            scan_id              INT          NOT NULL,
+            module               VARCHAR(50)  NOT NULL,
+            score                INT          NOT NULL DEFAULT 0,
+            summary              TEXT         NULL,
+            evidence_json        LONGTEXT     NULL,
+            passed_rules_json    LONGTEXT     NULL,
+            failed_rules_json    LONGTEXT     NULL,
+            recommendations_json LONGTEXT     NULL,
+            confidence           INT          NOT NULL DEFAULT 0,
             FOREIGN KEY (scan_id) REFERENCES scans(id)
                 ON DELETE CASCADE
                 ON UPDATE CASCADE
@@ -432,6 +452,10 @@ if (stripos($contentType, 'application/json') !== false) {
 $repoUrl = trim($inputData['repo_url'] ?? $_POST['repo_url'] ?? '');
 $pat     = trim($inputData['pat']      ?? $_POST['pat']      ?? '');
 
+if ($pat === '') {
+    $pat = trim((string) (getenv('GITHUB_TOKEN') ?: ''));
+}
+
 if ($repoUrl === '' || $pat === '') {
     http_response_code(422);
     echo json_encode(['error' => 'Repository URL and PAT are required.']);
@@ -590,6 +614,67 @@ function merge_check_outputs(array ...$outputs): array
     return $merged;
 }
 
+// Maps a check's numeric ID (#1-#120) to one of the 12 weighted analysis modules.
+function moduleForCheckId(int $id): string
+{
+    if (in_array($id, [1, 2, 6, 7, 9, 10], true)) {
+        return 'Security';
+    }
+    if (in_array($id, [3, 4, 5, 8], true) || ($id >= 21 && $id <= 30)) {
+        return 'Code Quality';
+    }
+    if ($id >= 11 && $id <= 20) {
+        return 'Complexity';
+    }
+    if ($id >= 31 && $id <= 40) {
+        return 'Clean Code';
+    }
+    if ($id >= 41 && $id <= 50) {
+        return 'Architecture';
+    }
+    if ($id >= 51 && $id <= 60) {
+        return 'Testing';
+    }
+    if ($id >= 61 && $id <= 70) {
+        return 'Performance';
+    }
+    if ($id >= 71 && $id <= 80) {
+        return 'Reliability';
+    }
+    if ($id >= 81 && $id <= 90) {
+        return 'Documentation';
+    }
+    if ($id >= 91 && $id <= 100) {
+        return 'Dependencies';
+    }
+    if ($id >= 101 && $id <= 110) {
+        return 'DevOps';
+    }
+    if ($id >= 111 && $id <= 120) {
+        return 'AI Readiness';
+    }
+    return 'Other';
+}
+
+// Total number of catalog checks that belong to each module (used for the confidence score).
+function moduleCheckTotals(): array
+{
+    return [
+        'Security'     => 6,
+        'Code Quality' => 14,
+        'Complexity'   => 10,
+        'Clean Code'   => 10,
+        'Architecture' => 10,
+        'Testing'      => 10,
+        'Performance'  => 10,
+        'Reliability'  => 10,
+        'Documentation'=> 10,
+        'Dependencies' => 10,
+        'DevOps'       => 10,
+        'AI Readiness' => 10,
+    ];
+}
+
 $newCheckMap = [
     'dependency_risk'  => ['#1 Insecure Design and Logic Flaws',      fn() => check_insecure_design($owner, $repo, $pat, $sourceFiles)],
     'hardening'        => ['#2 Vulnerable and Outdated Dependencies', fn() => check_dependency_hardening($owner, $repo, $pat, $tree)],
@@ -723,11 +808,22 @@ foreach ($selectedChecks as $checkId) {
         continue;
     }
     [$name, $fn] = $newCheckMap[$checkId];
-    $r              = run_check($name, $fn);
-    $checkResults[] = ['name' => $r['name'], 'finding_count' => $r['finding_count'], 'status' => $r['status']];
-    $allFindings          = array_merge($allFindings, $r['findings']);
-    $allRecommendations   = array_merge($allRecommendations, $r['recommendations']);
-    $allSkills            = array_merge($allSkills, $r['skills']);
+    $r      = run_check($name, $fn);
+    $module = preg_match('/#\s*(\d{1,3})/', $name, $idMatch) === 1
+        ? moduleForCheckId((int) $idMatch[1])
+        : 'Other';
+
+    $checkResults[] = ['name' => $r['name'], 'finding_count' => $r['finding_count'], 'status' => $r['status'], 'module' => $module];
+
+    foreach ($r['findings'] as $finding) {
+        $finding['module'] = $module;
+        $allFindings[]     = $finding;
+    }
+    foreach ($r['recommendations'] as $recommendation) {
+        $recommendation['module'] = $module;
+        $allRecommendations[]     = $recommendation;
+    }
+    $allSkills = array_merge($allSkills, $r['skills']);
 }
 
 $dedupFindings = [];
@@ -747,6 +843,54 @@ foreach ($allRecommendations as $recommendation) {
     $dedupRecommendations[$key] = $recommendation;
 }
 $allRecommendations = array_values($dedupRecommendations);
+
+// ---------------------------------------------------------------------------
+// Priority Matrix: Impact (from severity/priority) x Effort (from recommendation
+// wording) -> a 1-5 star priority so every recommendation is directly actionable.
+// ---------------------------------------------------------------------------
+function inferRecommendationEffort(string $text): string
+{
+    $normalized = strtolower($text);
+
+    $highEffortHints = ['redesign', 'restructure', 'rearchitect', 'rewrite', 'migrate', 'overhaul', 'refactor the', 'implement a full', 'build a'];
+    foreach ($highEffortHints as $hint) {
+        if (str_contains($normalized, $hint)) {
+            return 'High';
+        }
+    }
+
+    $lowEffortHints = ['add a', 'enable', 'move ', 'set ', 'remove', 'use github secrets', 'add .gitattributes', 'add a pre-commit', 'add a short description', 'add branch protection'];
+    foreach ($lowEffortHints as $hint) {
+        if (str_contains($normalized, $hint)) {
+            return 'Low';
+        }
+    }
+
+    return 'Medium';
+}
+
+function priorityStars(string $impact, string $effort): int
+{
+    $matrix = [
+        'High'   => ['Low' => 5, 'Medium' => 4, 'High' => 3],
+        'Medium' => ['Low' => 4, 'Medium' => 3, 'High' => 2],
+        'Low'    => ['Low' => 3, 'Medium' => 2, 'High' => 1],
+    ];
+
+    return $matrix[$impact][$effort] ?? 3;
+}
+
+foreach ($allRecommendations as &$recommendation) {
+    $impact = (string) ($recommendation['priority'] ?? 'Medium');
+    if (!in_array($impact, ['High', 'Medium', 'Low'], true)) {
+        $impact = 'Medium';
+    }
+    $effort = inferRecommendationEffort((string) ($recommendation['recommendation_text'] ?? ''));
+    $recommendation['impact']         = $impact;
+    $recommendation['effort']         = $effort;
+    $recommendation['priority_stars'] = priorityStars($impact, $effort);
+}
+unset($recommendation);
 
 if (empty($allSkills) && !empty($languages)) {
     $langTotal = array_sum(array_values($languages));
@@ -800,6 +944,81 @@ foreach ($allFindings as $f) {
     $deduction += $severityWeights[$f['severity']] ?? 1;
 }
 $overallScore = max(10, 100 - min(60, $deduction));
+
+// ---------------------------------------------------------------------------
+// Per-module ("Security", "Code Quality", ...) narrative summaries
+// ---------------------------------------------------------------------------
+$moduleTotals    = moduleCheckTotals();
+$moduleChecksRun = [];
+foreach ($checkResults as $cr) {
+    $moduleChecksRun[$cr['module']][] = $cr;
+}
+
+$moduleSummaries = [];
+foreach ($moduleChecksRun as $moduleName => $moduleChecks) {
+    $moduleFindings = array_values(array_filter(
+        $allFindings,
+        fn(array $f): bool => ($f['module'] ?? '') === $moduleName
+    ));
+    $moduleRecommendations = array_values(array_filter(
+        $allRecommendations,
+        fn(array $r): bool => ($r['module'] ?? '') === $moduleName
+    ));
+
+    $moduleDeduction = 0;
+    foreach ($moduleFindings as $f) {
+        $moduleDeduction += $severityWeights[$f['severity']] ?? 1;
+    }
+    $moduleScore = max(10, 100 - min(60, $moduleDeduction));
+
+    $passedRules = [];
+    $failedRules = [];
+    foreach ($moduleChecks as $cr) {
+        $label = (string) preg_replace('/^#\d+\s*/', '', $cr['name']);
+        if ($cr['status'] === 'clean') {
+            $passedRules[] = $label;
+        } else {
+            $failedRules[] = $label;
+        }
+    }
+
+    $evidence = [];
+    foreach ($moduleFindings as $f) {
+        $evidence[] = (string) $f['title'];
+        if (count($evidence) >= 5) {
+            break;
+        }
+    }
+
+    $highCount = count(array_filter($moduleFindings, fn(array $f): bool => ($f['severity'] ?? '') === 'High'));
+    $medCount  = count(array_filter($moduleFindings, fn(array $f): bool => ($f['severity'] ?? '') === 'Medium'));
+    $lowCount  = count(array_filter($moduleFindings, fn(array $f): bool => ($f['severity'] ?? '') === 'Low'));
+
+    if (empty($moduleFindings)) {
+        $summaryText = $moduleName . ' checks passed cleanly across ' . count($moduleChecks)
+            . ' reviewed rule(s), with no findings raised.';
+    } else {
+        $topTitles = array_slice(array_values(array_unique(array_column($moduleFindings, 'title'))), 0, 2);
+        $summaryText = $moduleName . ' analysis found ' . count($moduleFindings) . ' issue(s) ('
+            . $highCount . ' high, ' . $medCount . ' medium, ' . $lowCount . ' low) across '
+            . count($moduleChecks) . ' checks reviewed; primary concerns: ' . implode('; ', $topTitles) . '.';
+    }
+
+    $moduleTotal = $moduleTotals[$moduleName] ?? count($moduleChecks);
+    $confidence  = (int) round((count($moduleChecks) / max(1, $moduleTotal)) * 100);
+    $confidence  = min(100, $confidence);
+
+    $moduleSummaries[] = [
+        'module'          => $moduleName,
+        'score'           => $moduleScore,
+        'summary'         => $summaryText,
+        'evidence'        => $evidence,
+        'passed_rules'    => $passedRules,
+        'failed_rules'    => $failedRules,
+        'recommendations' => array_values(array_unique(array_column($moduleRecommendations, 'recommendation_text'))),
+        'confidence'      => $confidence,
+    ];
+}
 
 // ---------------------------------------------------------------------------
 // Persist to database
@@ -856,8 +1075,8 @@ try {
 
     $seenRecs = [];
     $recStmt  = $pdo->prepare(
-        'INSERT INTO recommendations (scan_id, recommendation_text, priority)
-         VALUES (:scan_id, :text, :priority)'
+        'INSERT INTO recommendations (scan_id, recommendation_text, priority, impact, effort, priority_stars)
+         VALUES (:scan_id, :text, :priority, :impact, :effort, :stars)'
     );
     foreach ($allRecommendations as $r) {
         $key = md5($r['recommendation_text']);
@@ -869,6 +1088,9 @@ try {
             ':scan_id'  => $scanId,
             ':text'     => $r['recommendation_text'],
             ':priority' => $r['priority'],
+            ':impact'   => $r['impact'],
+            ':effort'   => $r['effort'],
+            ':stars'    => $r['priority_stars'],
         ]);
     }
 
@@ -882,6 +1104,25 @@ try {
             ':name'    => $cr['name'],
             ':status'  => $cr['status'],
             ':count'   => $cr['finding_count'],
+        ]);
+    }
+
+    $moduleStmt = $pdo->prepare(
+        'INSERT INTO module_summaries
+            (scan_id, module, score, summary, evidence_json, passed_rules_json, failed_rules_json, recommendations_json, confidence)
+         VALUES (:scan_id, :module, :score, :summary, :evidence, :passed, :failed, :recs, :confidence)'
+    );
+    foreach ($moduleSummaries as $m) {
+        $moduleStmt->execute([
+            ':scan_id'    => $scanId,
+            ':module'     => $m['module'],
+            ':score'      => $m['score'],
+            ':summary'    => $m['summary'],
+            ':evidence'   => json_encode($m['evidence']),
+            ':passed'     => json_encode($m['passed_rules']),
+            ':failed'     => json_encode($m['failed_rules']),
+            ':recs'       => json_encode($m['recommendations']),
+            ':confidence' => $m['confidence'],
         ]);
     }
 
@@ -913,6 +1154,7 @@ try {
         'findings'        => $allFindings,
         'skills'          => array_values($allSkills),
         'recommendations' => array_values($allRecommendations),
+        'modules'         => $moduleSummaries,
     ]);
 } catch (Throwable $e) {
     if (isset($pdo) && $pdo instanceof PDO && $pdo->inTransaction()) {

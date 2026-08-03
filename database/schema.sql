@@ -51,6 +51,9 @@ CREATE TABLE IF NOT EXISTS recommendations (
     scan_id INT NOT NULL,
     recommendation_text TEXT NOT NULL,
     priority VARCHAR(20) NOT NULL,
+    impact VARCHAR(20) NOT NULL DEFAULT 'Medium',
+    effort VARCHAR(20) NOT NULL DEFAULT 'Medium',
+    priority_stars TINYINT NOT NULL DEFAULT 3,
     FOREIGN KEY (scan_id) REFERENCES scans(id)
         ON DELETE CASCADE
         ON UPDATE CASCADE
