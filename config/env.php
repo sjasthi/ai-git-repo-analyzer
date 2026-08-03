@@ -32,4 +32,34 @@ function load_env_file(string $path): void
     $loaded = true;
 }
 
+// Writes/overwrites a single KEY=value line in the .env file (creating the file
+// if needed) and updates the current process's environment to match.
+function save_env_value(string $path, string $key, string $value): void
+{
+    $lines = is_file($path) ? (file($path, FILE_IGNORE_NEW_LINES) ?: []) : [];
+    $found = false;
+
+    foreach ($lines as $i => $line) {
+        $trimmed = trim($line);
+        if ($trimmed === '' || str_starts_with($trimmed, '#')) {
+            continue;
+        }
+        [$lineKey] = array_pad(explode('=', $trimmed, 2), 2, '');
+        if (trim($lineKey) === $key) {
+            $lines[$i] = $key . '=' . $value;
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        $lines[] = $key . '=' . $value;
+    }
+
+    file_put_contents($path, implode("\n", $lines) . "\n");
+
+    putenv("{$key}={$value}");
+    $_ENV[$key] = $value;
+}
+
 load_env_file(__DIR__ . '/../.env');

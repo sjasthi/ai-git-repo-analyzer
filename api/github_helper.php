@@ -34,6 +34,14 @@ function repo_get_context(): array
     return $GLOBALS['_repo_context'];
 }
 
+// Tracks the HTTP status of the most recent repo_http_get_json() call so callers
+// that only get a null return (on any failure) can still tell an auth failure
+// (401/403 — bad or expired token) apart from a not-found or transient error.
+function github_last_http_status(): ?int
+{
+    return $GLOBALS['_github_last_http_status'] ?? null;
+}
+
 function repo_http_get_json(string $url, string $pat, array $headers, int $timeout = 20): ?array
 {
     $ch = curl_init($url);
@@ -46,6 +54,8 @@ function repo_http_get_json(string $url, string $pat, array $headers, int $timeo
     $body = curl_exec($ch);
     $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
+
+    $GLOBALS['_github_last_http_status'] = $code;
 
     if ($body === false || $code >= 400) {
         return null;

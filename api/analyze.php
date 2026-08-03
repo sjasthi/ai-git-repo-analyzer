@@ -450,15 +450,25 @@ if (stripos($contentType, 'application/json') !== false) {
 }
 
 $repoUrl = trim($inputData['repo_url'] ?? $_POST['repo_url'] ?? '');
-$pat     = trim($inputData['pat']      ?? $_POST['pat']      ?? '');
+$patFromForm = trim($inputData['pat']  ?? $_POST['pat']      ?? '');
+$pat     = $patFromForm;
 
 if ($pat === '') {
     $pat = trim((string) (getenv('GITHUB_TOKEN') ?: ''));
 }
 
-if ($repoUrl === '' || $pat === '') {
+if ($repoUrl === '') {
     http_response_code(422);
-    echo json_encode(['error' => 'Repository URL and PAT are required.']);
+    echo json_encode(['error' => 'Repository URL is required.']);
+    exit;
+}
+
+if ($pat === '') {
+    http_response_code(422);
+    echo json_encode([
+        'error'      => 'No GitHub token on file yet. Enter a Personal Access Token to get started.',
+        'error_type' => 'token_required',
+    ]);
     exit;
 }
 
@@ -489,9 +499,23 @@ repo_set_context([
 $repoMetadata = fetchRepositoryMetadata($provider, $owner, $repo, $pat);
 
 if ($repoMetadata === null) {
+    $lastStatus = function_exists('github_last_http_status') ? github_last_http_status() : null;
     http_response_code(401);
-    echo json_encode(['error' => 'Repository API rejected the request. Verify the URL and token permissions.']);
+    if (in_array($lastStatus, [401, 403], true)) {
+        echo json_encode([
+            'error'      => 'Your GitHub token is invalid or expired. Please provide a new token.',
+            'error_type' => 'token_invalid',
+        ]);
+    } else {
+        echo json_encode(['error' => 'Repository API rejected the request. Verify the URL and token permissions.']);
+    }
     exit;
+}
+
+// Token worked — if it came from the form (new or replacing a stored one), persist it
+// so future scans reuse it automatically without asking again.
+if ($patFromForm !== '' && $patFromForm !== trim((string) (getenv('GITHUB_TOKEN') ?: ''))) {
+    save_env_value(__DIR__ . '/../.env', 'GITHUB_TOKEN', $patFromForm);
 }
 
 $repoName        = $repoMetadata['full_name'] ?? ($owner . '/' . $repo);

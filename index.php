@@ -591,9 +591,8 @@ try {
                             name="pat"
                             class="form-control"
                             placeholder="ghp_..."
-                            required
                         >
-                        <div class="form-text">Used only for API access — never stored in the database.</div>
+                        <div class="form-text" id="pat-status">Used only for API access — never stored in the database.</div>
                     </div>
 
                     <div class="mb-3">
@@ -1473,6 +1472,29 @@ try {
         $('#status-msg').html(msg).css('color', isError ? '#DC2626' : '#6B7280');
     }
 
+    function refreshTokenStatus() {
+        $.get('api/token_status.php')
+            .done(function (data) {
+                const patField = $('#pat');
+                if (data && data.configured) {
+                    patField.attr('placeholder', 'Saved token will be used — leave blank to reuse it');
+                    $('#pat-status').text('A token is already on file. Leave this blank to reuse it, or enter a new one to replace it.').css('color', '');
+                } else {
+                    patField.attr('placeholder', 'ghp_...');
+                    $('#pat-status').text('No token on file yet — enter one to get started. It will be saved for future scans.').css('color', '');
+                }
+            })
+            .fail(function () {
+                // Non-fatal: leave the default placeholder/help text in place.
+            });
+    }
+
+    function promptForNewToken(message) {
+        const patField = $('#pat');
+        $('#pat-status').text(message).css('color', '#DC2626');
+        patField.val('').attr('placeholder', 'Enter a new token…').trigger('focus');
+    }
+
     let latestScanData = null;
 
     function scoreBadgeClass(score) {
@@ -2259,10 +2281,18 @@ try {
             .done(function (data) {
                 setStatus('Scan complete. Record saved to database (scan #' + data.scan_id + ').');
                 renderResults(data);
+                $('#pat').val('');
+                refreshTokenStatus();
             })
             .fail(function (xhr) {
                 const err = xhr.responseJSON || { error: 'Request failed', details: xhr.responseText };
                 setStatus('Error: ' + (err.error || 'Unknown error') + (err.details ? ' — ' + err.details : ''), true);
+
+                if (err.error_type === 'token_invalid') {
+                    promptForNewToken('Your saved token appears to be expired or invalid — please enter a new one.');
+                } else if (err.error_type === 'token_required') {
+                    promptForNewToken('No token on file yet — enter one to get started.');
+                }
             })
             .always(function () {
                 btn.prop('disabled', false).html('<i class="fas fa-play"></i> Analyze Repository');
@@ -2273,6 +2303,7 @@ try {
     initChecksFolderView();
     updateChecksSelectionStatus();
     loadRememberedRepoUrl();
+    refreshTokenStatus();
 </script>
 <footer class="site-footer">
     <div class="container">
