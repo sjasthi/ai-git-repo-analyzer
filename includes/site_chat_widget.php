@@ -19,9 +19,9 @@
         position: fixed;
         right: 16px;
         bottom: 72px;
-        width: min(420px, calc(100vw - 32px));
-        height: 520px;
-        max-height: calc(100vh - 96px);
+        width: min(560px, calc(100vw - 24px));
+        height: 680px;
+        max-height: calc(100vh - 72px);
         z-index: 1200;
         border: 1px solid #d1d5db;
         border-radius: 14px;
@@ -30,6 +30,16 @@
         display: none;
         flex-direction: column;
         overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .site-chat-panel {
+            right: 10px;
+            bottom: 66px;
+            width: calc(100vw - 20px);
+            height: min(78vh, 720px);
+            max-height: calc(100vh - 80px);
+        }
     }
 
     .site-chat-panel.open {
@@ -97,6 +107,25 @@
         border-color: #93c5fd;
     }
 
+    .site-chat-prompts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        padding: 0.7rem 0.7rem 0;
+        background: #ffffff;
+    }
+
+    .site-chat-prompt {
+        border: 1px solid #bfdbfe;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        padding: 0.38rem 0.6rem;
+        font-size: 0.76rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
     .site-chat-input-wrap {
         border-top: 1px solid #e5e7eb;
         padding: 0.7rem;
@@ -131,12 +160,28 @@
 
 <div id="site-chat-panel" class="site-chat-panel" aria-hidden="true">
     <div class="site-chat-header">
-        <h3 class="site-chat-title">AI Feature: Chat Assistant</h3>
+        <h3 class="site-chat-title">Chat Assistant</h3>
         <button type="button" id="site-chat-close" class="site-chat-close" aria-label="Close chat">&times;</button>
     </div>
     <div id="site-chat-messages" class="site-chat-messages" aria-live="polite"></div>
+    <div class="site-chat-prompts" aria-label="Suggested questions">
+        <button type="button" class="site-chat-prompt" data-question="What is this website?">What is this website?</button>
+        <button type="button" class="site-chat-prompt" data-question="How do I use this website?">How do I use it?</button>
+        <button type="button" class="site-chat-prompt" data-question="What checks are available?">What checks are available?</button>
+        <button type="button" class="site-chat-prompt" data-question="What is a PAT?">What is a PAT?</button>
+        <button type="button" class="site-chat-prompt" data-question="Does it support GitLab?">Does it support GitLab?</button>
+        <button type="button" class="site-chat-prompt" data-question="How is the score calculated?">How is the score calculated?</button>
+        <button type="button" class="site-chat-prompt" data-question="What affects the score?">What affects the score?</button>
+        <button type="button" class="site-chat-prompt" data-question="Which check affects score the most?">Which check affects score the most?</button>
+        <button type="button" class="site-chat-prompt" data-question="What does OWASP Checks measure?">What does OWASP check?</button>
+        <button type="button" class="site-chat-prompt" data-question="How can I improve the score?">How can I improve the score?</button>
+        <button type="button" class="site-chat-prompt" data-question="How long does analysis take?">How long does analysis take?</button>
+        <button type="button" class="site-chat-prompt" data-question="Who should I contact?">Who should I contact?</button>
+        <button type="button" class="site-chat-prompt" data-question="How long does it take to reply?">How long does it take to reply?</button>
+        <button type="button" class="site-chat-prompt" data-question="How do I create a PAT?">How do I create a PAT?</button>
+    </div>
     <div class="site-chat-input-wrap">
-        <input id="site-chat-input" class="site-chat-input" type="text" placeholder="Ask: How do I use this website?" maxlength="1000">
+        <input id="site-chat-input" class="site-chat-input" type="text" placeholder="Ask about the website or your scan" maxlength="1000">
         <button type="button" id="site-chat-send" class="site-chat-send">Send</button>
     </div>
 </div>
@@ -215,11 +260,18 @@
         });
     }
 
+    document.querySelectorAll('.site-chat-prompt').forEach(function (button) {
+        button.addEventListener('click', function () {
+            input.value = button.getAttribute('data-question') || '';
+            sendMessage();
+        });
+    });
+
     launcher.addEventListener('click', function () {
         panel.classList.toggle('open');
         panel.setAttribute('aria-hidden', panel.classList.contains('open') ? 'false' : 'true');
         if (panel.classList.contains('open') && messages.childElementCount === 0) {
-            appendMessage('assistant', 'Chat Assistant is ready. Ask about score, findings, priorities, or how to use this website.');
+            appendMessage('assistant', 'Chat Assistant is ready. Ask about the website, your scan, or what to improve next.');
         }
     });
 
