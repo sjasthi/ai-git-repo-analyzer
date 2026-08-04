@@ -155,34 +155,19 @@
 </style>
 
 <button type="button" id="site-chat-launcher" class="site-chat-launcher">
-    <i class="fas fa-robot"></i> Chat Assistant
+    <i class="fas fa-circle-question"></i> Help Center
 </button>
 
 <div id="site-chat-panel" class="site-chat-panel" aria-hidden="true">
     <div class="site-chat-header">
-        <h3 class="site-chat-title">Chat Assistant</h3>
+        <h3 class="site-chat-title">Help Center</h3>
         <button type="button" id="site-chat-close" class="site-chat-close" aria-label="Close chat">&times;</button>
     </div>
     <div id="site-chat-messages" class="site-chat-messages" aria-live="polite"></div>
-    <div class="site-chat-prompts" aria-label="Suggested questions">
-        <button type="button" class="site-chat-prompt" data-question="What is this website?">What is this website?</button>
-        <button type="button" class="site-chat-prompt" data-question="How do I use this website?">How do I use it?</button>
-        <button type="button" class="site-chat-prompt" data-question="What checks are available?">What checks are available?</button>
-        <button type="button" class="site-chat-prompt" data-question="What is a PAT?">What is a PAT?</button>
-        <button type="button" class="site-chat-prompt" data-question="Does it support GitLab?">Does it support GitLab?</button>
-        <button type="button" class="site-chat-prompt" data-question="How is the score calculated?">How is the score calculated?</button>
-        <button type="button" class="site-chat-prompt" data-question="What affects the score?">What affects the score?</button>
-        <button type="button" class="site-chat-prompt" data-question="Which check affects score the most?">Which check affects score the most?</button>
-        <button type="button" class="site-chat-prompt" data-question="What does OWASP Checks measure?">What does OWASP check?</button>
-        <button type="button" class="site-chat-prompt" data-question="How can I improve the score?">How can I improve the score?</button>
-        <button type="button" class="site-chat-prompt" data-question="How long does analysis take?">How long does analysis take?</button>
-        <button type="button" class="site-chat-prompt" data-question="Who should I contact?">Who should I contact?</button>
-        <button type="button" class="site-chat-prompt" data-question="How long does it take to reply?">How long does it take to reply?</button>
-        <button type="button" class="site-chat-prompt" data-question="How do I create a PAT?">How do I create a PAT?</button>
-    </div>
+    <div class="site-chat-prompts" id="site-chat-prompts" aria-label="Help Center questions"></div>
     <div class="site-chat-input-wrap">
-        <input id="site-chat-input" class="site-chat-input" type="text" placeholder="Ask about the website or your scan" maxlength="1000">
-        <button type="button" id="site-chat-send" class="site-chat-send">Send</button>
+        <input id="site-chat-input" class="site-chat-input" type="text" placeholder="Search or type a Help Center question" maxlength="1000">
+        <button type="button" id="site-chat-send" class="site-chat-send">Ask</button>
     </div>
 </div>
 
@@ -194,6 +179,8 @@
     const messages = document.getElementById('site-chat-messages');
     const input = document.getElementById('site-chat-input');
     const sendBtn = document.getElementById('site-chat-send');
+    const promptsWrap = document.getElementById('site-chat-prompts');
+    let helpFaqs = [];
 
     if (!launcher || !panel || !messages || !input || !sendBtn) {
         return;
@@ -213,18 +200,51 @@
         messages.scrollTop = messages.scrollHeight;
     }
 
-    function getContext() {
-        const root = window.latestScanData || {};
-        return {
-            score: root?.scan?.summary_score ?? null,
-            findings: Array.isArray(root?.findings) ? root.findings.slice(0, 80) : [],
-            recommendations: Array.isArray(root?.recommendations) ? root.recommendations.slice(0, 80) : [],
-            checks: Array.isArray(root?.checks) ? root.checks.slice(0, 120) : []
-        };
+    function renderFaqButtons() {
+        if (!promptsWrap) {
+            return;
+        }
+        promptsWrap.innerHTML = '';
+        helpFaqs.forEach(function (faq) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'site-chat-prompt';
+            btn.setAttribute('data-question-id', String(faq.id || ''));
+            btn.setAttribute('data-question', String(faq.question || ''));
+            btn.textContent = String(faq.question || 'Question');
+            btn.addEventListener('click', function () {
+                const question = String(faq.question || '').trim();
+                if (question === '') {
+                    return;
+                }
+                input.value = question;
+                sendMessage(String(faq.id || ''), question);
+            });
+            promptsWrap.appendChild(btn);
+        });
     }
 
-    function sendMessage() {
-        const question = String(input.value || '').trim();
+    function loadHelpCenterFaqs() {
+        return fetch('api/chat_assistant.php', { method: 'GET' })
+            .then(function (res) {
+                return res.json().then(function (data) {
+                    return { status: res.status, data: data };
+                });
+            })
+            .then(function (result) {
+                if (result.status >= 400 || !result.data || result.data.ok !== true || !Array.isArray(result.data.faqs)) {
+                    return;
+                }
+                helpFaqs = result.data.faqs.slice(0, 20);
+                renderFaqButtons();
+            })
+            .catch(function () {
+                // Keep static fallback behavior if loading FAQ list fails.
+            });
+    }
+
+    function sendMessage(questionId, forcedQuestion) {
+        const question = String(forcedQuestion || input.value || '').trim();
         if (question === '') {
             return;
         }
@@ -234,10 +254,14 @@
         sendBtn.disabled = true;
         sendBtn.textContent = '...';
 
+        const payload = questionId
+            ? { question_id: questionId, question: question }
+            : { question: question };
+
         fetch('api/chat_assistant.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question: question, context: getContext() })
+            body: JSON.stringify(payload)
         })
         .then(function (res) {
             return res.json().then(function (data) {
@@ -246,32 +270,26 @@
         })
         .then(function (result) {
             if (result.status >= 400 || !result.data || result.data.ok !== true) {
-                appendMessage('assistant', 'Error: Unable to generate a response right now.');
+                appendMessage('assistant', 'Error: Unable to load Help Center answer right now.');
                 return;
             }
             appendMessage('assistant', String(result.data.answer || 'No response generated.'));
         })
         .catch(function () {
-            appendMessage('assistant', 'Error: Failed to reach chat assistant endpoint.');
+            appendMessage('assistant', 'Error: Failed to reach Help Center endpoint.');
         })
         .finally(function () {
             sendBtn.disabled = false;
-            sendBtn.textContent = 'Send';
+            sendBtn.textContent = 'Ask';
         });
     }
-
-    document.querySelectorAll('.site-chat-prompt').forEach(function (button) {
-        button.addEventListener('click', function () {
-            input.value = button.getAttribute('data-question') || '';
-            sendMessage();
-        });
-    });
 
     launcher.addEventListener('click', function () {
         panel.classList.toggle('open');
         panel.setAttribute('aria-hidden', panel.classList.contains('open') ? 'false' : 'true');
         if (panel.classList.contains('open') && messages.childElementCount === 0) {
-            appendMessage('assistant', 'Chat Assistant is ready. Ask about the website, your scan, or what to improve next.');
+            appendMessage('assistant', 'Help Center is ready. Choose a question below or type one to search.');
+            loadHelpCenterFaqs();
         }
     });
 
@@ -282,11 +300,13 @@
         });
     }
 
-    sendBtn.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', function () {
+        sendMessage('', '');
+    });
     input.addEventListener('keydown', function (event) {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
-            sendMessage();
+            sendMessage('', '');
         }
     });
 })();
